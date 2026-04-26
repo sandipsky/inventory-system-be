@@ -1,225 +1,299 @@
-CREATE TABLE `category` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100) NOT NULL,
-  `is_active` TINYINT(1) DEFAULT 1,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE category (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  is_active INTEGER DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE `unit` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100) NOT NULL,
-  `is_active` TINYINT(1) DEFAULT 1,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+CREATE TRIGGER category_updated_at AFTER UPDATE ON category
+FOR EACH ROW BEGIN
+  UPDATE category SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;
+
+CREATE TABLE unit (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  is_active INTEGER DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE `product` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100),
-  `code` VARCHAR(50),
-  `is_active` TINYINT(1) DEFAULT 1,
-  `is_service_item` TINYINT(1) DEFAULT 0,
-  `is_purchasable` TINYINT(1) DEFAULT 1,
-  `is_sellable` TINYINT(1) DEFAULT 1,
-  `cost_price` DECIMAL(12,2),
-  `selling_price` DECIMAL(12,2),
-  `mrp` DECIMAL(12,2),
-  `category_id` INT,
-  `unit_id` INT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`category_id`) REFERENCES `category`(`id`),
-  FOREIGN KEY (`unit_id`) REFERENCES `unit`(`id`)
+CREATE TRIGGER unit_updated_at AFTER UPDATE ON unit
+FOR EACH ROW BEGIN
+  UPDATE unit SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;
+
+CREATE TABLE packing (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  is_active INTEGER DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TRIGGER packing_updated_at AFTER UPDATE ON packing
+FOR EACH ROW BEGIN
+  UPDATE packing SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;
+
+CREATE TABLE tax_type (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  tax_rate REAL NOT NULL DEFAULT 0,
+  is_active INTEGER DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TRIGGER tax_type_updated_at AFTER UPDATE ON tax_type
+FOR EACH ROW BEGIN
+  UPDATE tax_type SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;
+
+CREATE TABLE product (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
+  code TEXT,
+  is_active INTEGER DEFAULT 1,
+  is_service_item INTEGER DEFAULT 0,
+  is_purchasable INTEGER DEFAULT 1,
+  is_sellable INTEGER DEFAULT 1,
+  cost_price NUMERIC,
+  selling_price NUMERIC,
+  mrp NUMERIC,
+  category_id INTEGER,
+  unit_id INTEGER,
+  packing_id INTEGER,
+  tax_type_id INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (category_id) REFERENCES category(id),
+  FOREIGN KEY (unit_id) REFERENCES unit(id),
+  FOREIGN KEY (packing_id) REFERENCES packing(id),
+  FOREIGN KEY (tax_type_id) REFERENCES tax_type(id)
+);
+
+CREATE TRIGGER product_updated_at AFTER UPDATE ON product
+FOR EACH ROW BEGIN
+  UPDATE product SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;
 
 CREATE TABLE product_stock (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `quantity` DOUBLE,
-    `cost_price` DOUBLE,
-    `selling_price` DOUBLE,
-    `mrp` DOUBLE,
-    `product_id` INT,
-  FOREIGN KEY (`product_id`) REFERENCES `product`(`id`)
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  quantity REAL,
+  cost_price REAL,
+  selling_price REAL,
+  mrp REAL,
+  product_id INTEGER,
+  FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
-CREATE TABLE `user` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `full_name` VARCHAR(100) NOT NULL,
-  `username` VARCHAR(50) NOT NULL UNIQUE,
-  `email` VARCHAR(100) NOT NULL UNIQUE,
-  `password` VARCHAR(255) NOT NULL,
-  `gender` VARCHAR(10),
-  `contact` VARCHAR(20),
-  `image_url` VARCHAR(255),
-  `is_active` TINYINT(1) DEFAULT 1,
-  `account_non_locked` TINYINT(1) DEFAULT 1,
-  `failed_attempt` INT DEFAULT 0,
-  `lock_time` DATETIME DEFAULT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+CREATE TABLE user (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  full_name TEXT NOT NULL,
+  username TEXT NOT NULL UNIQUE,
+  email TEXT NOT NULL UNIQUE,
+  password TEXT NOT NULL,
+  gender TEXT,
+  contact TEXT,
+  image_url TEXT,
+  is_active INTEGER DEFAULT 1,
+  account_non_locked INTEGER DEFAULT 1,
+  failed_attempt INTEGER DEFAULT 0,
+  lock_time DATETIME DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE `party` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100) NOT NULL,
-  `registration_number` VARCHAR(100),
-  `is_active` TINYINT(1) DEFAULT 1,
-  `type` VARCHAR(50) NOT NULL,
-  `contact` VARCHAR(20),
-  `address` VARCHAR(255),
-  `email` VARCHAR(100),
-  `remarks` TEXT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+CREATE TRIGGER user_updated_at AFTER UPDATE ON user
+FOR EACH ROW BEGIN
+  UPDATE user SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;
+
+CREATE TABLE party (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  registration_number TEXT,
+  is_active INTEGER DEFAULT 1,
+  type TEXT NOT NULL,
+  contact TEXT,
+  address TEXT,
+  email TEXT,
+  remarks TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE `account_master` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `account_code` VARCHAR(50),
-  `account_name` VARCHAR(100) NOT NULL,
-  `account_type` VARCHAR(100) NOT NULL,
-  `is_active` TINYINT(1) DEFAULT 1,
-  `deletable` TINYINT(1) DEFAULT 1,
-  `parent_account_name` VARCHAR(100),
-  `parent_id` INT DEFAULT 0,
-  `remarks` TEXT,
-  `party_id` INT DEFAULT NULL UNIQUE,
-  `party_type` VARCHAR(50),
-   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`party_id`) REFERENCES `party`(`id`)
+CREATE TRIGGER party_updated_at AFTER UPDATE ON party
+FOR EACH ROW BEGIN
+  UPDATE party SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;
+
+CREATE TABLE account_master (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  account_code TEXT,
+  account_name TEXT NOT NULL,
+  account_type TEXT NOT NULL,
+  is_active INTEGER DEFAULT 1,
+  deletable INTEGER DEFAULT 1,
+  parent_account_name TEXT,
+  parent_id INTEGER DEFAULT 0,
+  remarks TEXT,
+  party_id INTEGER DEFAULT NULL UNIQUE,
+  party_type TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (party_id) REFERENCES party(id)
 );
 
-CREATE TABLE `document_number` (
-    `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    `module` VARCHAR(50) NOT NULL,          
-    `prefix` VARCHAR(20),                   
-    `start_number` INT NOT NULL DEFAULT 1,    
-    `end_number` INT NOT NULL DEFAULT 999999,  
-    `length` INT NOT NULL DEFAULT 6,          
-    `description` VARCHAR(255)              
+CREATE TRIGGER account_master_updated_at AFTER UPDATE ON account_master
+FOR EACH ROW BEGIN
+  UPDATE account_master SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;
+
+CREATE TABLE document_number (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  module TEXT NOT NULL,
+  prefix TEXT,
+  start_number INTEGER NOT NULL DEFAULT 1,
+  end_number INTEGER NOT NULL DEFAULT 999999,
+  length INTEGER NOT NULL DEFAULT 6,
+  description TEXT
 );
 
-CREATE TABLE `master_purchase_entry` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `date` VARCHAR(255),
-  `system_entry_no` VARCHAR(25) UNIQUE NOT NULL,
-  `bill_no` VARCHAR(255),
-  `transaction_type` VARCHAR(255),
-  `sub_total` DOUBLE DEFAULT 0 NOT NULL,
-  `discount` DOUBLE DEFAULT 0 NOT NULL,
-  `non_taxable_amount` DOUBLE DEFAULT 0 NOT NULL,
-  `taxable_amount` DOUBLE DEFAULT 0 NOT NULL,
-  `total_tax` DOUBLE DEFAULT 0 NOT NULL,
-  `rounded` BOOLEAN DEFAULT FALSE,
-  `rounding` DOUBLE DEFAULT 0 NOT NULL,
-  `grand_total` DOUBLE DEFAULT 0 NOT NULL,
-  `discount_type` VARCHAR(255),
-  `remarks` TEXT,
-  `party_id` INT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`party_id`) REFERENCES `party`(`id`),
-  UNIQUE KEY `unique_party_bill_no` (`party_id`, `bill_no`)
+CREATE TABLE master_purchase_entry (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  date TEXT,
+  system_entry_no TEXT UNIQUE NOT NULL,
+  bill_no TEXT,
+  transaction_type TEXT,
+  sub_total REAL NOT NULL DEFAULT 0,
+  discount REAL NOT NULL DEFAULT 0,
+  non_taxable_amount REAL NOT NULL DEFAULT 0,
+  taxable_amount REAL NOT NULL DEFAULT 0,
+  total_tax REAL NOT NULL DEFAULT 0,
+  rounded INTEGER DEFAULT 0,
+  rounding REAL NOT NULL DEFAULT 0,
+  grand_total REAL NOT NULL DEFAULT 0,
+  discount_type TEXT,
+  remarks TEXT,
+  party_id INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (party_id) REFERENCES party(id),
+  UNIQUE (party_id, bill_no)
 );
 
-CREATE TABLE `purchase_entry` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `master_purchase_entry_id` INT,
-    `quantity` DOUBLE,
-    `cost_price` DOUBLE,
-    `selling_price` DOUBLE,
-    `mrp` DOUBLE,
-    `product_id` INT,
-    FOREIGN KEY (`master_purchase_entry_id`) REFERENCES `master_purchase_entry`(`id`),
-  FOREIGN KEY (`product_id`) REFERENCES `product`(`id`)
+CREATE TRIGGER master_purchase_entry_updated_at AFTER UPDATE ON master_purchase_entry
+FOR EACH ROW BEGIN
+  UPDATE master_purchase_entry SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;
+
+CREATE TABLE purchase_entry (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  master_purchase_entry_id INTEGER,
+  quantity REAL,
+  cost_price REAL,
+  selling_price REAL,
+  mrp REAL,
+  product_id INTEGER,
+  FOREIGN KEY (master_purchase_entry_id) REFERENCES master_purchase_entry(id),
+  FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
-CREATE TABLE `master_sales_entry` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `date` VARCHAR(255),
-  `system_entry_no` VARCHAR(25) UNIQUE NOT NULL,
-  `transaction_type` VARCHAR(255),
-  `sub_total` DOUBLE DEFAULT 0 NOT NULL,
-  `discount` DOUBLE DEFAULT 0 NOT NULL,
-  `non_taxable_amount` DOUBLE DEFAULT 0 NOT NULL,
-  `taxable_amount` DOUBLE DEFAULT 0 NOT NULL,
-  `total_tax` DOUBLE DEFAULT 0 NOT NULL,
-  `rounded` BOOLEAN DEFAULT FALSE,
-  `is_cancelled` BOOLEAN DEFAULT FALSE,
-  `rounding` DOUBLE DEFAULT 0 NOT NULL,
-  `grand_total` DOUBLE DEFAULT 0 NOT NULL,
-  `discount_type` VARCHAR(255),
-  `remarks` TEXT,
-  `cancel_remarks` TEXT,
-  `party_id` INT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`party_id`) REFERENCES `party`(`id`)
+CREATE TABLE master_sales_entry (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  date TEXT,
+  system_entry_no TEXT UNIQUE NOT NULL,
+  transaction_type TEXT,
+  sub_total REAL NOT NULL DEFAULT 0,
+  discount REAL NOT NULL DEFAULT 0,
+  non_taxable_amount REAL NOT NULL DEFAULT 0,
+  taxable_amount REAL NOT NULL DEFAULT 0,
+  total_tax REAL NOT NULL DEFAULT 0,
+  rounded INTEGER DEFAULT 0,
+  is_cancelled INTEGER DEFAULT 0,
+  rounding REAL NOT NULL DEFAULT 0,
+  grand_total REAL NOT NULL DEFAULT 0,
+  discount_type TEXT,
+  remarks TEXT,
+  cancel_remarks TEXT,
+  party_id INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (party_id) REFERENCES party(id)
 );
 
-CREATE TABLE `sales_entry` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `master_sales_entry_id` INT,
-    `quantity` DOUBLE,
-    `cost_price` DOUBLE,
-    `selling_price` DOUBLE,
-    `mrp` DOUBLE,
-    `product_id` INT,
-    FOREIGN KEY (`master_sales_entry_id`) REFERENCES `master_sales_entry`(`id`),
-  FOREIGN KEY (`product_id`) REFERENCES `product`(`id`)
+CREATE TRIGGER master_sales_entry_updated_at AFTER UPDATE ON master_sales_entry
+FOR EACH ROW BEGIN
+  UPDATE master_sales_entry SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;
+
+CREATE TABLE sales_entry (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  master_sales_entry_id INTEGER,
+  quantity REAL,
+  cost_price REAL,
+  selling_price REAL,
+  mrp REAL,
+  product_id INTEGER,
+  FOREIGN KEY (master_sales_entry_id) REFERENCES master_sales_entry(id),
+  FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
-
-CREATE TABLE `master_journal_entry` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `date` VARCHAR(255),
-  `system_entry_no` VARCHAR(25) NOT NULL UNIQUE,
-  `remarks` TEXT,
-  `master_purchase_entry_id` INT,
-  `master_sales_entry_id` INT,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`master_purchase_entry_id`) REFERENCES `master_purchase_entry`(`id`),
-  FOREIGN KEY (`master_sales_entry_id`) REFERENCES `master_purchase_entry`(`id`)
+CREATE TABLE master_journal_entry (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  date TEXT,
+  system_entry_no TEXT NOT NULL UNIQUE,
+  remarks TEXT,
+  master_purchase_entry_id INTEGER,
+  master_sales_entry_id INTEGER,
+  FOREIGN KEY (master_purchase_entry_id) REFERENCES master_purchase_entry(id),
+  FOREIGN KEY (master_sales_entry_id) REFERENCES master_sales_entry(id)
 );
 
-CREATE TABLE `journal_entry` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `master_journal_entry_id` INT,
-  `narration` VARCHAR(255),
-  `debit_amount` DOUBLE,
-  `credit_amount` DOUBLE,
-  `account_master_id` INT,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`master_journal_entry_id`) REFERENCES `master_journal_entry`(`id`),
-  FOREIGN KEY (`account_master_id`) REFERENCES `account_master`(`id`)
+CREATE TABLE journal_entry (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  master_journal_entry_id INTEGER,
+  narration TEXT,
+  debit_amount REAL,
+  credit_amount REAL,
+  account_master_id INTEGER,
+  FOREIGN KEY (master_journal_entry_id) REFERENCES master_journal_entry(id),
+  FOREIGN KEY (account_master_id) REFERENCES account_master(id)
 );
 
-INSERT INTO `category` (`name`, `is_active`) VALUES 
+INSERT INTO category (name, is_active) VALUES
 ('Smartphones', 1),
 ('Laptops', 1),
 ('Accessories', 1),
 ('Tablets', 1),
 ('Smartwatches', 1);
 
-INSERT INTO `unit` (`name`, `is_active`) VALUES 
+INSERT INTO unit (name, is_active) VALUES
 ('Piece', 1),
 ('Box', 1),
 ('Packet', 1),
 ('Set', 1),
 ('Bundle', 1);
 
-INSERT INTO `product` 
-(`name`, `code`, `is_active`, `is_service_item`, `is_purchasable`, `is_sellable`, `cost_price`, `selling_price`, `mrp`, `category_id`, `unit_id`) 
+INSERT INTO packing (name, is_active) VALUES
+('Carton', 1),
+('Crate', 1),
+('Pallet', 1),
+('Pack', 1),
+('Roll', 1);
+
+INSERT INTO tax_type (name, tax_rate, is_active) VALUES
+('VAT 13%', 13, 1),
+('Tax Free', 0, 1),
+('Exempted', 0, 1);
+
+INSERT INTO product
+(name, code, is_active, is_service_item, is_purchasable, is_sellable, cost_price, selling_price, mrp, category_id, unit_id)
 VALUES
 ('iPhone 14 Pro', 'IP14P', 1, 0, 1, 1, 950.00, 1099.00, 1199.00, 1, 1),
 ('Samsung Galaxy S23', 'SGS23', 1, 0, 1, 1, 800.00, 999.00, 1050.00, 1, 1),
@@ -247,8 +321,8 @@ VALUES
 ('Sony Headphones', 'SH01', 1, 0, 1, 1, 60.00, 79.00, 89.00, 3, 3),
 ('HP Envy', 'HPE', 1, 0, 1, 1, 700.00, 899.00, 999.00, 2, 2);
 
-INSERT INTO `party` (`name`, `registration_number`, `is_active`, `type`, `contact`, `address`, `email`, `remarks`)
-VALUES 
+INSERT INTO party (name, registration_number, is_active, type, contact, address, email, remarks)
+VALUES
 ('Tech Distributors Inc.', 'REG12345', 1, 'Vendor', '9876543210', 'Kathmandu, Nepal', 'vendor1@techdist.com', 'Bulk electronics supplier'),
 ('Gadget Retailers', 'REG12346', 1, 'Customer', '9801234567', 'Lalitpur, Nepal', 'customer1@gadgetretail.com', 'Regular mobile retailer'),
 ('Digital Nepal', 'REG12347', 1, 'Vendor', '9811122233', 'Pokhara, Nepal', 'vendor2@digitalnepal.com', 'Laptop and accessory wholesaler'),
@@ -260,7 +334,7 @@ VALUES
 ('Ecom Vendor House', 'REG12353', 1, 'Vendor', '9866677885', 'Nepalgunj, Nepal', 'vendor5@ecomvendor.com', 'Online platform supplier'),
 ('City Electronics', 'REG12354', 1, 'Customer', '9812345678', 'Hetauda, Nepal', 'customer5@cityelectronics.com', 'Retail electronics chain');
 
-INSERT INTO `account_master` (`id`, `account_code`, `account_name`, `account_type`, `is_active`, `deletable`, `parent_account_name`, `parent_id`, `remarks`, `party_id`) VALUES
+INSERT INTO account_master (id, account_code, account_name, account_type, is_active, deletable, parent_account_name, parent_id, remarks, party_id) VALUES
 (1, 'C-000', 'Cash In Hand', 'Cash & Cash Equivalents', 1, 0, NULL, 0, NULL, NULL),
 (2, 'S-000', 'Sales', 'Direct Income', 1, 0, NULL, 0, NULL, NULL),
 (3, 'C-001', 'Cash', 'Cash & Cash Equivalents', 1, 0, 'Cash In Hand', 1, NULL, NULL),
@@ -296,12 +370,7 @@ INSERT INTO `account_master` (`id`, `account_code`, `account_name`, `account_typ
 (33, NULL, 'GreenTech Enterprises', 'Receivables', 1, 1, 'Trade Receivables', 23, 'Eco-tech solutions firm', 8),
 (34, NULL, 'City Electronics', 'Receivables', 1, 1, 'Trade Receivables', 23, 'Retail electronics chain', 10);
 
-INSERT INTO `document_number` (`module`, `prefix`, `start_number`, `end_number`, `length`, `description`) VALUES 
+INSERT INTO document_number (module, prefix, start_number, end_number, length, description) VALUES
 ('Purchase', 'PE-', 1, 999999, 6, 'Purchase Entry'),
-('Sales', 'SI-', 1, 999999, 6, 'Sales Entry');
+('Sales', 'SI-', 1, 999999, 6, 'Sales Entry'),
 ('Journal', 'J-', 1, 999999, 6, 'Journal Entry');
-
-
-
-
-

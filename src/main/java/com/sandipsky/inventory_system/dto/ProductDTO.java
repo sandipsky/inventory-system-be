@@ -21,6 +21,11 @@ public class ProductDTO {
     private String categoryName;
     private int unitId;
     private String unitName;
+    private int packingId;
+    private String packingName;
+    private int taxTypeId;
+    private String taxTypeName;
+    private double taxRate;
     @JsonProperty("is_active")
     private boolean isActive;
     private boolean isPurchasable;

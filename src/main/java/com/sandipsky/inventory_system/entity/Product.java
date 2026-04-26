@@ -38,4 +38,12 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "unit_id")
     private Unit unit;
+
+    @ManyToOne
+    @JoinColumn(name = "packing_id")
+    private Packing packing;
+
+    @ManyToOne
+    @JoinColumn(name = "tax_type_id")
+    private TaxType taxType;
 }

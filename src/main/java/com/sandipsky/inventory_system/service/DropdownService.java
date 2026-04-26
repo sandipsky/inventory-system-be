@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import com.sandipsky.inventory_system.dto.DropdownDTO;
 import com.sandipsky.inventory_system.repository.AccountMasterRepository;
 import com.sandipsky.inventory_system.repository.CategoryRepository;
+import com.sandipsky.inventory_system.repository.PackingRepository;
 import com.sandipsky.inventory_system.repository.PartyRepository;
 import com.sandipsky.inventory_system.repository.ProductRepository;
+import com.sandipsky.inventory_system.repository.TaxTypeRepository;
 import com.sandipsky.inventory_system.repository.UnitRepository;
 import com.sandipsky.inventory_system.repository.UserRepository;
 
@@ -30,6 +32,12 @@ public class DropdownService {
 
     @Autowired
     private UnitRepository unitRepository;
+
+    @Autowired
+    private PackingRepository packingRepository;
+
+    @Autowired
+    private TaxTypeRepository taxTypeRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -74,6 +82,16 @@ public class DropdownService {
     public List<DropdownDTO> getUnitsDropdown(String status) {
         Boolean isActive = "active".equalsIgnoreCase(status) ? true : null;
         return unitRepository.findFilteredDropdown(isActive);
+    }
+
+    public List<DropdownDTO> getPackingDropdown(String status) {
+        Boolean isActive = "active".equalsIgnoreCase(status) ? true : null;
+        return packingRepository.findFilteredDropdown(isActive);
+    }
+
+    public List<DropdownDTO> getTaxTypeDropdown(String status) {
+        Boolean isActive = "active".equalsIgnoreCase(status) ? true : null;
+        return taxTypeRepository.findFilteredDropdown(isActive);
     }
 
     public List<DropdownDTO> getCategoryDropdown(String status) {

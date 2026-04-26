@@ -1,0 +1,25 @@
+package com.sandipsky.inventory_system.entity;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+@Getter
+@Setter
+@Table(name = "tax_type")
+public class TaxType {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(nullable = false, unique = true)
+    private String name;
+
+    private double taxRate;
+
+    @JsonProperty("is_active")
+    private boolean isActive;
+}

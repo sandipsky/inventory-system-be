@@ -7,14 +7,18 @@ import com.sandipsky.inventory_system.dto.ProductDTO;
 import com.sandipsky.inventory_system.dto.ProductStockDTO;
 import com.sandipsky.inventory_system.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.entity.Category;
+import com.sandipsky.inventory_system.entity.Packing;
 import com.sandipsky.inventory_system.entity.Product;
 import com.sandipsky.inventory_system.entity.ProductStock;
+import com.sandipsky.inventory_system.entity.TaxType;
 import com.sandipsky.inventory_system.entity.Unit;
 import com.sandipsky.inventory_system.exception.DuplicateResourceException;
 import com.sandipsky.inventory_system.exception.ResourceNotFoundException;
 import com.sandipsky.inventory_system.repository.CategoryRepository;
+import com.sandipsky.inventory_system.repository.PackingRepository;
 import com.sandipsky.inventory_system.repository.ProductRepository;
 import com.sandipsky.inventory_system.repository.ProductStockRepository;
+import com.sandipsky.inventory_system.repository.TaxTypeRepository;
 import com.sandipsky.inventory_system.repository.UnitRepository;
 import com.sandipsky.inventory_system.util.SpecificationBuilder;
 
@@ -37,6 +41,12 @@ public class ProductService {
 
     @Autowired
     private UnitRepository unitRepository;
+
+    @Autowired
+    private PackingRepository packingRepository;
+
+    @Autowired
+    private TaxTypeRepository taxTypeRepository;
 
     private final SpecificationBuilder<Product> specBuilder = new SpecificationBuilder<>();
 
@@ -124,6 +134,11 @@ public class ProductService {
         dto.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : null);
         dto.setUnitId(product.getUnit() != null ? product.getUnit().getId() : null);
         dto.setUnitName(product.getUnit() != null ? product.getUnit().getName() : null);
+        dto.setPackingId(product.getPacking() != null ? product.getPacking().getId() : null);
+        dto.setPackingName(product.getPacking() != null ? product.getPacking().getName() : null);
+        dto.setTaxTypeId(product.getTaxType() != null ? product.getTaxType().getId() : null);
+        dto.setTaxTypeName(product.getTaxType() != null ? product.getTaxType().getName() : null);
+        dto.setTaxRate(product.getTaxType() != null ? product.getTaxType().getTaxRate() : 0);
         return dto;
     }
 
@@ -142,8 +157,14 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         Unit unit = unitRepository.findById(dto.getUnitId())
                 .orElseThrow(() -> new ResourceNotFoundException("Unit not found"));
+        Packing packing = packingRepository.findById(dto.getPackingId())
+                .orElseThrow(() -> new ResourceNotFoundException("Packing not found"));
+        TaxType taxType = taxTypeRepository.findById(dto.getTaxTypeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Tax Type not found"));
 
         product.setCategory(category);
         product.setUnit(unit);
+        product.setPacking(packing);
+        product.setTaxType(taxType);
     }
 }

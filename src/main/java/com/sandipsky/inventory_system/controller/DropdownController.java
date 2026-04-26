@@ -42,6 +42,16 @@ public class DropdownController {
         return service.getUnitsDropdown(status);
     }
 
+    @GetMapping("/packings/{status}")
+    public List<DropdownDTO> getPackingDropdown(@PathVariable String status) {
+        return service.getPackingDropdown(status);
+    }
+
+    @GetMapping("/tax-types/{status}")
+    public List<DropdownDTO> getTaxTypeDropdown(@PathVariable String status) {
+        return service.getTaxTypeDropdown(status);
+    }
+
     @GetMapping("/category/{status}")
     public List<DropdownDTO> getCategorysDropdown(@PathVariable String status) {
         return service.getCategoryDropdown(status);

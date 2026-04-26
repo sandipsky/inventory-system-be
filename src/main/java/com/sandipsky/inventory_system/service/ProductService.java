@@ -130,13 +130,13 @@ public class ProductService {
         dto.setPurchasable(product.isPurchasable());
         dto.setSellable(product.isSellable());
         dto.setServiceItem(product.isServiceItem());
-        dto.setCategoryId(product.getCategory() != null ? product.getCategory().getId() : null);
+        dto.setCategoryId(product.getCategory() != null ? product.getCategory().getId() : 0);
         dto.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : null);
-        dto.setUnitId(product.getUnit() != null ? product.getUnit().getId() : null);
+        dto.setUnitId(product.getUnit() != null ? product.getUnit().getId() : 0);
         dto.setUnitName(product.getUnit() != null ? product.getUnit().getName() : null);
-        dto.setPackingId(product.getPacking() != null ? product.getPacking().getId() : null);
+        dto.setPackingId(product.getPacking() != null ? product.getPacking().getId() : 0);
         dto.setPackingName(product.getPacking() != null ? product.getPacking().getName() : null);
-        dto.setTaxTypeId(product.getTaxType() != null ? product.getTaxType().getId() : null);
+        dto.setTaxTypeId(product.getTaxType() != null ? product.getTaxType().getId() : 0);
         dto.setTaxTypeName(product.getTaxType() != null ? product.getTaxType().getName() : null);
         dto.setTaxRate(product.getTaxType() != null ? product.getTaxType().getTaxRate() : 0);
         return dto;

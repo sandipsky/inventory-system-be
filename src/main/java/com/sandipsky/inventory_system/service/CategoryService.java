@@ -1,12 +1,18 @@
 package com.sandipsky.inventory_system.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.sandipsky.inventory_system.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.entity.Category;
 import com.sandipsky.inventory_system.exception.DuplicateResourceException;
 import com.sandipsky.inventory_system.exception.ResourceNotFoundException;
 import com.sandipsky.inventory_system.repository.CategoryRepository;
+import com.sandipsky.inventory_system.util.SpecificationBuilder;
 
 import java.util.List;
 
@@ -15,6 +21,8 @@ public class CategoryService {
 
     @Autowired
     private CategoryRepository repository;
+
+    private final SpecificationBuilder<Category> specBuilder = new SpecificationBuilder<>();
 
     public Category saveCategory(Category category) {
         if (category.getName() == null || category.getName().trim().isEmpty()) {
@@ -27,12 +35,24 @@ public class CategoryService {
         return repository.save(category);
     }
 
+    public Page<Category> getPaginatedCategorysList(RequestDTO request) {
+        Pageable pageable = PageRequest.of(
+                request.getPagination() != null ? request.getPagination().getPageIndex() : 0,
+                request.getPagination() != null ? request.getPagination().getPageSize() : 25,
+                specBuilder.buildSort(request.getSortDTO()));
+
+        Specification<Category> spec = specBuilder.buildSpecification(request.getFilter());
+        Page<Category> categoryPage = repository.findAll(spec, pageable);
+        return categoryPage;
+    }
+
     public List<Category> getCategorys() {
         return repository.findAll();
     }
 
     public Category getCategoryById(int id) {
-        Category existing = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        Category existing = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         return existing;
     }
 
@@ -40,7 +60,8 @@ public class CategoryService {
         if (category.getName() == null || category.getName().trim().isEmpty()) {
             throw new RuntimeException("Category name cannot be null or blank");
         }
-        Category existing = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        Category existing = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
         if (repository.existsByNameAndIdNot(category.getName().trim(), id)) {
             throw new DuplicateResourceException("Category with the same name already exists");

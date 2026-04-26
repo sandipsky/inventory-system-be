@@ -1,10 +1,12 @@
 package com.sandipsky.inventory_system.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.sandipsky.inventory_system.dto.ApiResponse;
+import com.sandipsky.inventory_system.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.entity.TaxType;
 import com.sandipsky.inventory_system.service.TaxTypeService;
 import com.sandipsky.inventory_system.util.ResponseUtil;
@@ -12,7 +14,7 @@ import com.sandipsky.inventory_system.util.ResponseUtil;
 import java.util.List;
 
 @RestController
-@RequestMapping("/tax-types")
+@RequestMapping("/master/taxtypes")
 public class TaxTypeController {
 
     @Autowired
@@ -21,6 +23,11 @@ public class TaxTypeController {
     @GetMapping()
     public List<TaxType> getTaxTypes() {
         return service.getTaxTypes();
+    }
+
+    @PostMapping("/view")
+    public Page<TaxType> getPaginatedTaxTypesList(@RequestBody RequestDTO request) {
+        return service.getPaginatedTaxTypesList(request);
     }
 
     @GetMapping("/{id}")

@@ -1,10 +1,12 @@
 package com.sandipsky.inventory_system.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.sandipsky.inventory_system.dto.ApiResponse;
+import com.sandipsky.inventory_system.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.entity.Category;
 import com.sandipsky.inventory_system.service.CategoryService;
 import com.sandipsky.inventory_system.util.ResponseUtil;
@@ -12,7 +14,7 @@ import com.sandipsky.inventory_system.util.ResponseUtil;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categorys")
+@RequestMapping("/master/categorys")
 public class CategoryController {
 
     @Autowired
@@ -21,6 +23,11 @@ public class CategoryController {
     @GetMapping()
     public List<Category> getCategorys() {
         return service.getCategorys();
+    }
+
+    @PostMapping("/view")
+    public Page<Category> getPaginatedCategorysList(@RequestBody RequestDTO request) {
+        return service.getPaginatedCategorysList(request);
     }
 
     @GetMapping("/{id}")

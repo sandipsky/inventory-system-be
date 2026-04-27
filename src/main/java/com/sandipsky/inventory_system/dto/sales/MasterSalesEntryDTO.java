@@ -48,11 +48,11 @@ public class MasterSalesEntryDTO {
     @JsonProperty("cancel_remarks")
     private String cancelRemarks;
 
-    @JsonProperty("party_id")
-    private int partyId;
+    @JsonProperty("customer_id")
+    private int customerId;
 
-    @JsonProperty("party_name")
-    private String partyName;
+    @JsonProperty("customer_name")
+    private String customerName;
 
     private List<SalesEntryDTO> salesEntries;
 }

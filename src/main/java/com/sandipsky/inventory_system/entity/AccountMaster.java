@@ -39,10 +39,10 @@ public class AccountMaster {
     private String remarks;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "party_id")
-    private Party party;
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
 
-    @Column(name = "party_type", length = 50)
-    private String partyType;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 }
-

@@ -23,12 +23,13 @@ public interface AccountMasterRepository
             SELECT new com.sandipsky.inventory_system.dto.DropdownDTO(p.id, p.accountName)
             FROM AccountMaster p
             WHERE (:type IS NULL OR
-                   (:type = TRUE AND p.party.id IS NOT NULL) OR
-                   (:type = FALSE AND p.party.id IS NULL))
+                   (:type = TRUE AND (p.vendor.id IS NOT NULL OR p.customer.id IS NOT NULL)) OR
+                   (:type = FALSE AND p.vendor.id IS NULL AND p.customer.id IS NULL))
               AND (:isActive IS NULL OR p.isActive = :isActive)
               AND (
-                  p.party.id IS NULL OR
-                  (:partyType IS NULL OR p.partyType = :partyType)
+                  :partyType IS NULL OR
+                  (:partyType = 'Vendor' AND p.vendor.id IS NOT NULL) OR
+                  (:partyType = 'Customer' AND p.customer.id IS NOT NULL)
               )
             """)
     List<DropdownDTO> findFilteredDropdown(Boolean type,
@@ -37,7 +38,14 @@ public interface AccountMasterRepository
     @Query("""
                 SELECT p
                 FROM AccountMaster p
-                WHERE p.party.id = :partyId
+                WHERE p.vendor.id = :vendorId
             """)
-    Optional<AccountMaster> findByPartyId(@Param("partyId") Integer partyId);
+    Optional<AccountMaster> findByVendorId(@Param("vendorId") Integer vendorId);
+
+    @Query("""
+                SELECT p
+                FROM AccountMaster p
+                WHERE p.customer.id = :customerId
+            """)
+    Optional<AccountMaster> findByCustomerId(@Param("customerId") Integer customerId);
 }

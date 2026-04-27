@@ -6,12 +6,13 @@ import org.springframework.stereotype.Service;
 import com.sandipsky.inventory_system.dto.DropdownDTO;
 import com.sandipsky.inventory_system.repository.AccountMasterRepository;
 import com.sandipsky.inventory_system.repository.CategoryRepository;
+import com.sandipsky.inventory_system.repository.CustomerRepository;
 import com.sandipsky.inventory_system.repository.PackingRepository;
-import com.sandipsky.inventory_system.repository.PartyRepository;
 import com.sandipsky.inventory_system.repository.ProductRepository;
 import com.sandipsky.inventory_system.repository.TaxTypeRepository;
 import com.sandipsky.inventory_system.repository.UnitRepository;
 import com.sandipsky.inventory_system.repository.UserRepository;
+import com.sandipsky.inventory_system.repository.VendorRepository;
 
 import java.util.List;
 
@@ -22,7 +23,10 @@ public class DropdownService {
     private ProductRepository productRepository;
 
     @Autowired
-    private PartyRepository partyRepository;
+    private VendorRepository vendorRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Autowired
     private AccountMasterRepository accountRepository;
@@ -54,14 +58,14 @@ public class DropdownService {
         return productRepository.findFilteredDropdown(isService, isPurchasable, isSellable, isActive);
     }
 
-    public List<DropdownDTO> getPartyDropdown(String type, String status) {
-        String productType = switch (type.toLowerCase()) {
-            case "customer" -> "Customer";
-            case "vendor" -> "Vendor";
-            default -> null; // "all"
-        };
+    public List<DropdownDTO> getVendorDropdown(String status) {
         Boolean isActive = "active".equalsIgnoreCase(status) ? true : null;
-        return partyRepository.findFilteredDropdown(productType, isActive);
+        return vendorRepository.findFilteredDropdown(isActive);
+    }
+
+    public List<DropdownDTO> getCustomerDropdown(String status) {
+        Boolean isActive = "active".equalsIgnoreCase(status) ? true : null;
+        return customerRepository.findFilteredDropdown(isActive);
     }
 
     public List<DropdownDTO> getAccountMasterDropdown(String type, String partyType, String status) {

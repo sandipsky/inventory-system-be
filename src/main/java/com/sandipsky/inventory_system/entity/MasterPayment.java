@@ -41,8 +41,12 @@ public class MasterPayment {
 	private List<PaymentDetail> paymentDetails;
 
 	@ManyToOne
-	@JoinColumn(name = "party_id", insertable = true, updatable = true)
-	private Party party;
+	@JoinColumn(name = "vendor_id", insertable = true, updatable = true)
+	private Vendor vendor;
+
+	@ManyToOne
+	@JoinColumn(name = "customer_id", insertable = true, updatable = true)
+	private Customer customer;
 
 	@ManyToOne
 	@JoinColumn(name = "transaction_type", insertable = true, updatable = true)

@@ -62,6 +62,6 @@ public class MasterSalesEntry {
 	private List<SalesEntry> salesEntries;
 
 	@ManyToOne
-	@JoinColumn(name = "party_id")
-	private Party party;
+	@JoinColumn(name = "customer_id")
+	private Customer customer;
 }

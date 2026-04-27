@@ -14,7 +14,7 @@ import com.sandipsky.inventory_system.entity.AccountMaster;
 import com.sandipsky.inventory_system.entity.JournalEntry;
 import com.sandipsky.inventory_system.entity.MasterJournalEntry;
 import com.sandipsky.inventory_system.entity.MasterPurchaseEntry;
-import com.sandipsky.inventory_system.entity.Party;
+import com.sandipsky.inventory_system.entity.Vendor;
 import com.sandipsky.inventory_system.entity.Product;
 import com.sandipsky.inventory_system.entity.ProductStock;
 import com.sandipsky.inventory_system.entity.PurchaseEntry;
@@ -23,7 +23,7 @@ import com.sandipsky.inventory_system.repository.AccountMasterRepository;
 import com.sandipsky.inventory_system.repository.JournalEntryRepository;
 import com.sandipsky.inventory_system.repository.MasterJournalEntryRepository;
 import com.sandipsky.inventory_system.repository.MasterPurchaseEntryRepository;
-import com.sandipsky.inventory_system.repository.PartyRepository;
+import com.sandipsky.inventory_system.repository.VendorRepository;
 import com.sandipsky.inventory_system.repository.ProductRepository;
 import com.sandipsky.inventory_system.repository.ProductStockRepository;
 import com.sandipsky.inventory_system.repository.PurchaseEntryRepository;
@@ -42,7 +42,7 @@ public class PurchaseEntryService {
     private PurchaseEntryRepository purchaseEntryRepository;
 
     @Autowired
-    private PartyRepository partyRepository;
+    private VendorRepository vendorRepository;
 
     @Autowired
     private ProductRepository productRepository;
@@ -94,6 +94,10 @@ public class PurchaseEntryService {
         masterPurchaseEntryDTO.setGrandTotal(masterPurchaseEntry.getGrandTotal());
         masterPurchaseEntryDTO.setDiscountType(masterPurchaseEntry.getDiscountType());
         masterPurchaseEntryDTO.setRemarks(masterPurchaseEntry.getRemarks());
+        if (masterPurchaseEntry.getVendor() != null) {
+            masterPurchaseEntryDTO.setVendorId(masterPurchaseEntry.getVendor().getId());
+            masterPurchaseEntryDTO.setVendorName(masterPurchaseEntry.getVendor().getName());
+        }
 
         if (masterPurchaseEntry.getPurchaseEntries() != null) {
             masterPurchaseEntryDTO.setPurchaseEntries(
@@ -130,12 +134,12 @@ public class PurchaseEntryService {
         masterPurchaseEntry.setRounding(masterPurchaseEntryDTO.getRounding());
         masterPurchaseEntry.setGrandTotal(masterPurchaseEntryDTO.getGrandTotal());
         masterPurchaseEntry.setDiscountType(masterPurchaseEntryDTO.getDiscountType());
-        Party party = partyRepository.findById(masterPurchaseEntryDTO.getPartyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Party not found"));
-        masterPurchaseEntry.setParty(party);
+        Vendor vendor = vendorRepository.findById(masterPurchaseEntryDTO.getVendorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Vendor not found"));
+        masterPurchaseEntry.setVendor(vendor);
 
         if (masterPurchaseEntryDTO.getRemarks().isEmpty() || masterPurchaseEntryDTO.getRemarks() == null) {
-            masterPurchaseEntry.setRemarks("Purchased Goods from " + party.getName());
+            masterPurchaseEntry.setRemarks("Purchased Goods from " + vendor.getName());
         } else {
             masterPurchaseEntry.setRemarks(masterPurchaseEntryDTO.getRemarks());
         }
@@ -213,12 +217,12 @@ public class PurchaseEntryService {
         masterPurchaseEntry.setRounding(masterPurchaseEntryDTO.getRounding());
         masterPurchaseEntry.setGrandTotal(masterPurchaseEntryDTO.getGrandTotal());
         masterPurchaseEntry.setDiscountType(masterPurchaseEntryDTO.getDiscountType());
-        Party party = partyRepository.findById(masterPurchaseEntryDTO.getPartyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Party not found"));
-        masterPurchaseEntry.setParty(party);
+        Vendor vendor = vendorRepository.findById(masterPurchaseEntryDTO.getVendorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Vendor not found"));
+        masterPurchaseEntry.setVendor(vendor);
 
         if (masterPurchaseEntryDTO.getRemarks().isEmpty() || masterPurchaseEntryDTO.getRemarks() == null) {
-            masterPurchaseEntry.setRemarks("Purchased Goods from " + party.getName());
+            masterPurchaseEntry.setRemarks("Purchased Goods from " + vendor.getName());
         } else {
             masterPurchaseEntry.setRemarks(masterPurchaseEntryDTO.getRemarks());
         }
@@ -351,6 +355,10 @@ public class PurchaseEntryService {
         masterPurchaseEntryDTO.setGrandTotal(entity.getGrandTotal());
         masterPurchaseEntryDTO.setDiscountType(entity.getDiscountType());
         masterPurchaseEntryDTO.setRemarks(entity.getRemarks());
+        if (entity.getVendor() != null) {
+            masterPurchaseEntryDTO.setVendorId(entity.getVendor().getId());
+            masterPurchaseEntryDTO.setVendorName(entity.getVendor().getName());
+        }
         return masterPurchaseEntryDTO;
     }
 
@@ -434,7 +442,7 @@ public class PurchaseEntryService {
                     .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
         } else {
-            accountMaster = accountMasterRepository.findByPartyId(masterEntry.getParty().getId())
+            accountMaster = accountMasterRepository.findByVendorId(masterEntry.getVendor().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
         }
         journalEntry.setMasterAccount(accountMaster);

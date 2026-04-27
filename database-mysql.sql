@@ -87,12 +87,25 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `party` (
+CREATE TABLE `vendor` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
   `registration_number` VARCHAR(100),
   `is_active` TINYINT(1) DEFAULT 1,
-  `type` VARCHAR(50) NOT NULL,
+  `contact` VARCHAR(20),
+  `address` VARCHAR(255),
+  `email` VARCHAR(100),
+  `remarks` TEXT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `customer` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `registration_number` VARCHAR(100),
+  `is_active` TINYINT(1) DEFAULT 1,
   `contact` VARCHAR(20),
   `address` VARCHAR(255),
   `email` VARCHAR(100),
@@ -112,22 +125,23 @@ CREATE TABLE `account_master` (
   `parent_account_name` VARCHAR(100),
   `parent_id` INT DEFAULT 0,
   `remarks` TEXT,
-  `party_id` INT DEFAULT NULL UNIQUE,
-  `party_type` VARCHAR(50),
+  `vendor_id` INT DEFAULT NULL UNIQUE,
+  `customer_id` INT DEFAULT NULL UNIQUE,
    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`party_id`) REFERENCES `party`(`id`)
+  FOREIGN KEY (`vendor_id`) REFERENCES `vendor`(`id`),
+  FOREIGN KEY (`customer_id`) REFERENCES `customer`(`id`)
 );
 
 CREATE TABLE `document_number` (
     `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    `module` VARCHAR(50) NOT NULL,          
-    `prefix` VARCHAR(20),                   
-    `start_number` INT NOT NULL DEFAULT 1,    
-    `end_number` INT NOT NULL DEFAULT 999999,  
-    `length` INT NOT NULL DEFAULT 6,          
-    `description` VARCHAR(255)              
+    `module` VARCHAR(50) NOT NULL,
+    `prefix` VARCHAR(20),
+    `start_number` INT NOT NULL DEFAULT 1,
+    `end_number` INT NOT NULL DEFAULT 999999,
+    `length` INT NOT NULL DEFAULT 6,
+    `description` VARCHAR(255)
 );
 
 CREATE TABLE `master_purchase_entry` (
@@ -146,12 +160,12 @@ CREATE TABLE `master_purchase_entry` (
   `grand_total` DOUBLE DEFAULT 0 NOT NULL,
   `discount_type` VARCHAR(255),
   `remarks` TEXT,
-  `party_id` INT,
+  `vendor_id` INT,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`party_id`) REFERENCES `party`(`id`),
-  UNIQUE KEY `unique_party_bill_no` (`party_id`, `bill_no`)
+  FOREIGN KEY (`vendor_id`) REFERENCES `vendor`(`id`),
+  UNIQUE KEY `unique_party_bill_no` (`vendor_id`, `bill_no`)
 );
 
 CREATE TABLE `purchase_entry` (
@@ -183,11 +197,11 @@ CREATE TABLE `master_sales_entry` (
   `discount_type` VARCHAR(255),
   `remarks` TEXT,
   `cancel_remarks` TEXT,
-  `party_id` INT,
+  `customer_id` INT,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`party_id`) REFERENCES `party`(`id`)
+  FOREIGN KEY (`customer_id`) REFERENCES `customer`(`id`)
 );
 
 CREATE TABLE `sales_entry` (
@@ -227,7 +241,7 @@ CREATE TABLE `journal_entry` (
   FOREIGN KEY (`account_master_id`) REFERENCES `account_master`(`id`)
 );
 
-INSERT INTO `category` (`name`, `is_active`) VALUES 
+INSERT INTO `category` (`name`, `is_active`) VALUES
 ('Smartphones', 1),
 ('Laptops', 1),
 ('Accessories', 1),
@@ -253,8 +267,8 @@ INSERT INTO `tax_type` (`name`, `tax_rate`, `is_active`) VALUES
 ('Tax Free', 0, 1),
 ('Exempted', 0, 1);
 
-INSERT INTO `product` 
-(`name`, `code`, `is_active`, `is_service_item`, `is_purchasable`, `is_sellable`, `cost_price`, `selling_price`, `mrp`, `category_id`, `unit_id`) 
+INSERT INTO `product`
+(`name`, `code`, `is_active`, `is_service_item`, `is_purchasable`, `is_sellable`, `cost_price`, `selling_price`, `mrp`, `category_id`, `unit_id`)
 VALUES
 ('iPhone 14 Pro', 'IP14P', 1, 0, 1, 1, 950.00, 1099.00, 1199.00, 1, 1),
 ('Samsung Galaxy S23', 'SGS23', 1, 0, 1, 1, 800.00, 999.00, 1050.00, 1, 1),
@@ -282,60 +296,62 @@ VALUES
 ('Sony Headphones', 'SH01', 1, 0, 1, 1, 60.00, 79.00, 89.00, 3, 3),
 ('HP Envy', 'HPE', 1, 0, 1, 1, 700.00, 899.00, 999.00, 2, 2);
 
-INSERT INTO `party` (`name`, `registration_number`, `is_active`, `type`, `contact`, `address`, `email`, `remarks`)
-VALUES 
-('Tech Distributors Inc.', 'REG12345', 1, 'Vendor', '9876543210', 'Kathmandu, Nepal', 'vendor1@techdist.com', 'Bulk electronics supplier'),
-('Gadget Retailers', 'REG12346', 1, 'Customer', '9801234567', 'Lalitpur, Nepal', 'customer1@gadgetretail.com', 'Regular mobile retailer'),
-('Digital Nepal', 'REG12347', 1, 'Vendor', '9811122233', 'Pokhara, Nepal', 'vendor2@digitalnepal.com', 'Laptop and accessory wholesaler'),
-('Smart Solutions', 'REG12348', 1, 'Customer', '9808765432', 'Biratnagar, Nepal', 'customer2@smartsolutions.com', 'Corporate client'),
-('Everest Traders', 'REG12349', 1, 'Vendor', '9822334455', 'Chitwan, Nepal', 'vendor3@everesttraders.com', 'Tablet and watch supplier'),
-('Valley Mobiles', 'REG12350', 1, 'Customer', '9841122334', 'Bhaktapur, Nepal', 'customer3@valleymobiles.com', 'Mobile shop chain'),
-('Quick Supplies', 'REG12351', 1, 'Vendor', '9855566778', 'Butwal, Nepal', 'vendor4@quicksupplies.com', 'General electronics vendor'),
-('GreenTech Enterprises', 'REG12352', 1, 'Customer', '9809988776', 'Dharan, Nepal', 'customer4@greentech.com', 'Eco-tech solutions firm'),
-('Ecom Vendor House', 'REG12353', 1, 'Vendor', '9866677885', 'Nepalgunj, Nepal', 'vendor5@ecomvendor.com', 'Online platform supplier'),
-('City Electronics', 'REG12354', 1, 'Customer', '9812345678', 'Hetauda, Nepal', 'customer5@cityelectronics.com', 'Retail electronics chain');
+INSERT INTO `vendor` (`name`, `registration_number`, `is_active`, `contact`, `address`, `email`, `remarks`)
+VALUES
+('Tech Distributors Inc.', 'REG12345', 1, '9876543210', 'Kathmandu, Nepal', 'vendor1@techdist.com', 'Bulk electronics supplier'),
+('Digital Nepal', 'REG12347', 1, '9811122233', 'Pokhara, Nepal', 'vendor2@digitalnepal.com', 'Laptop and accessory wholesaler'),
+('Everest Traders', 'REG12349', 1, '9822334455', 'Chitwan, Nepal', 'vendor3@everesttraders.com', 'Tablet and watch supplier'),
+('Quick Supplies', 'REG12351', 1, '9855566778', 'Butwal, Nepal', 'vendor4@quicksupplies.com', 'General electronics vendor'),
+('Ecom Vendor House', 'REG12353', 1, '9866677885', 'Nepalgunj, Nepal', 'vendor5@ecomvendor.com', 'Online platform supplier');
 
-INSERT INTO `account_master` (`id`, `account_code`, `account_name`, `account_type`, `is_active`, `deletable`, `parent_account_name`, `parent_id`, `remarks`, `party_id`) VALUES
-(1, 'C-000', 'Cash In Hand', 'Cash & Cash Equivalents', 1, 0, NULL, 0, NULL, NULL),
-(2, 'S-000', 'Sales', 'Direct Income', 1, 0, NULL, 0, NULL, NULL),
-(3, 'C-001', 'Cash', 'Cash & Cash Equivalents', 1, 0, 'Cash In Hand', 1, NULL, NULL),
-(4, 'P-001', 'Purchase', 'Cost of Goods Sold', 1, 0, NULL, 0, NULL, NULL),
-(5, 'S-001', 'VAT Sales', 'Direct Income', 1, 0, 'Sales', 2, NULL, NULL),
-(6, 'C-002', 'Petty Cash', 'Cash & Cash Equivalents', 1, 0, 'Cash In Hand', 1, NULL, NULL),
-(7, 'VP-001', 'VAT Purchase', 'Cost of Goods Sold', 1, 0, 'Purchase', 4, NULL, NULL),
-(8, 'E-002', 'Printing and Stationary', 'Administrative Expenses', 1, 0, NULL, 0, NULL, NULL),
-(9, 'E-003', 'Fuel Expenses', 'Administrative Expenses', 1, 0, NULL, 0, NULL, NULL),
-(10, 'VFP-001', 'VAT Free Purchase', 'Cost of Goods Sold', 1, 0, 'Purchase', 4, NULL, NULL),
-(11, 'FA-001', 'Fixed Assets', 'Non-Current Assets', 1, 0, NULL, 0, NULL, NULL),
-(12, NULL, 'Plant and Machinery', 'Non-Current Assets', 1, 0, 'Fixed Assets', 11, NULL, NULL),
-(13, NULL, 'Debtors', 'Receivables', 1, 0, NULL, 0, NULL, NULL),
-(14, 'TP-001', 'Tax Payable', 'Other Payables', 1, 0, NULL, 0, NULL, NULL),
-(15, 'T-001', 'Tax', 'Other Payables', 1, 0, 'Tax Payable', 14, NULL, NULL),
-(16, 'OE-001', 'Other Expenses', 'Administrative Expenses', 1, 0, NULL, 0, NULL, NULL),
-(17, 'A-001', 'Adjustment', 'Administrative Expenses', 1, 0, 'Other Expenses', 16, NULL, NULL),
-(18, 'TP-002', 'Trader Payable', 'Payables', 1, 0, NULL, 0, NULL, NULL),
-(19, NULL, 'In. Direct', 'Indirect Income', 1, 0, NULL, 0, NULL, NULL),
-(20, NULL, 'Interest', 'Indirect Income', 1, 0, 'In. Direct', 19, NULL, NULL),
-(21, NULL, 'In. Expenses', 'Other Indirect Expenses', 1, 0, NULL, 0, NULL, NULL),
-(22, NULL, 'Bank Charge', 'Other Indirect Expenses', 1, 0, 'In. Expenses', 21, NULL, NULL),
-(23, NULL, 'Trade Receivables', 'Receivables', 1, 0, NULL, 0, NULL, NULL),
-(24, NULL, 'VAT Free Sales', 'Direct Income', 1, 0, 'Sales', 2, NULL, NULL),
-(25, NULL, 'Tech Distributors Inc.', 'Payables', 1, 1, 'Trader Payable', 18, 'Bulk electronics supplier', 1),
-(26, NULL, 'Digital Nepal', 'Payables', 1, 1, 'Trader Payable', 18, 'Laptop and accessory wholesaler', 3),
-(27, NULL, 'Everest Traders', 'Payables', 1, 1, 'Trader Payable', 18, 'Tablet and watch supplier', 5),
-(28, NULL, 'Quick Supplies', 'Payables', 1, 1, 'Trader Payable', 18, 'General electronics vendor', 7),
-(29, NULL, 'Ecom Vendor House', 'Payables', 1, 1, 'Trader Payable', 18, 'Online platform supplier', 9),
-(30, NULL, 'Gadget Retailers', 'Receivables', 1, 1, 'Trade Receivables', 23, 'Regular mobile retailer', 2),
-(31, NULL, 'Smart Solutions', 'Receivables', 1, 1, 'Trade Receivables', 23, 'Corporate client', 4),
-(32, NULL, 'Valley Mobiles', 'Receivables', 1, 1, 'Trade Receivables', 23, 'Mobile shop chain', 6),
-(33, NULL, 'GreenTech Enterprises', 'Receivables', 1, 1, 'Trade Receivables', 23, 'Eco-tech solutions firm', 8),
-(34, NULL, 'City Electronics', 'Receivables', 1, 1, 'Trade Receivables', 23, 'Retail electronics chain', 10);
+INSERT INTO `customer` (`name`, `registration_number`, `is_active`, `contact`, `address`, `email`, `remarks`)
+VALUES
+('Gadget Retailers', 'REG12346', 1, '9801234567', 'Lalitpur, Nepal', 'customer1@gadgetretail.com', 'Regular mobile retailer'),
+('Smart Solutions', 'REG12348', 1, '9808765432', 'Biratnagar, Nepal', 'customer2@smartsolutions.com', 'Corporate client'),
+('Valley Mobiles', 'REG12350', 1, '9841122334', 'Bhaktapur, Nepal', 'customer3@valleymobiles.com', 'Mobile shop chain'),
+('GreenTech Enterprises', 'REG12352', 1, '9809988776', 'Dharan, Nepal', 'customer4@greentech.com', 'Eco-tech solutions firm'),
+('City Electronics', 'REG12354', 1, '9812345678', 'Hetauda, Nepal', 'customer5@cityelectronics.com', 'Retail electronics chain');
 
-INSERT INTO `document_number` (`module`, `prefix`, `start_number`, `end_number`, `length`, `description`) VALUES 
+INSERT INTO `account_master` (`id`, `account_code`, `account_name`, `account_type`, `is_active`, `deletable`, `parent_account_name`, `parent_id`, `remarks`, `vendor_id`, `customer_id`) VALUES
+(1, 'C-000', 'Cash In Hand', 'Cash & Cash Equivalents', 1, 0, NULL, 0, NULL, NULL, NULL),
+(2, 'S-000', 'Sales', 'Direct Income', 1, 0, NULL, 0, NULL, NULL, NULL),
+(3, 'C-001', 'Cash', 'Cash & Cash Equivalents', 1, 0, 'Cash In Hand', 1, NULL, NULL, NULL),
+(4, 'P-001', 'Purchase', 'Cost of Goods Sold', 1, 0, NULL, 0, NULL, NULL, NULL),
+(5, 'S-001', 'VAT Sales', 'Direct Income', 1, 0, 'Sales', 2, NULL, NULL, NULL),
+(6, 'C-002', 'Petty Cash', 'Cash & Cash Equivalents', 1, 0, 'Cash In Hand', 1, NULL, NULL, NULL),
+(7, 'VP-001', 'VAT Purchase', 'Cost of Goods Sold', 1, 0, 'Purchase', 4, NULL, NULL, NULL),
+(8, 'E-002', 'Printing and Stationary', 'Administrative Expenses', 1, 0, NULL, 0, NULL, NULL, NULL),
+(9, 'E-003', 'Fuel Expenses', 'Administrative Expenses', 1, 0, NULL, 0, NULL, NULL, NULL),
+(10, 'VFP-001', 'VAT Free Purchase', 'Cost of Goods Sold', 1, 0, 'Purchase', 4, NULL, NULL, NULL),
+(11, 'FA-001', 'Fixed Assets', 'Non-Current Assets', 1, 0, NULL, 0, NULL, NULL, NULL),
+(12, NULL, 'Plant and Machinery', 'Non-Current Assets', 1, 0, 'Fixed Assets', 11, NULL, NULL, NULL),
+(13, NULL, 'Debtors', 'Receivables', 1, 0, NULL, 0, NULL, NULL, NULL),
+(14, 'TP-001', 'Tax Payable', 'Other Payables', 1, 0, NULL, 0, NULL, NULL, NULL),
+(15, 'T-001', 'Tax', 'Other Payables', 1, 0, 'Tax Payable', 14, NULL, NULL, NULL),
+(16, 'OE-001', 'Other Expenses', 'Administrative Expenses', 1, 0, NULL, 0, NULL, NULL, NULL),
+(17, 'A-001', 'Adjustment', 'Administrative Expenses', 1, 0, 'Other Expenses', 16, NULL, NULL, NULL),
+(18, 'TP-002', 'Trader Payable', 'Payables', 1, 0, NULL, 0, NULL, NULL, NULL),
+(19, NULL, 'In. Direct', 'Indirect Income', 1, 0, NULL, 0, NULL, NULL, NULL),
+(20, NULL, 'Interest', 'Indirect Income', 1, 0, 'In. Direct', 19, NULL, NULL, NULL),
+(21, NULL, 'In. Expenses', 'Other Indirect Expenses', 1, 0, NULL, 0, NULL, NULL, NULL),
+(22, NULL, 'Bank Charge', 'Other Indirect Expenses', 1, 0, 'In. Expenses', 21, NULL, NULL, NULL),
+(23, NULL, 'Trade Receivables', 'Receivables', 1, 0, NULL, 0, NULL, NULL, NULL),
+(24, NULL, 'VAT Free Sales', 'Direct Income', 1, 0, 'Sales', 2, NULL, NULL, NULL),
+(25, NULL, 'Tech Distributors Inc.', 'Payables', 1, 1, 'Trader Payable', 18, 'Bulk electronics supplier', 1, NULL),
+(26, NULL, 'Digital Nepal', 'Payables', 1, 1, 'Trader Payable', 18, 'Laptop and accessory wholesaler', 2, NULL),
+(27, NULL, 'Everest Traders', 'Payables', 1, 1, 'Trader Payable', 18, 'Tablet and watch supplier', 3, NULL),
+(28, NULL, 'Quick Supplies', 'Payables', 1, 1, 'Trader Payable', 18, 'General electronics vendor', 4, NULL),
+(29, NULL, 'Ecom Vendor House', 'Payables', 1, 1, 'Trader Payable', 18, 'Online platform supplier', 5, NULL),
+(30, NULL, 'Gadget Retailers', 'Receivables', 1, 1, 'Trade Receivables', 23, 'Regular mobile retailer', NULL, 1),
+(31, NULL, 'Smart Solutions', 'Receivables', 1, 1, 'Trade Receivables', 23, 'Corporate client', NULL, 2),
+(32, NULL, 'Valley Mobiles', 'Receivables', 1, 1, 'Trade Receivables', 23, 'Mobile shop chain', NULL, 3),
+(33, NULL, 'GreenTech Enterprises', 'Receivables', 1, 1, 'Trade Receivables', 23, 'Eco-tech solutions firm', NULL, 4),
+(34, NULL, 'City Electronics', 'Receivables', 1, 1, 'Trade Receivables', 23, 'Retail electronics chain', NULL, 5);
+
+INSERT INTO `document_number` (`module`, `prefix`, `start_number`, `end_number`, `length`, `description`) VALUES
 ('Purchase', 'PE-', 1, 999999, 6, 'Purchase Entry'),
 ('Sales', 'SI-', 1, 999999, 6, 'Sales Entry');
 ('Journal', 'J-', 1, 999999, 6, 'Journal Entry');
-
 
 
 

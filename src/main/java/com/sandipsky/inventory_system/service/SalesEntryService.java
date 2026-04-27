@@ -8,12 +8,12 @@ import com.sandipsky.inventory_system.dto.sales.MasterSalesEntryDTO;
 import com.sandipsky.inventory_system.dto.sales.SalesEntryDTO;
 import com.sandipsky.inventory_system.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.entity.MasterSalesEntry;
-import com.sandipsky.inventory_system.entity.Party;
+import com.sandipsky.inventory_system.entity.Customer;
 import com.sandipsky.inventory_system.entity.ProductStock;
 import com.sandipsky.inventory_system.entity.SalesEntry;
 import com.sandipsky.inventory_system.exception.ResourceNotFoundException;
 import com.sandipsky.inventory_system.repository.MasterSalesEntryRepository;
-import com.sandipsky.inventory_system.repository.PartyRepository;
+import com.sandipsky.inventory_system.repository.CustomerRepository;
 import com.sandipsky.inventory_system.repository.ProductStockRepository;
 import com.sandipsky.inventory_system.repository.SalesEntryRepository;
 import com.sandipsky.inventory_system.util.SpecificationBuilder;
@@ -31,7 +31,7 @@ public class SalesEntryService {
     private SalesEntryRepository salesEntryRepository;
 
     @Autowired
-    private PartyRepository partyRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
     private ProductStockRepository productStockRepository;
@@ -70,6 +70,10 @@ public class SalesEntryService {
         masterSalesEntryDTO.setGrandTotal(masterSalesEntry.getGrandTotal());
         masterSalesEntryDTO.setDiscountType(masterSalesEntry.getDiscountType());
         masterSalesEntryDTO.setRemarks(masterSalesEntry.getRemarks());
+        if (masterSalesEntry.getCustomer() != null) {
+            masterSalesEntryDTO.setCustomerId(masterSalesEntry.getCustomer().getId());
+            masterSalesEntryDTO.setCustomerName(masterSalesEntry.getCustomer().getName());
+        }
 
         if (masterSalesEntry.getSalesEntries() != null) {
             masterSalesEntryDTO.setSalesEntries(
@@ -106,12 +110,12 @@ public class SalesEntryService {
         masterSalesEntry.setGrandTotal(masterSalesEntryDTO.getGrandTotal());
         masterSalesEntry.setDiscountType(masterSalesEntryDTO.getDiscountType());
 
-        Party party = partyRepository.findById(masterSalesEntryDTO.getPartyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Party not found"));
-        masterSalesEntry.setParty(party);
+        Customer customer = customerRepository.findById(masterSalesEntryDTO.getCustomerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        masterSalesEntry.setCustomer(customer);
 
         if (masterSalesEntryDTO.getRemarks().isEmpty() || masterSalesEntryDTO.getRemarks() == null) {
-            masterSalesEntry.setRemarks("Sold Goods to " + party.getName());
+            masterSalesEntry.setRemarks("Sold Goods to " + customer.getName());
         } else {
             masterSalesEntry.setRemarks(masterSalesEntryDTO.getRemarks());
         }
@@ -180,6 +184,10 @@ public class SalesEntryService {
         masterSalesEntryDTO.setGrandTotal(entity.getGrandTotal());
         masterSalesEntryDTO.setDiscountType(entity.getDiscountType());
         masterSalesEntryDTO.setRemarks(entity.getRemarks());
+        if (entity.getCustomer() != null) {
+            masterSalesEntryDTO.setCustomerId(entity.getCustomer().getId());
+            masterSalesEntryDTO.setCustomerName(entity.getCustomer().getName());
+        }
         return masterSalesEntryDTO;
     }
 

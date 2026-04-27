@@ -311,33 +311,33 @@ INSERT INTO tax_type (name, tax_rate, is_active) VALUES
 ('Exempted', 0, 1);
 
 INSERT INTO product
-(name, code, is_active, is_service_item, is_purchasable, is_sellable, cost_price, selling_price, mrp, category_id, unit_id)
+(name, code, is_active, is_service_item, is_purchasable, is_sellable, cost_price, selling_price, mrp, category_id, unit_id, packing_id, tax_type_id)
 VALUES
-('iPhone 14 Pro', 'IP14P', 1, 0, 1, 1, 950.00, 1099.00, 1199.00, 1, 1),
-('Samsung Galaxy S23', 'SGS23', 1, 0, 1, 1, 800.00, 999.00, 1050.00, 1, 1),
-('MacBook Air M2', 'MBAIR2', 1, 0, 1, 1, 1000.00, 1199.00, 1299.00, 2, 1),
-('Dell XPS 13', 'DX13', 1, 0, 1, 1, 950.00, 1150.00, 1250.00, 2, 2),
-('Logitech Mouse', 'LGM01', 1, 0, 1, 1, 15.00, 25.00, 30.00, 3, 3),
-('iPad Pro', 'IPDP', 1, 0, 1, 1, 700.00, 899.00, 999.00, 4, 1),
-('Apple Watch SE', 'AWSE', 1, 0, 1, 1, 200.00, 249.00, 299.00, 5, 1),
-('Lenovo Tab M10', 'LTM10', 1, 0, 1, 1, 120.00, 160.00, 180.00, 4, 1),
-('Galaxy Watch 5', 'GW5', 1, 0, 1, 1, 180.00, 229.00, 250.00, 5, 1),
-('Asus Vivobook', 'AVBK', 1, 0, 1, 1, 600.00, 750.00, 800.00, 2, 2),
-('HP Pavilion', 'HPPAV', 1, 0, 1, 1, 650.00, 799.00, 899.00, 2, 2),
-('iPhone SE', 'IPSE', 1, 0, 1, 1, 350.00, 429.00, 499.00, 1, 1),
-('Samsung Tab S6', 'STS6', 1, 0, 1, 1, 400.00, 499.00, 599.00, 4, 1),
-('Noise Smartwatch', 'NSW01', 1, 0, 1, 1, 30.00, 49.00, 60.00, 5, 1),
-('Boat Earbuds', 'BE01', 1, 0, 1, 1, 20.00, 29.00, 35.00, 3, 3),
-('Dell Mouse', 'DM01', 1, 0, 1, 1, 10.00, 19.00, 25.00, 3, 3),
-('iPad Mini', 'IPDM', 1, 0, 1, 1, 400.00, 499.00, 599.00, 4, 1),
-('MacBook Pro', 'MBP', 1, 0, 1, 1, 1200.00, 1499.00, 1599.00, 2, 2),
-('Lenovo Legion', 'LLGN', 1, 0, 1, 1, 1100.00, 1299.00, 1399.00, 2, 2),
-('Samsung Galaxy Buds', 'SGB', 1, 0, 1, 1, 50.00, 69.00, 79.00, 3, 3),
-('iPhone 13 Mini', 'IP13M', 1, 0, 1, 1, 700.00, 799.00, 899.00, 1, 1),
-('Realme Watch', 'RW01', 1, 0, 1, 1, 40.00, 59.00, 69.00, 5, 1),
-('Amazon Fire HD', 'AFHD', 1, 0, 1, 1, 80.00, 109.00, 120.00, 4, 4),
-('Sony Headphones', 'SH01', 1, 0, 1, 1, 60.00, 79.00, 89.00, 3, 3),
-('HP Envy', 'HPE', 1, 0, 1, 1, 700.00, 899.00, 999.00, 2, 2);
+('iPhone 14 Pro', 'IP14P', 1, 0, 1, 1, 950.00, 1099.00, 1199.00, 1, 1, 1, 1),
+('Samsung Galaxy S23', 'SGS23', 1, 0, 1, 1, 800.00, 999.00, 1050.00, 1, 1, 1, 1),
+('MacBook Air M2', 'MBAIR2', 1, 0, 1, 1, 1000.00, 1199.00, 1299.00, 2, 1, 1, 1),
+('Dell XPS 13', 'DX13', 1, 0, 1, 1, 950.00, 1150.00, 1250.00, 2, 2, 1, 1),
+('Logitech Mouse', 'LGM01', 1, 0, 1, 1, 15.00, 25.00, 30.00, 3, 3, 4, 1),
+('iPad Pro', 'IPDP', 1, 0, 1, 1, 700.00, 899.00, 999.00, 4, 1, 1, 1),
+('Apple Watch SE', 'AWSE', 1, 0, 1, 1, 200.00, 249.00, 299.00, 5, 1, 4, 1),
+('Lenovo Tab M10', 'LTM10', 1, 0, 1, 1, 120.00, 160.00, 180.00, 4, 1, 1, 1),
+('Galaxy Watch 5', 'GW5', 1, 0, 1, 1, 180.00, 229.00, 250.00, 5, 1, 4, 1),
+('Asus Vivobook', 'AVBK', 1, 0, 1, 1, 600.00, 750.00, 800.00, 2, 2, 1, 1),
+('HP Pavilion', 'HPPAV', 1, 0, 1, 1, 650.00, 799.00, 899.00, 2, 2, 1, 1),
+('iPhone SE', 'IPSE', 1, 0, 1, 1, 350.00, 429.00, 499.00, 1, 1, 1, 1),
+('Samsung Tab S6', 'STS6', 1, 0, 1, 1, 400.00, 499.00, 599.00, 4, 1, 1, 1),
+('Noise Smartwatch', 'NSW01', 1, 0, 1, 1, 30.00, 49.00, 60.00, 5, 1, 4, 1),
+('Boat Earbuds', 'BE01', 1, 0, 1, 1, 20.00, 29.00, 35.00, 3, 3, 4, 1),
+('Dell Mouse', 'DM01', 1, 0, 1, 1, 10.00, 19.00, 25.00, 3, 3, 4, 1),
+('iPad Mini', 'IPDM', 1, 0, 1, 1, 400.00, 499.00, 599.00, 4, 1, 1, 1),
+('MacBook Pro', 'MBP', 1, 0, 1, 1, 1200.00, 1499.00, 1599.00, 2, 2, 1, 1),
+('Lenovo Legion', 'LLGN', 1, 0, 1, 1, 1100.00, 1299.00, 1399.00, 2, 2, 1, 1),
+('Samsung Galaxy Buds', 'SGB', 1, 0, 1, 1, 50.00, 69.00, 79.00, 3, 3, 4, 1),
+('iPhone 13 Mini', 'IP13M', 1, 0, 1, 1, 700.00, 799.00, 899.00, 1, 1, 1, 1),
+('Realme Watch', 'RW01', 1, 0, 1, 1, 40.00, 59.00, 69.00, 5, 1, 4, 1),
+('Amazon Fire HD', 'AFHD', 1, 0, 1, 1, 80.00, 109.00, 120.00, 4, 4, 1, 1),
+('Sony Headphones', 'SH01', 1, 0, 1, 1, 60.00, 79.00, 89.00, 3, 3, 4, 1),
+('HP Envy', 'HPE', 1, 0, 1, 1, 700.00, 899.00, 999.00, 2, 2, 1, 1);
 
 INSERT INTO vendor (name, registration_number, is_active, contact, address, email, remarks)
 VALUES

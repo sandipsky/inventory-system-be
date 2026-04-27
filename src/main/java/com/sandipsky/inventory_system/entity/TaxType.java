@@ -18,6 +18,7 @@ public class TaxType {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @JsonProperty("tax_rate")
     private double taxRate;
 
     @JsonProperty("is_active")

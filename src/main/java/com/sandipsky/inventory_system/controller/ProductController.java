@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
-@RequestMapping("/master/products")
+@RequestMapping("/products")
 public class ProductController {
 
     @Autowired

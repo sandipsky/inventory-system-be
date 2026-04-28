@@ -50,7 +50,7 @@ public class DropdownController {
         return service.getPackingDropdown(status);
     }
 
-    @GetMapping("/tax-types/{status}")
+    @GetMapping("/taxtypes/{status}")
     public List<DropdownDTO> getTaxTypeDropdown(@PathVariable String status) {
         return service.getTaxTypeDropdown(status);
     }

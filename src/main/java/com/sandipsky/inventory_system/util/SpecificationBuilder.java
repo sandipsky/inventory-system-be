@@ -53,8 +53,8 @@ public class SpecificationBuilder<T> {
                 if (dto.getField() != null && dto.getOrderType() != null) {
                     String property = dto.getField();
                     Sort.Order order = "desc".equalsIgnoreCase(dto.getOrderType())
-                            ? Sort.Order.desc(property)
-                            : Sort.Order.asc(property);
+                            ? Sort.Order.desc(property).ignoreCase()
+                            : Sort.Order.asc(property).ignoreCase();
                     orders.add(order);
                 }
             }

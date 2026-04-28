@@ -1,4 +1,7 @@
 package com.sandipsky.inventory_system.entity;
+
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,27 +12,40 @@ import lombok.Setter;
 @Table(name = "product")
 public class Product {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(nullable = false, unique = true)
     private String name;
 
     private String code;
-    
+
+    private String barcode;
+
     private boolean isActive;
-    
-    private boolean isServiceItem = false;
-    
-    private boolean isPurchasable = true;
-    
-    private boolean isSellable = true;
-    
+
+    private String productType;
+
     private Double costPrice;
-    
+
     private Double sellingPrice;
-    
+
     private Double mrp;
+
+    private Double maxStock;
+
+    private Double minStock;
+
+    private String valuationMethod;
+
+    private boolean isBatchAvailable = false;
+
+    private boolean hasExpiryDate = false;
+
+    private boolean hasManufacturingDate = false;
+
+    @Column(columnDefinition = "TEXT")
+    private String remarks;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -46,4 +62,8 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "tax_type_id")
     private TaxType taxType;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    private List<BonusInfo> bonusInfos;
 }

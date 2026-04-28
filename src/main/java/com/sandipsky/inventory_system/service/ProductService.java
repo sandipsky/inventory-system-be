@@ -3,9 +3,11 @@ package com.sandipsky.inventory_system.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sandipsky.inventory_system.dto.BonusInfoDTO;
 import com.sandipsky.inventory_system.dto.ProductDTO;
 import com.sandipsky.inventory_system.dto.ProductStockDTO;
 import com.sandipsky.inventory_system.dto.filter.RequestDTO;
+import com.sandipsky.inventory_system.entity.BonusInfo;
 import com.sandipsky.inventory_system.entity.Category;
 import com.sandipsky.inventory_system.entity.Packing;
 import com.sandipsky.inventory_system.entity.Product;
@@ -25,6 +27,7 @@ import com.sandipsky.inventory_system.util.SpecificationBuilder;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -123,13 +126,19 @@ public class ProductService {
         dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setCode(product.getCode());
+        dto.setBarcode(product.getBarcode());
+        dto.setProductType(product.getProductType());
+        dto.setRemarks(product.getRemarks());
         dto.setCostPrice(product.getCostPrice());
         dto.setSellingPrice(product.getSellingPrice());
         dto.setMrp(product.getMrp());
+        dto.setMaxStock(product.getMaxStock());
+        dto.setMinStock(product.getMinStock());
+        dto.setValuationMethod(product.getValuationMethod());
+        dto.setBatchAvailable(product.isBatchAvailable());
+        dto.setHasExpiryDate(product.isHasExpiryDate());
+        dto.setHasManufacturingDate(product.isHasManufacturingDate());
         dto.setActive(product.isActive());
-        dto.setPurchasable(product.isPurchasable());
-        dto.setSellable(product.isSellable());
-        dto.setServiceItem(product.isServiceItem());
         dto.setCategoryId(product.getCategory() != null ? product.getCategory().getId() : 0);
         dto.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : null);
         dto.setUnitId(product.getUnit() != null ? product.getUnit().getId() : 0);
@@ -139,32 +148,78 @@ public class ProductService {
         dto.setTaxTypeId(product.getTaxType() != null ? product.getTaxType().getId() : 0);
         dto.setTaxTypeName(product.getTaxType() != null ? product.getTaxType().getName() : null);
         dto.setTaxRate(product.getTaxType() != null ? product.getTaxType().getTaxRate() : 0);
+
+        List<BonusInfoDTO> bonusInfoDTOs = new ArrayList<>();
+        if (product.getBonusInfos() != null) {
+            for (BonusInfo bi : product.getBonusInfos()) {
+                BonusInfoDTO biDto = new BonusInfoDTO();
+                biDto.setId(bi.getId());
+                biDto.setMinQuantity(bi.getMinQuantity());
+                biDto.setBonusQuantity(bi.getBonusQuantity());
+                bonusInfoDTOs.add(biDto);
+            }
+        }
+        dto.setBonusInfos(bonusInfoDTOs);
         return dto;
     }
 
     private void mapDtoToEntity(ProductDTO dto, Product product) {
         product.setName(dto.getName().trim());
-        product.setCode(dto.getCode().trim());
+        product.setCode(dto.getCode() != null ? dto.getCode().trim() : null);
+        product.setBarcode(dto.getBarcode() != null ? dto.getBarcode().trim() : null);
+        product.setProductType(dto.getProductType());
+        product.setRemarks(dto.getRemarks());
         product.setCostPrice(dto.getCostPrice());
         product.setSellingPrice(dto.getSellingPrice());
         product.setMrp(dto.getMrp());
+        product.setMaxStock(dto.getMaxStock());
+        product.setMinStock(dto.getMinStock());
+        product.setValuationMethod(dto.getValuationMethod());
+        product.setBatchAvailable(dto.isBatchAvailable());
+        product.setHasExpiryDate(dto.isHasExpiryDate());
+        product.setHasManufacturingDate(dto.isHasManufacturingDate());
         product.setActive(dto.isActive());
-        product.setPurchasable(dto.isPurchasable());
-        product.setSellable(dto.isSellable());
-        product.setServiceItem(dto.isServiceItem());
 
-        Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         Unit unit = unitRepository.findById(dto.getUnitId())
                 .orElseThrow(() -> new ResourceNotFoundException("Unit not found"));
-        Packing packing = packingRepository.findById(dto.getPackingId())
-                .orElseThrow(() -> new ResourceNotFoundException("Packing not found"));
-        TaxType taxType = taxTypeRepository.findById(dto.getTaxTypeId())
-                .orElseThrow(() -> new ResourceNotFoundException("Tax Type not found"));
-
-        product.setCategory(category);
         product.setUnit(unit);
-        product.setPacking(packing);
-        product.setTaxType(taxType);
+
+        if (dto.getCategoryId() > 0) {
+            Category category = categoryRepository.findById(dto.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+            product.setCategory(category);
+        } else {
+            product.setCategory(null);
+        }
+
+        if (dto.getPackingId() > 0) {
+            Packing packing = packingRepository.findById(dto.getPackingId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Packing not found"));
+            product.setPacking(packing);
+        } else {
+            product.setPacking(null);
+        }
+
+        if (dto.getTaxTypeId() > 0) {
+            TaxType taxType = taxTypeRepository.findById(dto.getTaxTypeId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Tax Type not found"));
+            product.setTaxType(taxType);
+        } else {
+            product.setTaxType(null);
+        }
+
+        if (product.getBonusInfos() == null) {
+            product.setBonusInfos(new ArrayList<>());
+        } else {
+            product.getBonusInfos().clear();
+        }
+        if (dto.getBonusInfos() != null) {
+            for (BonusInfoDTO biDto : dto.getBonusInfos()) {
+                BonusInfo bi = new BonusInfo();
+                bi.setMinQuantity(biDto.getMinQuantity());
+                bi.setBonusQuantity(biDto.getBonusQuantity());
+                product.getBonusInfos().add(bi);
+            }
+        }
     }
 }

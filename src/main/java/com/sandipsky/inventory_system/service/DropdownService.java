@@ -47,15 +47,16 @@ public class DropdownService {
     private UserRepository userRepository;
 
     public List<DropdownDTO> getProductsDropdown(String serviceType, String type, String status) {
-        Boolean isService = switch (serviceType.toLowerCase()) {
-            case "service" -> true;
-            case "inventory" -> false;
-            default -> null; // "all"
-        };
-        Boolean isPurchasable = "purchasable".equalsIgnoreCase(type) ? true : null;
-        Boolean isSellable = "sellable".equalsIgnoreCase(type) ? true : null;
+        String productType = null;
+        if ("service".equalsIgnoreCase(serviceType)) {
+            productType = "Service";
+        } else if ("purchasable".equalsIgnoreCase(type)) {
+            productType = "Purchasable";
+        } else if ("sellable".equalsIgnoreCase(type)) {
+            productType = "Sellable";
+        }
         Boolean isActive = "active".equalsIgnoreCase(status) ? true : null;
-        return productRepository.findFilteredDropdown(isService, isPurchasable, isSellable, isActive);
+        return productRepository.findFilteredDropdown(productType, isActive);
     }
 
     public List<DropdownDTO> getVendorDropdown(String status) {

@@ -18,7 +18,6 @@ public class ProductDTO {
     private String name;
     private String code;
     private String barcode;
-    private String productType;
     private String remarks;
     private Double costPrice;
     private Double sellingPrice;
@@ -42,8 +41,23 @@ public class ProductDTO {
     private String taxTypeName;
     private double taxRate;
 
-    @JsonProperty("status")
+    @JsonProperty("is_active")
     private boolean isActive;
+
+    private boolean isPurchasable;
+    private boolean isSellable;
+    private boolean isServiceItem;
+
+    public List<String> getProductTypes() {
+        List<String> types = new ArrayList<>();
+        if (isPurchasable) {
+            types.add("Purchasable");
+        }
+        if (isSellable) {
+            types.add("Sellable");
+        }
+        return types;
+    }
 
     private List<BonusInfoDTO> bonusInfos = new ArrayList<>();
 }

@@ -127,7 +127,6 @@ public class ProductService {
         dto.setName(product.getName());
         dto.setCode(product.getCode());
         dto.setBarcode(product.getBarcode());
-        dto.setProductType(product.getProductType());
         dto.setRemarks(product.getRemarks());
         dto.setCostPrice(product.getCostPrice());
         dto.setSellingPrice(product.getSellingPrice());
@@ -139,6 +138,9 @@ public class ProductService {
         dto.setHasExpiryDate(product.isHasExpiryDate());
         dto.setHasManufacturingDate(product.isHasManufacturingDate());
         dto.setActive(product.isActive());
+        dto.setPurchasable(product.isPurchasable());
+        dto.setSellable(product.isSellable());
+        dto.setServiceItem(product.isServiceItem());
         dto.setCategoryId(product.getCategory() != null ? product.getCategory().getId() : 0);
         dto.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : null);
         dto.setUnitId(product.getUnit() != null ? product.getUnit().getId() : 0);
@@ -167,7 +169,6 @@ public class ProductService {
         product.setName(dto.getName().trim());
         product.setCode(dto.getCode() != null ? dto.getCode().trim() : null);
         product.setBarcode(dto.getBarcode() != null ? dto.getBarcode().trim() : null);
-        product.setProductType(dto.getProductType());
         product.setRemarks(dto.getRemarks());
         product.setCostPrice(dto.getCostPrice());
         product.setSellingPrice(dto.getSellingPrice());
@@ -179,34 +180,23 @@ public class ProductService {
         product.setHasExpiryDate(dto.isHasExpiryDate());
         product.setHasManufacturingDate(dto.isHasManufacturingDate());
         product.setActive(dto.isActive());
+        product.setPurchasable(dto.isPurchasable());
+        product.setSellable(dto.isSellable());
+        product.setServiceItem(dto.isServiceItem());
 
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         Unit unit = unitRepository.findById(dto.getUnitId())
                 .orElseThrow(() -> new ResourceNotFoundException("Unit not found"));
+        Packing packing = packingRepository.findById(dto.getPackingId())
+                .orElseThrow(() -> new ResourceNotFoundException("Packing not found"));
+        TaxType taxType = taxTypeRepository.findById(dto.getTaxTypeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Tax Type not found"));
+
+        product.setCategory(category);
         product.setUnit(unit);
-
-        if (dto.getCategoryId() > 0) {
-            Category category = categoryRepository.findById(dto.getCategoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-            product.setCategory(category);
-        } else {
-            product.setCategory(null);
-        }
-
-        if (dto.getPackingId() > 0) {
-            Packing packing = packingRepository.findById(dto.getPackingId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Packing not found"));
-            product.setPacking(packing);
-        } else {
-            product.setPacking(null);
-        }
-
-        if (dto.getTaxTypeId() > 0) {
-            TaxType taxType = taxTypeRepository.findById(dto.getTaxTypeId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Tax Type not found"));
-            product.setTaxType(taxType);
-        } else {
-            product.setTaxType(null);
-        }
+        product.setPacking(packing);
+        product.setTaxType(taxType);
 
         if (product.getBonusInfos() == null) {
             product.setBonusInfos(new ArrayList<>());

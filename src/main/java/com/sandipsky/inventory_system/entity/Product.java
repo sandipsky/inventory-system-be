@@ -24,8 +24,6 @@ public class Product {
 
     private boolean isActive;
 
-    private String productType;
-
     private Double costPrice;
 
     private Double sellingPrice;
@@ -43,6 +41,12 @@ public class Product {
     private boolean hasExpiryDate = false;
 
     private boolean hasManufacturingDate = false;
+
+    private boolean isServiceItem = false;
+    
+    private boolean isPurchasable = true;
+    
+    private boolean isSellable = true;
 
     @Column(columnDefinition = "TEXT")
     private String remarks;

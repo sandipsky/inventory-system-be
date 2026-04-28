@@ -19,10 +19,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
         @Query("""
                             SELECT new com.sandipsky.inventory_system.dto.DropdownDTO(p.id, p.name)
                             FROM Product p
-                            WHERE (:productType IS NULL OR p.productType = :productType)
+                            WHERE (:isService IS NULL OR p.isServiceItem = :isService)
+                              AND (:isPurchasable IS NULL OR p.isPurchasable = :isPurchasable)
+                              AND (:isSellable IS NULL OR p.isSellable = :isSellable)
                               AND (:isActive IS NULL OR p.isActive = :isActive)
                         """)
-        List<DropdownDTO> findFilteredDropdown(String productType, Boolean isActive);
+        List<DropdownDTO> findFilteredDropdown(Boolean isService, Boolean isPurchasable, Boolean isSellable,
+                        Boolean isActive);
 
         @Query("""
                             SELECT p

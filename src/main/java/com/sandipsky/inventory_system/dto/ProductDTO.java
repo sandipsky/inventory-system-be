@@ -31,13 +31,13 @@ public class ProductDTO {
 
     private boolean hasExpiryDate;
     private boolean hasManufacturingDate;
-    private int categoryId;
+    private Integer categoryId;
     private String categoryName;
     private int unitId;
     private String unitName;
-    private int packingId;
+    private Integer packingId;
     private String packingName;
-    private int taxTypeId;
+    private Integer taxTypeId;
     private String taxTypeName;
     private double taxRate;
 

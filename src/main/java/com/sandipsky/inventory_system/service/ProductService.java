@@ -149,13 +149,13 @@ public class ProductService {
         dto.setPurchasable(product.isPurchasable());
         dto.setSellable(product.isSellable());
         dto.setServiceItem(product.isServiceItem());
-        dto.setCategoryId(product.getCategory() != null ? product.getCategory().getId() : 0);
+        dto.setCategoryId(product.getCategory() != null ? product.getCategory().getId() : null);
         dto.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : null);
         dto.setUnitId(product.getUnit() != null ? product.getUnit().getId() : 0);
         dto.setUnitName(product.getUnit() != null ? product.getUnit().getName() : null);
-        dto.setPackingId(product.getPacking() != null ? product.getPacking().getId() : 0);
+        dto.setPackingId(product.getPacking() != null ? product.getPacking().getId() : null);
         dto.setPackingName(product.getPacking() != null ? product.getPacking().getName() : null);
-        dto.setTaxTypeId(product.getTaxType() != null ? product.getTaxType().getId() : 0);
+        dto.setTaxTypeId(product.getTaxType() != null ? product.getTaxType().getId() : null);
         dto.setTaxTypeName(product.getTaxType() != null ? product.getTaxType().getName() : null);
         dto.setTaxRate(product.getTaxType() != null ? product.getTaxType().getTaxRate() : 0);
 
@@ -198,7 +198,7 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Unit not found"));
         product.setUnit(unit);
 
-        if (dto.getCategoryId() > 0) {
+        if (dto.getCategoryId() != null && dto.getCategoryId() > 0) {
             Category category = categoryRepository.findById(dto.getCategoryId())
                     .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
             product.setCategory(category);
@@ -206,7 +206,7 @@ public class ProductService {
             product.setCategory(null);
         }
 
-        if (dto.getPackingId() > 0) {
+        if (dto.getPackingId() != null && dto.getPackingId() > 0) {
             Packing packing = packingRepository.findById(dto.getPackingId())
                     .orElseThrow(() -> new ResourceNotFoundException("Packing not found"));
             product.setPacking(packing);
@@ -214,7 +214,7 @@ public class ProductService {
             product.setPacking(null);
         }
 
-        if (dto.getTaxTypeId() > 0) {
+        if (dto.getTaxTypeId() != null && dto.getTaxTypeId() > 0) {
             TaxType taxType = taxTypeRepository.findById(dto.getTaxTypeId())
                     .orElseThrow(() -> new ResourceNotFoundException("Tax Type not found"));
             product.setTaxType(taxType);

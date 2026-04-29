@@ -62,6 +62,14 @@ public class ProductService {
             throw new RuntimeException("Product name cannot be null or blank");
         }
 
+        if (dto.getUnitId() <= 0) {
+            throw new RuntimeException("Unit is required");
+        }
+
+        if (dto.getValuationMethod() == null || dto.getValuationMethod().trim().isEmpty()) {
+            throw new RuntimeException("Valuation method is required");
+        }
+
         Product product = new Product();
         mapDtoToEntity(dto, product);
         return repository.save(product);
@@ -175,7 +183,9 @@ public class ProductService {
         product.setMrp(dto.getMrp());
         product.setMaxStock(dto.getMaxStock());
         product.setMinStock(dto.getMinStock());
-        product.setValuationMethod(dto.getValuationMethod());
+
+        product.setValuationMethod(dto.getValuationMethod().trim());
+
         product.setBatchAvailable(dto.isBatchAvailable());
         product.setHasExpiryDate(dto.isHasExpiryDate());
         product.setHasManufacturingDate(dto.isHasManufacturingDate());
@@ -184,19 +194,33 @@ public class ProductService {
         product.setSellable(dto.isSellable());
         product.setServiceItem(dto.isServiceItem());
 
-        Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         Unit unit = unitRepository.findById(dto.getUnitId())
                 .orElseThrow(() -> new ResourceNotFoundException("Unit not found"));
-        Packing packing = packingRepository.findById(dto.getPackingId())
-                .orElseThrow(() -> new ResourceNotFoundException("Packing not found"));
-        TaxType taxType = taxTypeRepository.findById(dto.getTaxTypeId())
-                .orElseThrow(() -> new ResourceNotFoundException("Tax Type not found"));
-
-        product.setCategory(category);
         product.setUnit(unit);
-        product.setPacking(packing);
-        product.setTaxType(taxType);
+
+        if (dto.getCategoryId() > 0) {
+            Category category = categoryRepository.findById(dto.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+            product.setCategory(category);
+        } else {
+            product.setCategory(null);
+        }
+
+        if (dto.getPackingId() > 0) {
+            Packing packing = packingRepository.findById(dto.getPackingId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Packing not found"));
+            product.setPacking(packing);
+        } else {
+            product.setPacking(null);
+        }
+
+        if (dto.getTaxTypeId() > 0) {
+            TaxType taxType = taxTypeRepository.findById(dto.getTaxTypeId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Tax Type not found"));
+            product.setTaxType(taxType);
+        } else {
+            product.setTaxType(null);
+        }
 
         if (product.getBonusInfos() == null) {
             product.setBonusInfos(new ArrayList<>());

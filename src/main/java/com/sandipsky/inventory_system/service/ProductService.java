@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.sandipsky.inventory_system.dto.BonusInfoDTO;
 import com.sandipsky.inventory_system.dto.ProductDTO;
 import com.sandipsky.inventory_system.dto.ProductStockDTO;
+import com.sandipsky.inventory_system.dto.filter.FilterDTO;
 import com.sandipsky.inventory_system.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.entity.BonusInfo;
 import com.sandipsky.inventory_system.entity.Category;
@@ -81,9 +82,43 @@ public class ProductService {
                 request.getPagination() != null ? request.getPagination().getPageSize() : 25,
                 specBuilder.buildSort(request.getSortDTO()));
 
-        Specification<Product> spec = specBuilder.buildSpecification(request.getFilter());
+        String productType = null;
+        List<FilterDTO> filters = request.getFilter();
+        if (filters != null) {
+            List<FilterDTO> remaining = new ArrayList<>();
+            for (FilterDTO f : filters) {
+                if ("productType".equalsIgnoreCase(f.getField())) {
+                    productType = f.getValue();
+                } else {
+                    remaining.add(f);
+                }
+            }
+            filters = remaining;
+        }
+
+        Specification<Product> spec = specBuilder.buildSpecification(filters);
+        Specification<Product> typeSpec = buildProductTypeSpec(productType);
+        if (typeSpec != null) {
+            spec = spec == null ? typeSpec : spec.and(typeSpec);
+        }
+
         Page<Product> productPage = repository.findAll(spec, pageable);
         return productPage.map(this::mapToDTO);
+    }
+
+    private Specification<Product> buildProductTypeSpec(String productType) {
+        if (productType == null || productType.trim().isEmpty()) {
+            return null;
+        }
+        String normalized = productType.trim().toLowerCase();
+        return switch (normalized) {
+            case "purchasable" -> (root, query, cb) -> cb.isTrue(root.get("isPurchasable"));
+            case "sellable" -> (root, query, cb) -> cb.isTrue(root.get("isSellable"));
+            case "both" -> (root, query, cb) -> cb.and(
+                    cb.isTrue(root.get("isPurchasable")),
+                    cb.isTrue(root.get("isSellable")));
+            default -> null;
+        };
     }
 
     public List<ProductDTO> getProducts() {

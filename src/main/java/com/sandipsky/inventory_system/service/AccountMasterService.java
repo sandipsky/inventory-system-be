@@ -49,6 +49,7 @@ public class AccountMasterService {
 
         AccountMaster accountMaster = new AccountMaster();
         mapDtoToEntity(dto, accountMaster);
+        accountMaster.setIsSystemGenerated(false);
         return repository.save(accountMaster);
     }
 
@@ -131,6 +132,7 @@ public class AccountMasterService {
         dto.setRemarks(accountMaster.getRemarks());
         dto.setIsActive(accountMaster.getIsActive());
         dto.setDeletable(accountMaster.getDeletable());
+        dto.setIsSystemGenerated(accountMaster.getIsSystemGenerated());
         return dto;
     }
 

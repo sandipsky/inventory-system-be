@@ -17,6 +17,10 @@ public class AccountMasterDTO {
     private Boolean isActive = true;
 
     private Boolean deletable = true;
+
+    @JsonProperty("is_system_generated")
+    private Boolean isSystemGenerated = false;
+
     @JsonProperty("parent_account_name")
     private String parentAccountName;
     @JsonProperty("parent_id")

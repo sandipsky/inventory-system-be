@@ -52,7 +52,9 @@ public interface AccountMasterRepository
     @Query("""
                 SELECT new com.sandipsky.inventory_system.dto.DropdownDTO(p.id, p.accountName)
                 FROM AccountMaster p
-                WHERE p.accountType = :accountType AND p.isActive = TRUE
+                WHERE p.accountType = :accountType
+                  AND p.isActive = TRUE
+                  AND p.isSystemGenerated = TRUE
             """)
     List<DropdownDTO> findDropdownByAccountType(@Param("accountType") String accountType);
 }

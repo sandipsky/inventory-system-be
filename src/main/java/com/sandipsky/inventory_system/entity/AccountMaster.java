@@ -29,6 +29,9 @@ public class AccountMaster {
     @Column(name = "deletable", columnDefinition = "TINYINT(1) DEFAULT 1")
     private Boolean deletable = true;
 
+    @Column(name = "is_system_generated", columnDefinition = "TINYINT(1) DEFAULT 0")
+    private Boolean isSystemGenerated = false;
+
     @Column(name = "parent_account_name", length = 100)
     private String parentAccountName;
 

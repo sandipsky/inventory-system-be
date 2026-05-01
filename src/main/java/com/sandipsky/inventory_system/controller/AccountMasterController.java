@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.sandipsky.inventory_system.dto.ApiResponse;
 import com.sandipsky.inventory_system.dto.AccountMasterDTO;
+import com.sandipsky.inventory_system.dto.AccountTypeGroupDTO;
+import com.sandipsky.inventory_system.dto.DropdownDTO;
 import com.sandipsky.inventory_system.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.entity.AccountMaster;
 import com.sandipsky.inventory_system.service.AccountMasterService;
@@ -30,6 +32,16 @@ public class AccountMasterController {
     @PostMapping("/view")
     public Page<AccountMasterDTO> getPaginatedAccountMastersList(@RequestBody RequestDTO request) {
         return service.getPaginatedAccountMastersList(request);
+    }
+
+    @GetMapping("/getAccountTypes")
+    public List<AccountTypeGroupDTO> getAccountTypes() {
+        return service.getAccountTypes();
+    }
+
+    @GetMapping("/getParentAccount/{accountTypeName}")
+    public List<DropdownDTO> getParentAccount(@PathVariable String accountTypeName) {
+        return service.getParentAccount(accountTypeName);
     }
 
     @GetMapping("/{id}")

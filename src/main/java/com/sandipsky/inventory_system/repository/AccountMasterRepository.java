@@ -48,4 +48,11 @@ public interface AccountMasterRepository
                 WHERE p.customer.id = :customerId
             """)
     Optional<AccountMaster> findByCustomerId(@Param("customerId") Integer customerId);
+
+    @Query("""
+                SELECT new com.sandipsky.inventory_system.dto.DropdownDTO(p.id, p.accountName)
+                FROM AccountMaster p
+                WHERE p.accountType = :accountType AND p.isActive = TRUE
+            """)
+    List<DropdownDTO> findDropdownByAccountType(@Param("accountType") String accountType);
 }

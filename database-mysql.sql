@@ -161,6 +161,13 @@ CREATE TABLE `document_number` (
     `description` VARCHAR(255)
 );
 
+CREATE TABLE `account_types` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `heading` VARCHAR(100) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
 CREATE TABLE `master_purchase_entry` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date` VARCHAR(255),
@@ -404,6 +411,26 @@ INSERT INTO `document_number` (`module`, `prefix`, `start_number`, `end_number`,
 ('Purchase', 'PE-', 1, 999999, 6, 'Purchase Entry'),
 ('Sales', 'SI-', 1, 999999, 6, 'Sales Entry');
 ('Journal', 'J-', 1, 999999, 6, 'Journal Entry');
+
+INSERT INTO `account_types` (`heading`, `name`) VALUES
+('Assets', 'Cash & Cash Equivalents'),
+('Assets', 'Other Current Assets'),
+('Assets', 'Receivables'),
+('Assets', 'Other Receivables'),
+('Assets', 'Non-Current Assets'),
+('Liability', 'Other Payables'),
+('Liability', 'Statutory Payables'),
+('Liability', 'Secured Loan'),
+('Liability', 'Unsecured Loan'),
+('Liability', 'Payables'),
+('Equity', 'Capital Account'),
+('Equity', 'Retained Earning'),
+('Income', 'Direct Income'),
+('Income', 'Indirect Income'),
+('Expenses', 'Administrative Expenses'),
+('Expenses', 'Sales & Marketing Expenses'),
+('Expenses', 'Other Indirect Expenses'),
+('Expenses', 'Cost of Goods Sold');
 
 
 

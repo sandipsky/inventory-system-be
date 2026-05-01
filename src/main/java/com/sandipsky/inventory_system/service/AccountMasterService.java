@@ -4,23 +4,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sandipsky.inventory_system.dto.AccountMasterDTO;
+import com.sandipsky.inventory_system.dto.AccountTypeGroupDTO;
+import com.sandipsky.inventory_system.dto.DropdownDTO;
 import com.sandipsky.inventory_system.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.entity.AccountMaster;
+import com.sandipsky.inventory_system.entity.AccountType;
 import com.sandipsky.inventory_system.exception.DuplicateResourceException;
 import com.sandipsky.inventory_system.exception.ResourceNotFoundException;
 import com.sandipsky.inventory_system.repository.AccountMasterRepository;
+import com.sandipsky.inventory_system.repository.AccountTypeRepository;
 import com.sandipsky.inventory_system.util.SpecificationBuilder;
 
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountMasterService {
 
     @Autowired
     private AccountMasterRepository repository;
+
+    @Autowired
+    private AccountTypeRepository accountTypeRepository;
 
     private final SpecificationBuilder<AccountMaster> specBuilder = new SpecificationBuilder<>();
 
@@ -83,6 +93,21 @@ public class AccountMasterService {
 
         mapDtoToEntity(accountMaster, existing);
         return repository.save(existing);
+    }
+
+    public List<AccountTypeGroupDTO> getAccountTypes() {
+        Map<String, List<String>> grouped = accountTypeRepository.findAll().stream()
+                .collect(Collectors.groupingBy(
+                        AccountType::getHeading,
+                        LinkedHashMap::new,
+                        Collectors.mapping(AccountType::getName, Collectors.toList())));
+        return grouped.entrySet().stream()
+                .map(e -> new AccountTypeGroupDTO(e.getKey(), e.getValue()))
+                .toList();
+    }
+
+    public List<DropdownDTO> getParentAccount(String accountTypeName) {
+        return repository.findDropdownByAccountType(accountTypeName);
     }
 
     public void deleteAccountMaster(int id) {

@@ -198,6 +198,12 @@ CREATE TABLE document_number (
   description TEXT
 );
 
+CREATE TABLE account_types (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  heading TEXT NOT NULL,
+  name TEXT NOT NULL
+);
+
 CREATE TABLE master_purchase_entry (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   date TEXT,
@@ -446,3 +452,23 @@ INSERT INTO document_number (module, prefix, start_number, end_number, length, d
 ('Purchase', 'PE-', 1, 999999, 6, 'Purchase Entry'),
 ('Sales', 'SI-', 1, 999999, 6, 'Sales Entry'),
 ('Journal', 'J-', 1, 999999, 6, 'Journal Entry');
+
+INSERT INTO account_types (heading, name) VALUES
+('Assets', 'Cash & Cash Equivalents'),
+('Assets', 'Other Current Assets'),
+('Assets', 'Receivables'),
+('Assets', 'Other Receivables'),
+('Assets', 'Non-Current Assets'),
+('Liability', 'Other Payables'),
+('Liability', 'Statutory Payables'),
+('Liability', 'Secured Loan'),
+('Liability', 'Unsecured Loan'),
+('Liability', 'Payables'),
+('Equity', 'Capital Account'),
+('Equity', 'Retained Earning'),
+('Income', 'Direct Income'),
+('Income', 'Indirect Income'),
+('Expenses', 'Administrative Expenses'),
+('Expenses', 'Sales & Marketing Expenses'),
+('Expenses', 'Other Indirect Expenses'),
+('Expenses', 'Cost of Goods Sold');

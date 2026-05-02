@@ -3,7 +3,12 @@ package com.sandipsky.inventory_system.service;
 import com.sandipsky.inventory_system.repository.*;
 import com.sandipsky.inventory_system.entity.*;
 import com.sandipsky.inventory_system.exception.AccountLockException;
+import com.sandipsky.inventory_system.exception.ResourceNotFoundException;
+import com.sandipsky.inventory_system.dto.UserRoleOperationsDTO;
 import com.sandipsky.inventory_system.dto.login.*;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,5 +82,40 @@ public class AuthService {
                 user.setLockTime(null);
                 userRepository.save(user);
                 return user;
+        }
+
+        public UserRoleOperationsDTO getUserRoleOperations(String username) {
+                User user = userRepository.findByUsername(username)
+                                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+                UserRoleOperationsDTO dto = new UserRoleOperationsDTO();
+                dto.setId(user.getId());
+                dto.setUsername(user.getUsername());
+                dto.setFullName(user.getFullName());
+
+                Role role = user.getRole();
+                if (role == null) {
+                        return dto;
+                }
+
+                dto.setRoleId(role.getId());
+                dto.setRoleName(role.getName());
+
+                Set<String> masterModules = new LinkedHashSet<>();
+                Set<String> modules = new LinkedHashSet<>();
+                Set<String> operations = new LinkedHashSet<>();
+
+                if (role.getOperations() != null) {
+                        for (Operation op : role.getOperations()) {
+                                masterModules.add(op.getMasterModule());
+                                modules.add(op.getModule());
+                                operations.add(op.getName());
+                        }
+                }
+
+                dto.getMasterModules().addAll(masterModules);
+                dto.getModules().addAll(modules);
+                dto.getOperations().addAll(operations);
+                return dto;
         }
 }

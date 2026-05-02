@@ -1,5 +1,7 @@
 package com.sandipsky.inventory_system.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -9,4 +11,6 @@ public interface RoleRepository extends JpaRepository<Role, Integer>, JpaSpecifi
     boolean existsByName(String name);
 
     boolean existsByNameAndIdNot(String name, int id);
+
+    Optional<Role> findByName(String name);
 }

@@ -9,9 +9,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sandipsky.inventory_system.dto.UserDTO;
 import com.sandipsky.inventory_system.dto.filter.RequestDTO;
+import com.sandipsky.inventory_system.entity.Role;
 import com.sandipsky.inventory_system.entity.User;
 import com.sandipsky.inventory_system.exception.DuplicateResourceException;
 import com.sandipsky.inventory_system.exception.ResourceNotFoundException;
+import com.sandipsky.inventory_system.repository.RoleRepository;
 import com.sandipsky.inventory_system.repository.UserRepository;
 import com.sandipsky.inventory_system.util.SpecificationBuilder;
 
@@ -32,6 +34,9 @@ public class UserService {
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -137,6 +142,10 @@ public class UserService {
         dto.setGender(user.getGender());
         dto.setContact(user.getContact());
         dto.setActive(user.isActive());
+        if (user.getRole() != null) {
+            dto.setRoleId(user.getRole().getId());
+            dto.setRoleName(user.getRole().getName());
+        }
         return dto;
     }
 
@@ -149,6 +158,13 @@ public class UserService {
         user.setGender(dto.getGender());
         user.setContact(dto.getContact());
         user.setActive(dto.isActive());
+        if (dto.getRoleId() != null && dto.getRoleId() > 0) {
+            Role role = roleRepository.findById(dto.getRoleId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
+            user.setRole(role);
+        } else {
+            user.setRole(null);
+        }
     }
 
     private String saveImageFile(MultipartFile file) {

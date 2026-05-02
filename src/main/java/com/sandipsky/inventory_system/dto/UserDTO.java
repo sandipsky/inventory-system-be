@@ -20,4 +20,10 @@ public class UserDTO {
     private boolean isActive;
     @JsonProperty("image_url")
     private boolean imageUrl;
+
+    @JsonProperty("role_id")
+    private Integer roleId;
+
+    @JsonProperty("role_name")
+    private String roleName;
 }

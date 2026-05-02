@@ -9,6 +9,7 @@ import com.sandipsky.inventory_system.repository.CategoryRepository;
 import com.sandipsky.inventory_system.repository.CustomerRepository;
 import com.sandipsky.inventory_system.repository.PackingRepository;
 import com.sandipsky.inventory_system.repository.ProductRepository;
+import com.sandipsky.inventory_system.repository.RoleRepository;
 import com.sandipsky.inventory_system.repository.TaxTypeRepository;
 import com.sandipsky.inventory_system.repository.UnitRepository;
 import com.sandipsky.inventory_system.repository.UserRepository;
@@ -45,6 +46,9 @@ public class DropdownService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     public List<DropdownDTO> getProductsDropdown(String serviceType, String type, String status) {
         Boolean isService = switch (serviceType.toLowerCase()) {
@@ -106,6 +110,11 @@ public class DropdownService {
     public List<DropdownDTO> getUserDropdown(String status) {
         Boolean isActive = "active".equalsIgnoreCase(status) ? true : null;
         return userRepository.findFilteredDropdown(isActive);
+    }
+
+    public List<DropdownDTO> getRoleDropdown(String status) {
+        Boolean isActive = "active".equalsIgnoreCase(status) ? true : null;
+        return roleRepository.findFilteredDropdown(isActive);
     }
 
 }

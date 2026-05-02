@@ -64,4 +64,9 @@ public class DropdownController {
     public List<DropdownDTO> getUsersDropdown(@PathVariable String status) {
         return service.getUserDropdown(status);
     }
+
+    @GetMapping("/roles/{status}")
+    public List<DropdownDTO> getRolesDropdown(@PathVariable String status) {
+        return service.getRoleDropdown(status);
+    }
 }

@@ -473,3 +473,95 @@ INSERT INTO account_types (heading, name) VALUES
 ('Expenses', 'Sales & Marketing Expenses'),
 ('Expenses', 'Other Indirect Expenses'),
 ('Expenses', 'Cost of Goods Sold');
+
+CREATE TABLE operation (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE,
+  module TEXT NOT NULL,
+  master_module TEXT NOT NULL
+);
+
+CREATE TABLE role (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE,
+  description TEXT,
+  is_active INTEGER DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TRIGGER role_updated_at AFTER UPDATE ON role
+FOR EACH ROW BEGIN
+  UPDATE role SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;
+
+CREATE TABLE role_operation (
+  role_id INTEGER NOT NULL,
+  operation_id INTEGER NOT NULL,
+  PRIMARY KEY (role_id, operation_id),
+  FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE,
+  FOREIGN KEY (operation_id) REFERENCES operation(id) ON DELETE CASCADE
+);
+
+INSERT INTO operation (name, module, master_module) VALUES
+('CreatePurchaseOrder', 'PurchaseOrder', 'Purchase'),
+('ReadPurchaseOrder', 'PurchaseOrder', 'Purchase'),
+('UpdatePurchaseOrder', 'PurchaseOrder', 'Purchase'),
+('DeletePurchaseOrder', 'PurchaseOrder', 'Purchase'),
+('CreateSalesEntry', 'SalesEntry', 'Sales'),
+('ReadSalesEntry', 'SalesEntry', 'Sales'),
+('UpdateSalesEntry', 'SalesEntry', 'Sales'),
+('DeleteSalesEntry', 'SalesEntry', 'Sales'),
+('CancelSalesEntry', 'SalesEntry', 'Sales'),
+('CreateProduct', 'Product', 'Inventory'),
+('ReadProduct', 'Product', 'Inventory'),
+('UpdateProduct', 'Product', 'Inventory'),
+('DeleteProduct', 'Product', 'Inventory'),
+('CreateCategory', 'Category', 'Inventory'),
+('ReadCategory', 'Category', 'Inventory'),
+('UpdateCategory', 'Category', 'Inventory'),
+('DeleteCategory', 'Category', 'Inventory'),
+('CreateUnit', 'Unit', 'Inventory'),
+('ReadUnit', 'Unit', 'Inventory'),
+('UpdateUnit', 'Unit', 'Inventory'),
+('DeleteUnit', 'Unit', 'Inventory'),
+('CreatePacking', 'Packing', 'Inventory'),
+('ReadPacking', 'Packing', 'Inventory'),
+('UpdatePacking', 'Packing', 'Inventory'),
+('DeletePacking', 'Packing', 'Inventory'),
+('CreateTaxType', 'TaxType', 'Inventory'),
+('ReadTaxType', 'TaxType', 'Inventory'),
+('UpdateTaxType', 'TaxType', 'Inventory'),
+('DeleteTaxType', 'TaxType', 'Inventory'),
+('CreateVendor', 'Vendor', 'Party'),
+('ReadVendor', 'Vendor', 'Party'),
+('UpdateVendor', 'Vendor', 'Party'),
+('DeleteVendor', 'Vendor', 'Party'),
+('CreateCustomer', 'Customer', 'Party'),
+('ReadCustomer', 'Customer', 'Party'),
+('UpdateCustomer', 'Customer', 'Party'),
+('DeleteCustomer', 'Customer', 'Party'),
+('CreateAccountMaster', 'AccountMaster', 'Accounting'),
+('ReadAccountMaster', 'AccountMaster', 'Accounting'),
+('UpdateAccountMaster', 'AccountMaster', 'Accounting'),
+('DeleteAccountMaster', 'AccountMaster', 'Accounting'),
+('CreateJournalEntry', 'JournalEntry', 'Accounting'),
+('ReadJournalEntry', 'JournalEntry', 'Accounting'),
+('UpdateJournalEntry', 'JournalEntry', 'Accounting'),
+('DeleteJournalEntry', 'JournalEntry', 'Accounting'),
+('CreateUser', 'User', 'Settings'),
+('ReadUser', 'User', 'Settings'),
+('UpdateUser', 'User', 'Settings'),
+('DeleteUser', 'User', 'Settings'),
+('CreateRole', 'Role', 'Settings'),
+('ReadRole', 'Role', 'Settings'),
+('UpdateRole', 'Role', 'Settings'),
+('DeleteRole', 'Role', 'Settings'),
+('ReadDocumentNumber', 'DocumentNumber', 'Settings'),
+('UpdateDocumentNumber', 'DocumentNumber', 'Settings');
+
+INSERT INTO role (id, name, description, is_active) VALUES
+(1, 'Admin', 'Administrator with full access to all operations', 1);
+
+INSERT INTO role_operation (role_id, operation_id)
+SELECT 1, id FROM operation;

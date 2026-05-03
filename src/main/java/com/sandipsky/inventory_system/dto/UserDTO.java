@@ -16,10 +16,9 @@ public class UserDTO {
     private String password;
     private String gender;
     private String contact;
+    private String remarks;
     @JsonProperty("is_active")
     private boolean isActive;
-    @JsonProperty("image_url")
-    private boolean imageUrl;
 
     @JsonProperty("role_id")
     private Integer roleId;

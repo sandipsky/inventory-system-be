@@ -31,6 +31,7 @@ public class DataInitializer implements CommandLineRunner {
             adminDto.setGender("Other"); // or null or any appropriate value
             adminDto.setContact("0000000000"); // default
             adminDto.setActive(true);
+            adminDto.setRemarks("Admin User");
             roleRepository.findByName("Admin").ifPresent(r -> adminDto.setRoleId(r.getId()));
             userService.saveUser(adminDto, null);
         }

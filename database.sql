@@ -120,6 +120,7 @@ CREATE TABLE user (
   account_non_locked INTEGER DEFAULT 1,
   failed_attempt INTEGER DEFAULT 0,
   lock_time DATETIME DEFAULT NULL,
+  remarks TEXT,
   role_id INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -554,7 +555,17 @@ INSERT INTO operation (name, module, master_module) VALUES
 ('CreateRole', 'Role', 'User and Roles'),
 ('ViewRole', 'Role', 'User and Roles'),
 ('EditRole', 'Role', 'User and Roles'),
-('DeleteRole', 'Role', 'User and Roles');
+('DeleteRole', 'Role', 'User and Roles'),
+
+('CreateConfiguration', 'Configuration', 'Settings'),
+('ViewConfiguration', 'Configuration', 'Settings'),
+('EditConfiguration', 'Configuration', 'Settings'),
+('DeleteConfiguration', 'Configuration', 'Settings'),
+
+('CreateDocumentNumbering', 'DocumentNumbering', 'Settings'),
+('ViewDocumentNumbering', 'DocumentNumbering', 'Settings'),
+('EditDocumentNumbering', 'DocumentNumbering', 'Settings'),
+('DeleteDocumentNumbering', 'DocumentNumbering', 'Settings');
 
 
 INSERT INTO role (id, name, description, is_active) VALUES

@@ -140,6 +140,7 @@ public class UserService {
         dto.setEmail(user.getEmail());
         dto.setPassword("");
         dto.setGender(user.getGender());
+        dto.setRemarks(user.getRemarks());
         dto.setContact(user.getContact());
         dto.setActive(user.isActive());
         if (user.getRole() != null) {
@@ -158,6 +159,7 @@ public class UserService {
         user.setGender(dto.getGender());
         user.setContact(dto.getContact());
         user.setActive(dto.isActive());
+        user.setRemarks(dto.getRemarks());
         if (dto.getRoleId() != null && dto.getRoleId() > 0) {
             Role role = roleRepository.findById(dto.getRoleId())
                     .orElseThrow(() -> new ResourceNotFoundException("Role not found"));

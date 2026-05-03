@@ -4,6 +4,7 @@ import com.sandipsky.inventory_system.dto.ApiResponse;
 import com.sandipsky.inventory_system.dto.UserDTO;
 import com.sandipsky.inventory_system.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.entity.User;
+import com.sandipsky.inventory_system.security.RequiresOperation;
 import com.sandipsky.inventory_system.service.UserService;
 import com.sandipsky.inventory_system.util.ResponseUtil;
 
@@ -25,21 +26,25 @@ public class UserController {
     private UserService service;
 
     @GetMapping()
+    @RequiresOperation("ViewUser")
     public List<UserDTO> getUsers() {
         return service.getUsers();
     }
 
     @PostMapping("/view")
+    @RequiresOperation("ViewUser")
     public Page<UserDTO> getPaginatedUsersList(@RequestBody RequestDTO request) {
         return service.getPaginatedUsersList(request);
     }
 
     @GetMapping("/{id}")
+    @RequiresOperation("ViewUser")
     public UserDTO getUser(@PathVariable int id) {
         return service.getUserById(id);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequiresOperation("CreateUser")
     public ResponseEntity<ApiResponse<User>> createUser(@RequestPart("user") UserDTO user,
             @RequestPart(value = "image", required = false) MultipartFile imageFile) {
         User res = service.saveUser(user, imageFile);
@@ -47,6 +52,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequiresOperation("EditUser")
     public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable int id, @RequestPart("user") UserDTO user,
             @RequestPart(value = "image", required = false) MultipartFile imageFile) {
         User res = service.updateUser(id, user, imageFile);
@@ -54,12 +60,14 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @RequiresOperation("DeleteUser")
     public ResponseEntity<ApiResponse<User>> deleteUser(@PathVariable int id) {
         service.deleteUser(id);
         return ResponseEntity.ok(ResponseUtil.success(id, "User deleted successfully"));
     }
 
     @GetMapping("/image/{id}")
+    @RequiresOperation("ViewUser")
     public ResponseEntity<Resource> getUserImageFile(@PathVariable int id) {
         Resource imageFile = service.getUserImageFileById(id);
 

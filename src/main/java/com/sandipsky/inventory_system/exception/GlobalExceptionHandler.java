@@ -46,7 +46,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Object>> handleAccessDenied(AccessDeniedException ex) {
-        ApiResponse<Object> response = ResponseUtil.error("You are not authorized to access this resource", 403);
+        String message = (ex.getMessage() != null && !ex.getMessage().isBlank())
+                ? ex.getMessage()
+                : "You are not authorized to access this resource";
+        ApiResponse<Object> response = ResponseUtil.error(message, 403);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 

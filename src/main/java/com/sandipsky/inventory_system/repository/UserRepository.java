@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.sandipsky.inventory_system.dto.DropdownDTO;
 import com.sandipsky.inventory_system.entity.User;
@@ -28,4 +29,15 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
             """)
     List<DropdownDTO> findFilteredDropdown(
             Boolean isActive);
+
+    @Query("""
+                SELECT COUNT(o) > 0
+                FROM User u
+                JOIN u.role r
+                JOIN r.operations o
+                WHERE u.username = :username
+                  AND o.name = :operationName
+            """)
+    boolean existsByUsernameAndOperation(@Param("username") String username,
+            @Param("operationName") String operationName);
 }

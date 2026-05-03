@@ -9,6 +9,7 @@ import com.sandipsky.inventory_system.dto.AccountTypeGroupDTO;
 import com.sandipsky.inventory_system.dto.DropdownDTO;
 import com.sandipsky.inventory_system.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.entity.AccountMaster;
+import com.sandipsky.inventory_system.security.RequiresOperation;
 import com.sandipsky.inventory_system.service.AccountMasterService;
 import com.sandipsky.inventory_system.util.ResponseUtil;
 
@@ -25,43 +26,51 @@ public class AccountMasterController {
     private AccountMasterService service;
 
     @GetMapping()
+    @RequiresOperation("ViewAccountMaster")
     public List<AccountMasterDTO> getAccountMasters() {
         return service.getAccountMasters();
     }
 
     @PostMapping("/view")
+    @RequiresOperation("ViewAccountMaster")
     public Page<AccountMasterDTO> getPaginatedAccountMastersList(@RequestBody RequestDTO request) {
         return service.getPaginatedAccountMastersList(request);
     }
 
     @GetMapping("/getAccountTypes")
+    @RequiresOperation("ViewAccountMaster")
     public List<AccountTypeGroupDTO> getAccountTypes() {
         return service.getAccountTypes();
     }
 
     @GetMapping("/getParentAccount/{accountTypeName}")
+    @RequiresOperation("ViewAccountMaster")
     public List<DropdownDTO> getParentAccount(@PathVariable String accountTypeName) {
         return service.getParentAccount(accountTypeName);
     }
 
     @GetMapping("/{id}")
+    @RequiresOperation("ViewAccountMaster")
     public AccountMasterDTO getAccountMaster(@PathVariable int id) {
         return service.getAccountMasterById(id);
     }
 
     @PostMapping()
+    @RequiresOperation("CreateAccountMaster")
     public ResponseEntity<ApiResponse<AccountMaster>> createAccountMaster(@RequestBody AccountMasterDTO accountMaster) {
         AccountMaster res = service.saveAccountMaster(accountMaster);
         return ResponseEntity.ok(ResponseUtil.success(res.getId(), "AccountMaster Added successfully"));
     }
 
     @PutMapping("/{id}")
+    @RequiresOperation("EditAccountMaster")
     public ResponseEntity<ApiResponse<AccountMaster>> updateAccountMaster(@PathVariable int id, @RequestBody AccountMasterDTO accountMaster) {
         AccountMaster res = service.updateAccountMaster(id, accountMaster);
         return ResponseEntity.ok(ResponseUtil.success(res.getId(), "AccountMaster Updated successfully"));
     }
 
     @DeleteMapping("/{id}")
+    @RequiresOperation("DeleteAccountMaster")
     public ResponseEntity<ApiResponse<AccountMaster>> deleteAccountMaster(@PathVariable int id) {
         service.deleteAccountMaster(id);
         return ResponseEntity.ok(ResponseUtil.success(id, "AccountMaster Deleted successfully"));

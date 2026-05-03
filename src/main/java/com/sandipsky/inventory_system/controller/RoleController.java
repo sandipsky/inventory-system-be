@@ -12,6 +12,7 @@ import com.sandipsky.inventory_system.dto.RoleDTO;
 import com.sandipsky.inventory_system.dto.RoleOperationGroupDTO;
 import com.sandipsky.inventory_system.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.entity.Role;
+import com.sandipsky.inventory_system.security.RequiresOperation;
 import com.sandipsky.inventory_system.service.RoleService;
 import com.sandipsky.inventory_system.util.ResponseUtil;
 
@@ -23,38 +24,45 @@ public class RoleController {
     private RoleService service;
 
     @GetMapping()
+    @RequiresOperation("ViewRole")
     public List<RoleDTO> getRoles() {
         return service.getRoles();
     }
 
     @PostMapping("/view")
+    @RequiresOperation("ViewRole")
     public Page<RoleDTO> getPaginatedRolesList(@RequestBody RequestDTO request) {
         return service.getPaginatedRolesList(request);
     }
 
     @GetMapping("/{id}")
+    @RequiresOperation("ViewRole")
     public RoleDTO getRole(@PathVariable int id) {
         return service.getRoleById(id);
     }
 
     @GetMapping("/operations/{id}")
+    @RequiresOperation("ViewRole")
     public List<RoleOperationGroupDTO> getAllRoleOperations(@PathVariable int id) {
         return service.getAllRoleOperations(id);
     }
 
     @PostMapping()
+    @RequiresOperation("CreateRole")
     public ResponseEntity<ApiResponse<Role>> createRole(@RequestBody RoleDTO role) {
         Role res = service.saveRole(role);
         return ResponseEntity.ok(ResponseUtil.success(res.getId(), "Role Added successfully"));
     }
 
     @PutMapping("/{id}")
+    @RequiresOperation("EditRole")
     public ResponseEntity<ApiResponse<Role>> updateRole(@PathVariable int id, @RequestBody RoleDTO role) {
         Role res = service.updateRole(id, role);
         return ResponseEntity.ok(ResponseUtil.success(res.getId(), "Role Updated successfully"));
     }
 
     @DeleteMapping("/{id}")
+    @RequiresOperation("DeleteRole")
     public ResponseEntity<ApiResponse<Role>> deleteRole(@PathVariable int id) {
         service.deleteRole(id);
         return ResponseEntity.ok(ResponseUtil.success(id, "Role Deleted successfully"));

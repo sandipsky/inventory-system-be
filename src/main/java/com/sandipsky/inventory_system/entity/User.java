@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Getter
@@ -30,6 +31,7 @@ public class User implements UserDetails {
     private String gender;
     private String contact;
 
+    @JsonProperty("image_url")
     private String imageUrl;
 
     @Column(name = "is_active")

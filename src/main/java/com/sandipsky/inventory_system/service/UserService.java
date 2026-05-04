@@ -1,8 +1,6 @@
 package com.sandipsky.inventory_system.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +20,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -110,28 +107,6 @@ public class UserService {
         repository.deleteById(id);
     }
 
-    public Resource getUserImageFileById(int id) {
-        User user = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        if (user.getImageUrl() == null || user.getImageUrl().isBlank()) {
-            throw new ResourceNotFoundException("Image not found for user");
-        }
-
-        try {
-            Path filePath = Paths.get(user.getImageUrl().replaceFirst("/", "")).toAbsolutePath();
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (resource.exists() && resource.isReadable()) {
-                return resource;
-            } else {
-                throw new ResourceNotFoundException("File not found or unreadable");
-            }
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Invalid file path", e);
-        }
-    }
-
     private UserDTO mapToDTO(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
@@ -147,6 +122,7 @@ public class UserService {
             dto.setRoleId(user.getRole().getId());
             dto.setRoleName(user.getRole().getName());
         }
+        dto.setImageUrl(user.getImageUrl());
         return dto;
     }
 

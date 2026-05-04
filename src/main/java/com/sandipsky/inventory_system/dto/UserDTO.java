@@ -25,4 +25,7 @@ public class UserDTO {
 
     @JsonProperty("role_name")
     private String roleName;
+
+    @JsonProperty("image_url")
+    private String imageUrl;
 }

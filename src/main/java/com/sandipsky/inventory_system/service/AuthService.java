@@ -92,6 +92,7 @@ public class AuthService {
                 dto.setId(user.getId());
                 dto.setUsername(user.getUsername());
                 dto.setFullName(user.getFullName());
+                dto.setImageUrl(user.getImageUrl());
 
                 Role role = user.getRole();
                 if (role == null) {

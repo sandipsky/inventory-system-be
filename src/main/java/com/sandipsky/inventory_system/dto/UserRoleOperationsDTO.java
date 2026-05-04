@@ -25,6 +25,9 @@ public class UserRoleOperationsDTO {
     @JsonProperty("role_name")
     private String roleName;
 
+    @JsonProperty("image_url")
+    private String imageUrl;
+
     @JsonProperty("master_modules")
     private List<String> masterModules = new ArrayList<>();
 

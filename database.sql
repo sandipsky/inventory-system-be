@@ -477,6 +477,24 @@ INSERT INTO account_types (heading, name) VALUES
 ('Expenses', 'Other Indirect Expenses'),
 ('Expenses', 'Cost of Goods Sold');
 
+CREATE TABLE configuration (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE,
+  label TEXT,
+  value TEXT,
+  is_editable INTEGER DEFAULT 1
+);
+
+INSERT INTO configuration (name, label, value, is_editable) VALUES
+('company_name', 'Company Name', 'Test Pvt. Ltd.', 1),
+('company_reg_type', 'Company Reg. Type', 'PAN', 1),
+('company_reg', 'Company Reg. No.', '3872378734', 1),
+('company_contact', 'Company Contact', '98432337382', 1),
+('company_address', 'Company Address', 'Kathmandu', 1),
+('company_email', 'Company Email', 'test@company.com', 1),
+('calendar_type', 'Calendar Type', 'BS', 1),
+('default_rounding', 'Default Rounding', '1', 1);
+
 CREATE TABLE operation (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL UNIQUE,

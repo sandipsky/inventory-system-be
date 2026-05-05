@@ -130,8 +130,9 @@ public class UserService {
         user.setUsername(dto.getUsername().trim());
         user.setFullName(dto.getFullName());
         user.setEmail(dto.getEmail().trim());
-        String hashedPassword = passwordEncoder.encode(dto.getPassword());
-        user.setPassword(hashedPassword);
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
         user.setGender(dto.getGender());
         user.setContact(dto.getContact());
         user.setActive(dto.isActive());

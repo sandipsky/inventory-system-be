@@ -493,7 +493,8 @@ INSERT INTO configuration (name, label, value, is_editable) VALUES
 ('company_address', 'Company Address', 'Kathmandu', 1),
 ('company_email', 'Company Email', 'test@company.com', 1),
 ('calendar_type', 'Calendar Type', 'BS', 1),
-('default_rounding', 'Default Rounding', '1', 1);
+('default_rounding', 'Default Rounding', '1', 1),
+('fiscal_year', 'Fiscal Year', '2081', 1);
 
 CREATE TABLE operation (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -591,3 +592,28 @@ INSERT INTO role (id, name, description, is_active) VALUES
 
 INSERT INTO role_operation (role_id, operation_id)
 SELECT 1, id FROM operation;
+
+CREATE TABLE document_numbering (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  start_date TEXT,
+  end_date TEXT,
+  numbering_style TEXT,
+  prefix TEXT,
+  body_length INTEGER,
+  total_length INTEGER,
+  start_no INTEGER,
+  end_no INTEGER
+);
+
+INSERT INTO document_numbering (id, name, start_date, end_date, numbering_style, prefix, body_length, total_length, start_no, end_no) VALUES
+(1, 'Purchase Entry', '-04-01', '-03-32', 'Auto', '|PE-', 6, 17, 1, 999999),
+(4, 'Purchase Order', '-04-01', '-03-32', 'Auto', '|PO-', 6, 17, 1, 999999),
+(5, 'Purchase Return', '-04-01', '-03-32', 'Auto', '|PR-', 6, 17, 1, 999999),
+(8, 'Sales Entry', '-04-01', '-03-32', 'Auto', '|SI-', 6, 17, 1, 999999),
+(9, 'Sales Return', '-04-01', '-03-32', 'Auto', '|SR-', 6, 17, 1, 999999),
+(10, 'Sales Order', '-04-01', '-03-32', 'Auto', '|SO-', 6, 17, 1, 999999),
+(11, 'BDE', '-04-01', '-03-32', 'Auto', '|BDE-', 6, 18, 1, 999999),
+(12, 'Stock Adjustment', '-04-01', '-03-32', 'Auto', '|SA-', 6, 17, 1, 999999),
+(17, 'Journal Entry', '-04-01', '-03-32', 'Auto', '|J-', 6, 16, 1, 999999),
+(18, 'Payment', '-04-01', '-03-32', 'Auto', '|P-', 6, 16, 1, 999999);

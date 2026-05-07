@@ -13,12 +13,6 @@ public class DocumentNumberingDTO {
 
     private String name;
 
-    @JsonProperty("start_date")
-    private String startDate;
-
-    @JsonProperty("end_date")
-    private String endDate;
-
     @JsonProperty("numbering_style")
     private String numberingStyle;
 
@@ -26,9 +20,6 @@ public class DocumentNumberingDTO {
 
     @JsonProperty("body_length")
     private int bodyLength;
-
-    @JsonProperty("total_length")
-    private int totalLength;
 
     @JsonProperty("start_no")
     private int startNo;

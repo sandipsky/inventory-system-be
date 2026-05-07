@@ -17,22 +17,10 @@ public class DocumentNumbering {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "start_date")
-    private String startDate;
-
-    @Column(name = "end_date")
-    private String endDate;
-
-    @Column(name = "numbering_style")
-    private String numberingStyle;
-
     private String prefix;
 
     @Column(name = "body_length")
     private int bodyLength;
-
-    @Column(name = "total_length")
-    private int totalLength;
 
     @Column(name = "start_no")
     private int startNo;

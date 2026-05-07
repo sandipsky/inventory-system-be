@@ -60,7 +60,7 @@ public class PurchaseEntryService {
     private AccountMasterRepository accountMasterRepository;
 
     @Autowired
-    private DocumentNumberService documentNumberService;
+    private DocumentNumberingService documentNumberService;
 
     private final SpecificationBuilder<MasterPurchaseEntry> specBuilder = new SpecificationBuilder<>();
 

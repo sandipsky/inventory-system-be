@@ -37,7 +37,7 @@ public class SalesEntryService {
     private ProductStockRepository productStockRepository;
 
     @Autowired
-    private DocumentNumberService documentNumberService;
+    private DocumentNumberingService documentNumberService;
 
     private final SpecificationBuilder<MasterSalesEntry> specBuilder = new SpecificationBuilder<>();
 

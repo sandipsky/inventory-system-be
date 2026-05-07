@@ -1,57 +1,94 @@
 package com.sandipsky.inventory_system.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sandipsky.inventory_system.dto.DocumentNumberingDTO;
-import com.sandipsky.inventory_system.entity.Configuration;
 import com.sandipsky.inventory_system.entity.DocumentNumbering;
-import com.sandipsky.inventory_system.repository.ConfigurationRepository;
+import com.sandipsky.inventory_system.entity.MasterJournalEntry;
+import com.sandipsky.inventory_system.entity.MasterPurchaseEntry;
+import com.sandipsky.inventory_system.entity.MasterSalesEntry;
 import com.sandipsky.inventory_system.repository.DocumentNumberingRepository;
+import com.sandipsky.inventory_system.repository.MasterJournalEntryRepository;
+import com.sandipsky.inventory_system.repository.MasterPurchaseEntryRepository;
+import com.sandipsky.inventory_system.repository.MasterSalesEntryRepository;
 
 @Service
 public class DocumentNumberingService {
-
-    private static final String FISCAL_YEAR_CONFIG = "fiscal_year";
 
     @Autowired
     private DocumentNumberingRepository repository;
 
     @Autowired
-    private ConfigurationRepository configurationRepository;
+    private MasterPurchaseEntryRepository masterPurchaseEntryRepository;
+
+    @Autowired
+    private MasterSalesEntryRepository masterSalesEntryRepository;
+
+    @Autowired
+    private MasterJournalEntryRepository masterJournalEntryRepository;
 
     public List<DocumentNumberingDTO> getDocumentNumberings() {
-        String fiscalYear = configurationRepository.findByName(FISCAL_YEAR_CONFIG)
-                .map(Configuration::getValue)
-                .orElse("");
-
         return repository.findAll().stream()
-                .map(entity -> mapToDTO(entity, fiscalYear))
+                .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
-    private DocumentNumberingDTO mapToDTO(DocumentNumbering entity, String fiscalYear) {
+    public String generatePurchaseNumber() {
+        DocumentNumbering pref = repository.findByName("Purchase Entry")
+                .orElseThrow(() -> new RuntimeException("Document numbering not found for Purchase Entry"));
+
+        Optional<MasterPurchaseEntry> lastEntryOpt = masterPurchaseEntryRepository.findTopByOrderByIdDesc();
+        return buildNextNumber(pref, lastEntryOpt.map(MasterPurchaseEntry::getSystemEntryNo).orElse(null));
+    }
+
+    public String generateSalesNumber() {
+        DocumentNumbering pref = repository.findByName("Sales Entry")
+                .orElseThrow(() -> new RuntimeException("Document numbering not found for Sales Entry"));
+
+        Optional<MasterSalesEntry> lastEntryOpt = masterSalesEntryRepository.findTopByOrderByIdDesc();
+        return buildNextNumber(pref, lastEntryOpt.map(MasterSalesEntry::getSystemEntryNo).orElse(null));
+    }
+
+    public String generateJournalNumber() {
+        DocumentNumbering pref = repository.findByName("Journal Entry")
+                .orElseThrow(() -> new RuntimeException("Document numbering not found for Journal Entry"));
+
+        Optional<MasterJournalEntry> lastEntryOpt = masterJournalEntryRepository.findTopByOrderByIdDescJournal();
+        return buildNextNumber(pref, lastEntryOpt.map(MasterJournalEntry::getSystemEntryNo).orElse(null));
+    }
+
+    private String buildNextNumber(DocumentNumbering pref, String lastNumber) {
+        int nextNumber = pref.getStartNo();
+
+        if (lastNumber != null && pref.getPrefix() != null) {
+            String numericPart = lastNumber.replace(pref.getPrefix(), "");
+            try {
+                nextNumber = Integer.parseInt(numericPart) + 1;
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        if (nextNumber > pref.getEndNo()) {
+            throw new IllegalStateException("Document number has exceeded the configured end number.");
+        }
+
+        String formattedNumber = String.format("%0" + pref.getBodyLength() + "d", nextNumber);
+        return (pref.getPrefix() == null ? "" : pref.getPrefix()) + formattedNumber;
+    }
+
+    private DocumentNumberingDTO mapToDTO(DocumentNumbering entity) {
         DocumentNumberingDTO dto = new DocumentNumberingDTO();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
-        dto.setStartDate(prepend(fiscalYear, entity.getStartDate()));
-        dto.setEndDate(prepend(fiscalYear, entity.getEndDate()));
-        dto.setNumberingStyle(entity.getNumberingStyle());
-        dto.setPrefix(prepend(fiscalYear, entity.getPrefix()));
+        dto.setPrefix(entity.getPrefix());
         dto.setBodyLength(entity.getBodyLength());
-        dto.setTotalLength(entity.getTotalLength());
         dto.setStartNo(entity.getStartNo());
         dto.setEndNo(entity.getEndNo());
         return dto;
-    }
-
-    private String prepend(String fiscalYear, String value) {
-        if (value == null) {
-            return fiscalYear;
-        }
-        return fiscalYear + value;
     }
 }

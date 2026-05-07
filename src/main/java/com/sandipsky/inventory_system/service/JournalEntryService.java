@@ -29,7 +29,7 @@ public class JournalEntryService {
     private AccountMasterRepository accountMasterRepository;
 
     @Autowired
-    private DocumentNumberService documentNumberService;
+    private DocumentNumberingService documentNumberService;
 
     public List<MasterJournalEntryDTO> getAllJournalReport() {
         List<MasterJournalEntry> journalEntries = repository.findAll();

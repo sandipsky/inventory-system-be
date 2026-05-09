@@ -11,6 +11,9 @@ public class MasterPurchaseEntryDTO {
 
     private String date;
 
+    @JsonProperty("bill_date")
+    private String billDate;
+
     @JsonProperty("system_entry_no")
     private String systemEntryNo;
 
@@ -31,7 +34,7 @@ public class MasterPurchaseEntryDTO {
     @JsonProperty("taxable_amount")
     private double taxableAmount;
 
-    @JsonProperty("total_tax")
+    @JsonProperty("tax")
     private double totalTax;
 
     private boolean rounded;

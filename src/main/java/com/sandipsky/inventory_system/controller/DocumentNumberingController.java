@@ -21,14 +21,4 @@ public class DocumentNumberingController {
     public List<DocumentNumberingDTO> getDocumentNumberings() {
         return service.getDocumentNumberings();
     }
-
-     @GetMapping("/generatePurchaseNumber")
-    public String generatePurchaseNumber() {
-        return service.generatePurchaseNumber();
-    }
-
-    @GetMapping("/generateSalesNumber")
-    public String generateSalesNumber() {
-        return service.generateSalesNumber();
-    }
 }

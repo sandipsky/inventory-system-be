@@ -172,6 +172,7 @@ CREATE TABLE `account_types` (
 CREATE TABLE `master_purchase_entry` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date` VARCHAR(255),
+  `bill_date` VARCHAR(255),
   `system_entry_no` VARCHAR(25) UNIQUE NOT NULL,
   `bill_no` VARCHAR(255),
   `transaction_type` VARCHAR(255),

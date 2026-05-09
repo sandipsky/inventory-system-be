@@ -201,6 +201,7 @@ CREATE TABLE account_types (
 CREATE TABLE master_purchase_entry (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   date TEXT,
+  bill_date TEXT,
   system_entry_no TEXT UNIQUE NOT NULL,
   bill_no TEXT,
   transaction_type TEXT,
@@ -569,7 +570,12 @@ INSERT INTO operation (name, module, master_module) VALUES
 ('CreateDocumentNumbering', 'DocumentNumbering', 'Settings'),
 ('ViewDocumentNumbering', 'DocumentNumbering', 'Settings'),
 ('EditDocumentNumbering', 'DocumentNumbering', 'Settings'),
-('DeleteDocumentNumbering', 'DocumentNumbering', 'Settings');
+('DeleteDocumentNumbering', 'DocumentNumbering', 'Settings'),
+
+('CreatePurchaseEntry', 'PurchaseEntry', 'Purchase'),
+('ViewPurchaseEntry', 'PurchaseEntry', 'Purchase'),
+('EditPurchaseEntry', 'PurchaseEntry', 'Purchase'),
+('DeletePurchaseEntry', 'PurchaseEntry', 'Purchase');
 
 
 INSERT INTO role (id, name, description, is_active) VALUES

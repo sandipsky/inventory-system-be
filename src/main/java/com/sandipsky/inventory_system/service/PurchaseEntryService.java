@@ -81,6 +81,7 @@ public class PurchaseEntryService {
         MasterPurchaseEntryDTO masterPurchaseEntryDTO = new MasterPurchaseEntryDTO();
         masterPurchaseEntryDTO.setId(masterPurchaseEntry.getId());
         masterPurchaseEntryDTO.setDate(masterPurchaseEntry.getDate());
+        masterPurchaseEntryDTO.setBillDate(masterPurchaseEntry.getBillDate());
         masterPurchaseEntryDTO.setSystemEntryNo(masterPurchaseEntry.getSystemEntryNo());
         masterPurchaseEntryDTO.setBillNo(masterPurchaseEntry.getBillNo());
         masterPurchaseEntryDTO.setTransactionType(masterPurchaseEntry.getTransactionType());
@@ -122,6 +123,7 @@ public class PurchaseEntryService {
     public MasterPurchaseEntry saveMasterPurchaseEntry(MasterPurchaseEntryDTO masterPurchaseEntryDTO) {
         MasterPurchaseEntry masterPurchaseEntry = new MasterPurchaseEntry();
         masterPurchaseEntry.setDate(masterPurchaseEntryDTO.getDate());
+        masterPurchaseEntry.setBillDate(masterPurchaseEntryDTO.getBillDate());
         masterPurchaseEntry.setSystemEntryNo(documentNumberService.generatePurchaseNumber());
         masterPurchaseEntry.setBillNo(masterPurchaseEntryDTO.getBillNo());
         masterPurchaseEntry.setTransactionType(masterPurchaseEntryDTO.getTransactionType());
@@ -206,6 +208,7 @@ public class PurchaseEntryService {
         MasterPurchaseEntry masterPurchaseEntry = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Purchase Entry with Given Id not found"));
         masterPurchaseEntry.setDate(masterPurchaseEntryDTO.getDate());
+        masterPurchaseEntry.setBillDate(masterPurchaseEntryDTO.getBillDate());
         masterPurchaseEntry.setBillNo(masterPurchaseEntryDTO.getBillNo());
         masterPurchaseEntry.setTransactionType(masterPurchaseEntryDTO.getTransactionType());
         masterPurchaseEntry.setSubTotal(masterPurchaseEntryDTO.getSubTotal());
@@ -342,6 +345,7 @@ public class PurchaseEntryService {
         MasterPurchaseEntryDTO masterPurchaseEntryDTO = new MasterPurchaseEntryDTO();
         masterPurchaseEntryDTO.setId(entity.getId());
         masterPurchaseEntryDTO.setDate(entity.getDate());
+        masterPurchaseEntryDTO.setBillDate(entity.getBillDate());
         masterPurchaseEntryDTO.setSystemEntryNo(entity.getSystemEntryNo());
         masterPurchaseEntryDTO.setBillNo(entity.getBillNo());
         masterPurchaseEntryDTO.setTransactionType(entity.getTransactionType());

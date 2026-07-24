@@ -1,6 +1,6 @@
-package com.sandipsky.inventory_system.journal;
-import com.sandipsky.inventory_system.sales.MasterSalesEntry;
-import com.sandipsky.inventory_system.purchase.MasterPurchaseEntry;
+package com.sandipsky.inventory_system.features.accounting.journal.entities;
+import com.sandipsky.inventory_system.features.sales.sales_entry.entities.MasterSalesEntry;
+import com.sandipsky.inventory_system.features.purchase.purchase_entry.entities.MasterPurchaseEntry;
 
 import java.util.List;
 import jakarta.persistence.*;

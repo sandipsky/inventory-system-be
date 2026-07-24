@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.journal;
+package com.sandipsky.inventory_system.features.accounting.journal.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

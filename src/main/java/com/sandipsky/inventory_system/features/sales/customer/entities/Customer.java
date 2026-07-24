@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.customer;
+package com.sandipsky.inventory_system.features.sales.customer.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

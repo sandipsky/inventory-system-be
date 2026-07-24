@@ -1,4 +1,7 @@
-package com.sandipsky.inventory_system.journal;
+package com.sandipsky.inventory_system.features.accounting.journal.controllers;
+import com.sandipsky.inventory_system.features.accounting.journal.dtos.MasterJournalEntryDTO;
+import com.sandipsky.inventory_system.features.accounting.journal.entities.MasterJournalEntry;
+import com.sandipsky.inventory_system.features.accounting.journal.services.JournalEntryService;
 
 import java.util.List;
 

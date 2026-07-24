@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.common.dto;
+package com.sandipsky.inventory_system.common.dropdown.dtos;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

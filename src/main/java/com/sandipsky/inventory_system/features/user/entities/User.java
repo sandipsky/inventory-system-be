@@ -1,5 +1,5 @@
-package com.sandipsky.inventory_system.user;
-import com.sandipsky.inventory_system.role.Role;
+package com.sandipsky.inventory_system.features.user.entities;
+import com.sandipsky.inventory_system.features.role_operations.entities.Role;
 
 import java.util.Collection;
 import java.util.Date;

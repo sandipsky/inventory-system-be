@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.user;
+package com.sandipsky.inventory_system.features.user.dtos;
 
 import java.util.ArrayList;
 import java.util.List;

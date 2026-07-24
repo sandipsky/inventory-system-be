@@ -1,4 +1,7 @@
-package com.sandipsky.inventory_system.vendor;
+package com.sandipsky.inventory_system.features.purchase.vendor.controllers;
+import com.sandipsky.inventory_system.features.purchase.vendor.entities.Vendor;
+import com.sandipsky.inventory_system.features.purchase.vendor.services.VendorService;
+import com.sandipsky.inventory_system.features.purchase.vendor.dtos.VendorDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

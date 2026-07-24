@@ -1,5 +1,5 @@
-package com.sandipsky.inventory_system.journal;
-import com.sandipsky.inventory_system.account.AccountMaster;
+package com.sandipsky.inventory_system.features.accounting.journal.entities;
+import com.sandipsky.inventory_system.features.accounting.account.entities.AccountMaster;
 
 import jakarta.persistence.*;
 import lombok.Getter;

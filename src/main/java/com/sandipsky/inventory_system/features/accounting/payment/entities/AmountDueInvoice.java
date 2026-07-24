@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.payment;
+package com.sandipsky.inventory_system.features.accounting.payment.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.sandipsky.inventory_system.security;
 
-import com.sandipsky.inventory_system.user.UserRepository;
+import com.sandipsky.inventory_system.features.user.repositories.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

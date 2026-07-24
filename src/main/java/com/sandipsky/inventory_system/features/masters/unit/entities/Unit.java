@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.unit;
+package com.sandipsky.inventory_system.features.masters.unit.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;

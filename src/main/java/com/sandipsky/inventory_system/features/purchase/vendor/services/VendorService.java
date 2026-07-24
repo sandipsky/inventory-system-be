@@ -1,12 +1,15 @@
-package com.sandipsky.inventory_system.vendor;
+package com.sandipsky.inventory_system.features.purchase.vendor.services;
+import com.sandipsky.inventory_system.features.purchase.vendor.repositories.VendorRepository;
+import com.sandipsky.inventory_system.features.purchase.vendor.dtos.VendorDTO;
+import com.sandipsky.inventory_system.features.purchase.vendor.entities.Vendor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
-import com.sandipsky.inventory_system.account.AccountMaster;
+import com.sandipsky.inventory_system.features.accounting.account.entities.AccountMaster;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;
-import com.sandipsky.inventory_system.account.AccountMasterRepository;
+import com.sandipsky.inventory_system.features.accounting.account.repositories.AccountMasterRepository;
 import com.sandipsky.inventory_system.common.util.SpecificationBuilder;
 
 import jakarta.transaction.Transactional;

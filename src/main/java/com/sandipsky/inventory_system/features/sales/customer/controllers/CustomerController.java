@@ -1,4 +1,7 @@
-package com.sandipsky.inventory_system.customer;
+package com.sandipsky.inventory_system.features.sales.customer.controllers;
+import com.sandipsky.inventory_system.features.sales.customer.services.CustomerService;
+import com.sandipsky.inventory_system.features.sales.customer.dtos.CustomerDTO;
+import com.sandipsky.inventory_system.features.sales.customer.entities.Customer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

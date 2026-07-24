@@ -1,5 +1,5 @@
-package com.sandipsky.inventory_system.purchase;
-import com.sandipsky.inventory_system.vendor.Vendor;
+package com.sandipsky.inventory_system.features.purchase.purchase_entry.entities;
+import com.sandipsky.inventory_system.features.purchase.vendor.entities.Vendor;
 
 import java.util.List;
 import jakarta.persistence.*;

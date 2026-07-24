@@ -1,19 +1,19 @@
-package com.sandipsky.inventory_system.dropdown;
+package com.sandipsky.inventory_system.common.dropdown.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sandipsky.inventory_system.common.dto.DropdownDTO;
-import com.sandipsky.inventory_system.account.AccountMasterRepository;
-import com.sandipsky.inventory_system.category.CategoryRepository;
-import com.sandipsky.inventory_system.customer.CustomerRepository;
-import com.sandipsky.inventory_system.packing.PackingRepository;
-import com.sandipsky.inventory_system.product.ProductRepository;
-import com.sandipsky.inventory_system.role.RoleRepository;
-import com.sandipsky.inventory_system.taxtype.TaxTypeRepository;
-import com.sandipsky.inventory_system.unit.UnitRepository;
-import com.sandipsky.inventory_system.user.UserRepository;
-import com.sandipsky.inventory_system.vendor.VendorRepository;
+import com.sandipsky.inventory_system.common.dropdown.dtos.DropdownDTO;
+import com.sandipsky.inventory_system.features.accounting.account.repositories.AccountMasterRepository;
+import com.sandipsky.inventory_system.features.masters.category.repositories.CategoryRepository;
+import com.sandipsky.inventory_system.features.sales.customer.repositories.CustomerRepository;
+import com.sandipsky.inventory_system.features.masters.packing.repositories.PackingRepository;
+import com.sandipsky.inventory_system.features.product.repositories.ProductRepository;
+import com.sandipsky.inventory_system.features.role_operations.repositories.RoleRepository;
+import com.sandipsky.inventory_system.features.masters.taxtype.repositories.TaxTypeRepository;
+import com.sandipsky.inventory_system.features.masters.unit.repositories.UnitRepository;
+import com.sandipsky.inventory_system.features.user.repositories.UserRepository;
+import com.sandipsky.inventory_system.features.purchase.vendor.repositories.VendorRepository;
 
 import java.util.List;
 

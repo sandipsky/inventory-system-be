@@ -1,4 +1,8 @@
-package com.sandipsky.inventory_system.role;
+package com.sandipsky.inventory_system.features.role_operations.controllers;
+import com.sandipsky.inventory_system.features.role_operations.services.RoleService;
+import com.sandipsky.inventory_system.features.role_operations.dtos.RoleOperationGroupDTO;
+import com.sandipsky.inventory_system.features.role_operations.dtos.RoleDTO;
+import com.sandipsky.inventory_system.features.role_operations.entities.Role;
 
 import java.util.List;
 

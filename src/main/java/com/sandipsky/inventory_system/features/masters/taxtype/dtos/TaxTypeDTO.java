@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.taxtype;
+package com.sandipsky.inventory_system.features.masters.taxtype.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;

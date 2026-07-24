@@ -1,4 +1,6 @@
-package com.sandipsky.inventory_system.features.documentnumbering.controllers;
+package com.sandipsky.inventory_system.features.settings.document_numbering.controllers;
+import com.sandipsky.inventory_system.features.settings.document_numbering.services.DocumentNumberingService;
+import com.sandipsky.inventory_system.features.settings.document_numbering.dtos.DocumentNumberingDTO;
 
 import java.util.List;
 

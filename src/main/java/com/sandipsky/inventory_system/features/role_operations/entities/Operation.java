@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.role;
+package com.sandipsky.inventory_system.features.role_operations.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,10 +1,14 @@
-package com.sandipsky.inventory_system.account;
+package com.sandipsky.inventory_system.features.accounting.account.controllers;
+import com.sandipsky.inventory_system.features.accounting.account.dtos.AccountTypeGroupDTO;
+import com.sandipsky.inventory_system.features.accounting.account.services.AccountMasterService;
+import com.sandipsky.inventory_system.features.accounting.account.dtos.AccountMasterDTO;
+import com.sandipsky.inventory_system.features.accounting.account.entities.AccountMaster;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.sandipsky.inventory_system.common.dto.ApiResponse;
-import com.sandipsky.inventory_system.common.dto.DropdownDTO;
+import com.sandipsky.inventory_system.common.dropdown.dtos.DropdownDTO;
 import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.security.RequiresOperation;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;

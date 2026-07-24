@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.category;
+package com.sandipsky.inventory_system.features.masters.category.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;

@@ -1,4 +1,7 @@
-package com.sandipsky.inventory_system.category;
+package com.sandipsky.inventory_system.features.masters.category.controllers;
+import com.sandipsky.inventory_system.features.masters.category.services.CategoryService;
+import com.sandipsky.inventory_system.features.masters.category.dtos.CategoryDTO;
+import com.sandipsky.inventory_system.features.masters.category.entities.Category;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

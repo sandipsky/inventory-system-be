@@ -1,6 +1,6 @@
-package com.sandipsky.inventory_system.account;
-import com.sandipsky.inventory_system.vendor.Vendor;
-import com.sandipsky.inventory_system.customer.Customer;
+package com.sandipsky.inventory_system.features.accounting.account.entities;
+import com.sandipsky.inventory_system.features.purchase.vendor.entities.Vendor;
+import com.sandipsky.inventory_system.features.sales.customer.entities.Customer;
 
 import jakarta.persistence.*;
 import lombok.Getter;

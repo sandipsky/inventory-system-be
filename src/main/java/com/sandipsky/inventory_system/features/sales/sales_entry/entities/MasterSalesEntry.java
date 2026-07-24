@@ -1,5 +1,5 @@
 package com.sandipsky.inventory_system.features.sales.sales_entry.entities;
-import com.sandipsky.inventory_system.customer.Customer;
+import com.sandipsky.inventory_system.features.sales.customer.entities.Customer;
 
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;

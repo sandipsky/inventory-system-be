@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.auth;
+package com.sandipsky.inventory_system.features.auth.dtos;
 
 import lombok.Data;
 

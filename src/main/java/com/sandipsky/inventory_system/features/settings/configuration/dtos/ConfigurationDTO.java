@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.configuration;
+package com.sandipsky.inventory_system.features.settings.configuration.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;

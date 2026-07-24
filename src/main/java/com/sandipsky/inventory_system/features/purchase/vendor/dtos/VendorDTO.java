@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.vendor;
+package com.sandipsky.inventory_system.features.purchase.vendor.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

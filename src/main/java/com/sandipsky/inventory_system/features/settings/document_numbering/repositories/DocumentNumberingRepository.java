@@ -1,4 +1,5 @@
-package com.sandipsky.inventory_system.features.documentnumbering.repositories;
+package com.sandipsky.inventory_system.features.settings.document_numbering.repositories;
+import com.sandipsky.inventory_system.features.settings.document_numbering.entities.DocumentNumbering;
 
 import java.util.Optional;
 

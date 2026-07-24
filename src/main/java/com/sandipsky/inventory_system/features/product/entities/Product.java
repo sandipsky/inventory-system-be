@@ -1,8 +1,8 @@
-package com.sandipsky.inventory_system.product;
-import com.sandipsky.inventory_system.unit.Unit;
-import com.sandipsky.inventory_system.taxtype.TaxType;
-import com.sandipsky.inventory_system.packing.Packing;
-import com.sandipsky.inventory_system.category.Category;
+package com.sandipsky.inventory_system.features.product.entities;
+import com.sandipsky.inventory_system.features.masters.unit.entities.Unit;
+import com.sandipsky.inventory_system.features.masters.taxtype.entities.TaxType;
+import com.sandipsky.inventory_system.features.masters.packing.entities.Packing;
+import com.sandipsky.inventory_system.features.masters.category.entities.Category;
 
 import java.util.List;
 

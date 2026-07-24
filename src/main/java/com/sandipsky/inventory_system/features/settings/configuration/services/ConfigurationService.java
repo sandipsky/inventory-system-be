@@ -1,4 +1,7 @@
-package com.sandipsky.inventory_system.configuration;
+package com.sandipsky.inventory_system.features.settings.configuration.services;
+import com.sandipsky.inventory_system.features.settings.configuration.repositories.ConfigurationRepository;
+import com.sandipsky.inventory_system.features.settings.configuration.dtos.ConfigurationDTO;
+import com.sandipsky.inventory_system.features.settings.configuration.entities.Configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

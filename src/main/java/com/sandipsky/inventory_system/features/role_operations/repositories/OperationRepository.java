@@ -1,4 +1,5 @@
-package com.sandipsky.inventory_system.role;
+package com.sandipsky.inventory_system.features.role_operations.repositories;
+import com.sandipsky.inventory_system.features.role_operations.entities.Operation;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

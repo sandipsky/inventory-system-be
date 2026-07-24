@@ -1,4 +1,5 @@
-package com.sandipsky.inventory_system.purchase;
+package com.sandipsky.inventory_system.features.purchase.purchase_entry.repositories;
+import com.sandipsky.inventory_system.features.purchase.purchase_entry.entities.MasterPurchaseEntry;
 
 
 import java.util.Optional;

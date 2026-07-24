@@ -1,4 +1,5 @@
-package com.sandipsky.inventory_system.configuration;
+package com.sandipsky.inventory_system.features.settings.configuration.repositories;
+import com.sandipsky.inventory_system.features.settings.configuration.entities.Configuration;
 
 import java.util.Optional;
 

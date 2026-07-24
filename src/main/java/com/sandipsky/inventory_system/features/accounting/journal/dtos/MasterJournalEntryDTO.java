@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.journal;
+package com.sandipsky.inventory_system.features.accounting.journal.dtos;
 
 import lombok.Data;
 import java.util.List;

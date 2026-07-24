@@ -1,4 +1,5 @@
 package com.sandipsky.inventory_system.features.sales.sales_entry.repositories;
+import com.sandipsky.inventory_system.features.sales.sales_entry.entities.SalesEntry;
 
 import java.util.List;
 

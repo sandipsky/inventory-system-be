@@ -1,11 +1,14 @@
 package com.sandipsky.inventory_system.features.sales.sales_entry.controllers;
+import com.sandipsky.inventory_system.features.sales.sales_entry.services.SalesEntryService;
+import com.sandipsky.inventory_system.features.sales.sales_entry.dtos.MasterSalesEntryDTO;
+import com.sandipsky.inventory_system.features.sales.sales_entry.entities.MasterSalesEntry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.sandipsky.inventory_system.common.dto.ApiResponse;
 import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
-import com.sandipsky.inventory_system.documentnumbering.DocumentNumberingService;
+import com.sandipsky.inventory_system.features.settings.document_numbering.services.DocumentNumberingService;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 
 import org.springframework.data.domain.*;

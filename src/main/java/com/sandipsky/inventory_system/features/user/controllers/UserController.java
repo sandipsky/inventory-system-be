@@ -1,4 +1,7 @@
-package com.sandipsky.inventory_system.user;
+package com.sandipsky.inventory_system.features.user.controllers;
+import com.sandipsky.inventory_system.features.user.services.UserService;
+import com.sandipsky.inventory_system.features.user.dtos.UserDTO;
+import com.sandipsky.inventory_system.features.user.entities.User;
 
 import com.sandipsky.inventory_system.common.dto.ApiResponse;
 import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;

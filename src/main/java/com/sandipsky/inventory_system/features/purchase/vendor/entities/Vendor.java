@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.vendor;
+package com.sandipsky.inventory_system.features.purchase.vendor.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

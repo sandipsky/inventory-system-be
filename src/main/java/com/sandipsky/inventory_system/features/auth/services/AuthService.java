@@ -1,12 +1,13 @@
-package com.sandipsky.inventory_system.auth;
+package com.sandipsky.inventory_system.features.auth.services;
+import com.sandipsky.inventory_system.features.auth.dtos.LoginRequest;
 
 import com.sandipsky.inventory_system.common.exception.AccountLockException;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;
-import com.sandipsky.inventory_system.role.Operation;
-import com.sandipsky.inventory_system.role.Role;
-import com.sandipsky.inventory_system.user.User;
-import com.sandipsky.inventory_system.user.UserRepository;
-import com.sandipsky.inventory_system.user.UserRoleOperationsDTO;
+import com.sandipsky.inventory_system.features.role_operations.entities.Operation;
+import com.sandipsky.inventory_system.features.role_operations.entities.Role;
+import com.sandipsky.inventory_system.features.user.entities.User;
+import com.sandipsky.inventory_system.features.user.repositories.UserRepository;
+import com.sandipsky.inventory_system.features.user.dtos.UserRoleOperationsDTO;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

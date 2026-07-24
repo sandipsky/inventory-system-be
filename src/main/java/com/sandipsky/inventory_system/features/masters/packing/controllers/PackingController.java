@@ -1,4 +1,7 @@
-package com.sandipsky.inventory_system.packing;
+package com.sandipsky.inventory_system.features.masters.packing.controllers;
+import com.sandipsky.inventory_system.features.masters.packing.services.PackingService;
+import com.sandipsky.inventory_system.features.masters.packing.dtos.PackingDTO;
+import com.sandipsky.inventory_system.features.masters.packing.entities.Packing;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

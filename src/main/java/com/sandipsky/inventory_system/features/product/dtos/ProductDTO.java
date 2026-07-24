@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.product;
+package com.sandipsky.inventory_system.features.product.dtos;
 
 import java.util.ArrayList;
 import java.util.List;

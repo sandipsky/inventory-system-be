@@ -1,5 +1,11 @@
-package com.sandipsky.inventory_system.journal;
-import com.sandipsky.inventory_system.documentnumbering.DocumentNumberingService;
+package com.sandipsky.inventory_system.features.accounting.journal.services;
+import com.sandipsky.inventory_system.features.accounting.journal.dtos.JournalEntryDTO;
+import com.sandipsky.inventory_system.features.accounting.journal.entities.JournalEntry;
+import com.sandipsky.inventory_system.features.accounting.journal.repositories.MasterJournalEntryRepository;
+import com.sandipsky.inventory_system.features.accounting.journal.dtos.MasterJournalEntryDTO;
+import com.sandipsky.inventory_system.features.accounting.journal.entities.MasterJournalEntry;
+import com.sandipsky.inventory_system.features.accounting.journal.repositories.JournalEntryRepository;
+import com.sandipsky.inventory_system.features.settings.document_numbering.services.DocumentNumberingService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sandipsky.inventory_system.account.AccountMaster;
+import com.sandipsky.inventory_system.features.accounting.account.entities.AccountMaster;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;
-import com.sandipsky.inventory_system.account.AccountMasterRepository;
+import com.sandipsky.inventory_system.features.accounting.account.repositories.AccountMasterRepository;
 
 @Service
 public class JournalEntryService {

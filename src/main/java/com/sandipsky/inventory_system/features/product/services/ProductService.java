@@ -1,20 +1,28 @@
-package com.sandipsky.inventory_system.product;
+package com.sandipsky.inventory_system.features.product.services;
+import com.sandipsky.inventory_system.features.product.entities.ProductStock;
+import com.sandipsky.inventory_system.features.product.dtos.BonusInfoDTO;
+import com.sandipsky.inventory_system.features.product.entities.BonusInfo;
+import com.sandipsky.inventory_system.features.product.repositories.ProductStockRepository;
+import com.sandipsky.inventory_system.features.product.dtos.ProductStockDTO;
+import com.sandipsky.inventory_system.features.product.repositories.ProductRepository;
+import com.sandipsky.inventory_system.features.product.dtos.ProductDTO;
+import com.sandipsky.inventory_system.features.product.entities.Product;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sandipsky.inventory_system.common.dto.filter.FilterDTO;
 import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
-import com.sandipsky.inventory_system.category.Category;
-import com.sandipsky.inventory_system.packing.Packing;
-import com.sandipsky.inventory_system.taxtype.TaxType;
-import com.sandipsky.inventory_system.unit.Unit;
+import com.sandipsky.inventory_system.features.masters.category.entities.Category;
+import com.sandipsky.inventory_system.features.masters.packing.entities.Packing;
+import com.sandipsky.inventory_system.features.masters.taxtype.entities.TaxType;
+import com.sandipsky.inventory_system.features.masters.unit.entities.Unit;
 import com.sandipsky.inventory_system.common.exception.DuplicateResourceException;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;
-import com.sandipsky.inventory_system.category.CategoryRepository;
-import com.sandipsky.inventory_system.packing.PackingRepository;
-import com.sandipsky.inventory_system.taxtype.TaxTypeRepository;
-import com.sandipsky.inventory_system.unit.UnitRepository;
+import com.sandipsky.inventory_system.features.masters.category.repositories.CategoryRepository;
+import com.sandipsky.inventory_system.features.masters.packing.repositories.PackingRepository;
+import com.sandipsky.inventory_system.features.masters.taxtype.repositories.TaxTypeRepository;
+import com.sandipsky.inventory_system.features.masters.unit.repositories.UnitRepository;
 import com.sandipsky.inventory_system.common.util.SpecificationBuilder;
 
 import org.springframework.data.domain.*;

@@ -1,4 +1,11 @@
-package com.sandipsky.inventory_system.role;
+package com.sandipsky.inventory_system.features.role_operations.services;
+import com.sandipsky.inventory_system.features.role_operations.dtos.OperationDTO;
+import com.sandipsky.inventory_system.features.role_operations.repositories.RoleRepository;
+import com.sandipsky.inventory_system.features.role_operations.dtos.RoleOperationGroupDTO;
+import com.sandipsky.inventory_system.features.role_operations.dtos.RoleDTO;
+import com.sandipsky.inventory_system.features.role_operations.entities.Role;
+import com.sandipsky.inventory_system.features.role_operations.repositories.OperationRepository;
+import com.sandipsky.inventory_system.features.role_operations.entities.Operation;
 
 import java.util.ArrayList;
 import java.util.HashSet;

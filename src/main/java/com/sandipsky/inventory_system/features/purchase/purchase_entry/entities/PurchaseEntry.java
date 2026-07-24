@@ -1,5 +1,5 @@
-package com.sandipsky.inventory_system.purchase;
-import com.sandipsky.inventory_system.product.Product;
+package com.sandipsky.inventory_system.features.purchase.purchase_entry.entities;
+import com.sandipsky.inventory_system.features.product.entities.Product;
 
 import jakarta.persistence.*;
 import lombok.Getter;

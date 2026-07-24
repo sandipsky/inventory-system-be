@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.role;
+package com.sandipsky.inventory_system.features.role_operations.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

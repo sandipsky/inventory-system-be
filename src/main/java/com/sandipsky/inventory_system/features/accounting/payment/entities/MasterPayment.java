@@ -1,7 +1,7 @@
-package com.sandipsky.inventory_system.payment;
-import com.sandipsky.inventory_system.vendor.Vendor;
-import com.sandipsky.inventory_system.customer.Customer;
-import com.sandipsky.inventory_system.account.AccountMaster;
+package com.sandipsky.inventory_system.features.accounting.payment.entities;
+import com.sandipsky.inventory_system.features.purchase.vendor.entities.Vendor;
+import com.sandipsky.inventory_system.features.sales.customer.entities.Customer;
+import com.sandipsky.inventory_system.features.accounting.account.entities.AccountMaster;
 import java.util.List;
 
 import jakarta.persistence.*;

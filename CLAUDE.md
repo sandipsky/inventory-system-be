@@ -20,23 +20,44 @@ The project is packaged as a WAR (`<packaging>war</packaging>`) and includes [Se
 ## Required External State
 
 - **MySQL** schema `inventory_system` must exist before startup. Connection settings live in [application.properties](src/main/resources/application.properties) (defaults: `localhost`, `root` / `Admin@123`). Tables can be created with [database.sql](database.sql), or let Hibernate generate them via JPA (no `ddl-auto` is configured, so set it explicitly if you want auto-create).
-- **`uploads/`** directory at repo root — used for user profile images, served back at `/uploads/**` via [WebConfig.java](src/main/java/com/sandipsky/inventory_system/config/WebConfig.java).
-- On first boot, [DataInitializer.java](src/main/java/com/sandipsky/inventory_system/config/DataInitializer.java) seeds an `admin` / `Admin@123` user if none exists.
+- **`uploads/`** directory at repo root — used for user profile images, served back at `/uploads/**` via [WebConfig.java](src/main/java/com/sandipsky/inventory_system/common/config/WebConfig.java).
+- On first boot, [DataInitializer.java](src/main/java/com/sandipsky/inventory_system/common/config/DataInitializer.java) seeds an `admin` / `Admin@123` user if none exists.
 
 ## Package Naming Gotcha
 
-Maven artifactId is `spring-boot-inventory-system` and the main class is `SpringBootInventorySystemApplication`, but **the actual Java package is `com.sandipsky.inventory_system`** (not `spring_boot_inventory_system`). The test directory still uses the old name (`src/test/java/com/sandipsky/spring_boot_inventory_system/`) — don't add new code under that path; mirror the main package.
+Maven artifactId is `spring-boot-inventory-system` and the main class is `SpringBootInventorySystemApplication`, but **the actual Java package is `com.sandipsky.inventory_system`** (not `spring_boot_inventory_system`). Tests mirror the main package under `src/test/java/com/sandipsky/inventory_system/`.
 
 ## Architecture
 
-### Layered, per-domain slices
-Standard Spring layering — `controller/` → `service/` → `repository/` → `entity/` — with one slice per domain (Product, Party, Purchase, Sales, Journal, AccountMaster, Unit, Category, User, DocumentNumber). DTOs live in `dto/` (some grouped into subpackages: `dto/purchase`, `dto/sales`, `dto/journal`, `dto/login`, `dto/filter`).
+### Package-by-feature
+Code is organized under `com.sandipsky.inventory_system.features`, one package per feature (some grouped under a parent domain), and inside each feature the classes are split into `controllers/`, `services/`, `repositories/`, `entities/`, and `dtos/` subpackages:
+
+```
+features/
+├── masters/           # simple lookup masters
+│   ├── category/  unit/  taxtype/  packing/
+├── purchase/
+│   ├── vendor/  purchase_entry/
+├── sales/
+│   ├── customer/  sales_entry/
+├── accounting/
+│   ├── journal/  account/  payment/   # payment = entities only, feature in progress
+├── settings/
+│   ├── configuration/  document_numbering/
+├── product/  user/  role_operations/  auth/
+```
+
+Cross-cutting code lives in:
+- `common/` — `common/dto` (`ApiResponse`, `dto/filter/RequestDTO` etc.), `common/exception`, `common/util` (`ResponseUtil`, `SpecificationBuilder`), `common/config` (`WebConfig`, `DataInitializer`), `common/dropdown` (the cross-feature dropdown endpoint — controller, service, and `DropdownDTO` together)
+- `security/` — JWT filter chain, `WebSecurityConfig`, `JwtUtil`, `@RequiresOperation` + its aspect
+
+When adding a new domain, create a new feature package under `features/` with the same layer subfolders. Java package names can't contain hyphens, so multi-word features use underscores (`purchase_entry`, `sales_entry`, `role_operations`, `document_numbering`). Note: repository JPQL uses fully-qualified constructor expressions (e.g. `SELECT new com.sandipsky.inventory_system.common.dropdown.dtos.DropdownDTO(...)`) — the compiler does not check these strings, so they must be updated by hand on any package move or they fail at runtime.
 
 ### Master/Detail pattern for transactional entries
 Purchase, Sales, and Journal modules all follow the same shape:
 - `Master*Entry` (header: date, totals, party, transaction type) `@OneToMany` → list of `*Entry` (line items).
 - DTO mirror: `Master*EntryDTO` contains `List<*EntryDTO>`.
-- Save/update flow rewrites the line items and adjusts derived state (stock, journal entries) in a single `@Transactional` method. See [PurchaseEntryService.java](src/main/java/com/sandipsky/inventory_system/service/PurchaseEntryService.java) as the reference implementation — Sales and Journal follow the same pattern.
+- Save/update flow rewrites the line items and adjusts derived state (stock, journal entries) in a single `@Transactional` method. See [PurchaseEntryService.java](src/main/java/com/sandipsky/inventory_system/features/purchase/purchase_entry/services/PurchaseEntryService.java) as the reference implementation — Sales and Journal follow the same pattern.
 
 ### Inventory + Accounting are coupled
 Saving a `MasterPurchaseEntry` or `MasterSalesEntry` does three things atomically:
@@ -47,30 +68,30 @@ Saving a `MasterPurchaseEntry` or `MasterSalesEntry` does three things atomicall
 When changing the columns/totals on a Master entry, also update `createJournalEntries` so the books balance.
 
 ### Document numbering
-Human-readable numbers (e.g. `PUR0001`, `SAL0001`, `JV0001`) are generated by [DocumentNumberService.java](src/main/java/com/sandipsky/inventory_system/service/DocumentNumberService.java) per module, using prefix + zero-padded sequence. The next number is derived from the **latest existing master row's `systemEntryNo`**, not from a counter column — so manual DB edits to that field can break sequencing. A `DocumentNumber` row per module (`Purchase`, `Sales`, `Journal`) must exist with `prefix`, `startNumber`, `endNumber`, `length` configured.
+Human-readable numbers (e.g. `PUR0001`, `SAL0001`, `JV0001`) are generated by [DocumentNumberingService.java](src/main/java/com/sandipsky/inventory_system/features/settings/document_numbering/services/DocumentNumberingService.java) per module, using prefix + zero-padded sequence. The next number is derived from the **latest existing master row's `systemEntryNo`**, not from a counter column — so manual DB edits to that field can break sequencing. A `DocumentNumbering` row per module (`Purchase`, `Sales`, `Journal`) must exist with `prefix`, `startNumber`, `endNumber`, `length` configured.
 
 ### Paginated list endpoints
-Every domain exposes `POST /<resource>/view` taking a [RequestDTO](src/main/java/com/sandipsky/inventory_system/dto/filter/RequestDTO.java) with `filter` (list of `{field, value}`), `pagination` (`pageIndex`, `pageSize`), and `sortDTO`. The generic [SpecificationBuilder.java](src/main/java/com/sandipsky/inventory_system/util/SpecificationBuilder.java) builds a JPA `Specification` doing **case-insensitive `LIKE` on every filter field** (cast to string + lowercased). It supports nested fields via dot notation (e.g. `party.name`). Unknown fields are silently skipped. Repositories must extend `JpaSpecificationExecutor<T>` to plug in.
+Every domain exposes `POST /<resource>/view` taking a [RequestDTO](src/main/java/com/sandipsky/inventory_system/common/dto/filter/RequestDTO.java) with `filter` (list of `{field, value}`), `pagination` (`pageIndex`, `pageSize`), and `sortDTO`. The generic [SpecificationBuilder.java](src/main/java/com/sandipsky/inventory_system/common/util/SpecificationBuilder.java) builds a JPA `Specification` doing **case-insensitive `LIKE` on every filter field** (cast to string + lowercased). It supports nested fields via dot notation (e.g. `party.name`). Unknown fields are silently skipped. Repositories must extend `JpaSpecificationExecutor<T>` to plug in.
 
 When adding a new domain, copy this controller pattern: `POST /view` (paginated list), `GET /` (full list, where applicable), `GET /{id}`, `POST /`, `PUT /{id}`, `DELETE /{id}`.
 
 ### Response envelope
-Mutating endpoints return `ResponseEntity<ApiResponse<T>>` built via [ResponseUtil.success(id, message)](src/main/java/com/sandipsky/inventory_system/util/ResponseUtil.java). `ApiResponse.data` is an `int` (the affected entity's ID) serialized as `post_data_id` in JSON — this is intentional, frontend depends on that field name. Read endpoints return DTOs / `Page<DTO>` directly without the envelope.
+Mutating endpoints return `ResponseEntity<ApiResponse<T>>` built via [ResponseUtil.success(id, message)](src/main/java/com/sandipsky/inventory_system/common/util/ResponseUtil.java). `ApiResponse.data` is an `int` (the affected entity's ID) serialized as `post_data_id` in JSON — this is intentional, frontend depends on that field name. Read endpoints return DTOs / `Page<DTO>` directly without the envelope.
 
 ### Errors
-Throw the typed exceptions in [exception/](src/main/java/com/sandipsky/inventory_system/exception/) — [GlobalExceptionHandler.java](src/main/java/com/sandipsky/inventory_system/exception/GlobalExceptionHandler.java) maps them to HTTP codes (`ResourceNotFoundException` → 404, `DuplicateResourceException` → 409, `BadCredentialsException` → 401, `AccountLockException` / `AccessDeniedException` / `ExpiredJwtException` → 403, anything else → 500). All responses go through `ResponseUtil.error(...)`.
+Throw the typed exceptions in [common/exception/](src/main/java/com/sandipsky/inventory_system/common/exception/) — [GlobalExceptionHandler.java](src/main/java/com/sandipsky/inventory_system/common/exception/GlobalExceptionHandler.java) maps them to HTTP codes (`ResourceNotFoundException` → 404, `DuplicateResourceException` → 409, `BadCredentialsException` → 401, `AccountLockException` / `AccessDeniedException` / `ExpiredJwtException` → 403, anything else → 500). All responses go through `ResponseUtil.error(...)`.
 
 ### Security / Auth
 - JWT-based, stateless. Login at `POST /auth/login` returns a token; subsequent requests send `Authorization: Bearer <token>`. [AuthTokenFilter.java](src/main/java/com/sandipsky/inventory_system/security/AuthTokenFilter.java) runs before `UsernamePasswordAuthenticationFilter` and populates `SecurityContextHolder` if the token is valid.
-- Account lockout: 5 failed login attempts (`auth.maxFailedAttempts`) lock the account for 1 hour (`auth.lockTimeDurationMs`). The unlock check happens on the next login attempt, in [AuthService.authenticate](src/main/java/com/sandipsky/inventory_system/service/AuthService.java).
+- Account lockout: 5 failed login attempts (`auth.maxFailedAttempts`) lock the account for 1 hour (`auth.lockTimeDurationMs`). The unlock check happens on the next login attempt, in [AuthService.authenticate](src/main/java/com/sandipsky/inventory_system/features/auth/services/AuthService.java).
 - **`WebSecurityConfig` currently has `.requestMatchers("/auth/**", "/users/**", "/**").permitAll()`** — every endpoint is open at the matcher level. The filter still parses any `Bearer` token sent, but no endpoint actually requires authentication. Treat this as a known state of the codebase, not an invariant — if you add a real role/permission gate, you'll need to tighten the matcher list.
 - CORS is hardcoded to `http://localhost:8005` in [WebSecurityConfig.java](src/main/java/com/sandipsky/inventory_system/security/WebSecurityConfig.java).
 
 ### Multipart endpoints
-User create/update accept `multipart/form-data` with a `user` JSON part and an optional `image` file part — see [UserController.java](src/main/java/com/sandipsky/inventory_system/controller/UserController.java) for the pattern (`@RequestPart("user") UserDTO`, `@RequestPart("image") MultipartFile`). Image is stored to `uploads/` and the path persisted on `User.imageUrl`.
+User create/update accept `multipart/form-data` with a `user` JSON part and an optional `image` file part — see [UserController.java](src/main/java/com/sandipsky/inventory_system/features/user/controllers/UserController.java) for the pattern (`@RequestPart("user") UserDTO`, `@RequestPart("image") MultipartFile`). Image is stored to `uploads/` and the path persisted on `User.imageUrl`.
 
 ### Dropdown endpoint
-[DropdownController.java](src/main/java/com/sandipsky/inventory_system/controller/DropdownController.java) exposes `GET /dropdown/<resource>/...` returning lightweight `{id, name}` lists for select widgets, with status/type filters baked into the URL path.
+[DropdownController.java](src/main/java/com/sandipsky/inventory_system/common/dropdown/controllers/DropdownController.java) exposes `GET /dropdown/<resource>/...` returning lightweight `{id, name}` lists for select widgets, with status/type filters baked into the URL path.
 
 ## Conventions
 

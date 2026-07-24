@@ -1,5 +1,11 @@
-package com.sandipsky.inventory_system.purchase;
-import com.sandipsky.inventory_system.documentnumbering.DocumentNumberingService;
+package com.sandipsky.inventory_system.features.purchase.purchase_entry.services;
+import com.sandipsky.inventory_system.features.purchase.purchase_entry.dtos.PurchaseEntryDTO;
+import com.sandipsky.inventory_system.features.purchase.purchase_entry.entities.PurchaseEntry;
+import com.sandipsky.inventory_system.features.purchase.purchase_entry.repositories.PurchaseEntryRepository;
+import com.sandipsky.inventory_system.features.purchase.purchase_entry.repositories.MasterPurchaseEntryRepository;
+import com.sandipsky.inventory_system.features.purchase.purchase_entry.dtos.MasterPurchaseEntryDTO;
+import com.sandipsky.inventory_system.features.purchase.purchase_entry.entities.MasterPurchaseEntry;
+import com.sandipsky.inventory_system.features.settings.document_numbering.services.DocumentNumberingService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,19 +15,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
-import com.sandipsky.inventory_system.account.AccountMaster;
-import com.sandipsky.inventory_system.journal.JournalEntry;
-import com.sandipsky.inventory_system.journal.MasterJournalEntry;
-import com.sandipsky.inventory_system.vendor.Vendor;
-import com.sandipsky.inventory_system.product.Product;
-import com.sandipsky.inventory_system.product.ProductStock;
+import com.sandipsky.inventory_system.features.accounting.account.entities.AccountMaster;
+import com.sandipsky.inventory_system.features.accounting.journal.entities.JournalEntry;
+import com.sandipsky.inventory_system.features.accounting.journal.entities.MasterJournalEntry;
+import com.sandipsky.inventory_system.features.purchase.vendor.entities.Vendor;
+import com.sandipsky.inventory_system.features.product.entities.Product;
+import com.sandipsky.inventory_system.features.product.entities.ProductStock;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;
-import com.sandipsky.inventory_system.account.AccountMasterRepository;
-import com.sandipsky.inventory_system.journal.JournalEntryRepository;
-import com.sandipsky.inventory_system.journal.MasterJournalEntryRepository;
-import com.sandipsky.inventory_system.vendor.VendorRepository;
-import com.sandipsky.inventory_system.product.ProductRepository;
-import com.sandipsky.inventory_system.product.ProductStockRepository;
+import com.sandipsky.inventory_system.features.accounting.account.repositories.AccountMasterRepository;
+import com.sandipsky.inventory_system.features.accounting.journal.repositories.JournalEntryRepository;
+import com.sandipsky.inventory_system.features.accounting.journal.repositories.MasterJournalEntryRepository;
+import com.sandipsky.inventory_system.features.purchase.vendor.repositories.VendorRepository;
+import com.sandipsky.inventory_system.features.product.repositories.ProductRepository;
+import com.sandipsky.inventory_system.features.product.repositories.ProductStockRepository;
 import com.sandipsky.inventory_system.common.util.SpecificationBuilder;
 
 import org.springframework.data.domain.*;

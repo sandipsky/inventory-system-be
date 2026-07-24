@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.features.documentnumbering.entities;
+package com.sandipsky.inventory_system.features.settings.document_numbering.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

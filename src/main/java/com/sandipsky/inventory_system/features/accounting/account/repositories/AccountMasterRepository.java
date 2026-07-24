@@ -1,4 +1,5 @@
-package com.sandipsky.inventory_system.account;
+package com.sandipsky.inventory_system.features.accounting.account.repositories;
+import com.sandipsky.inventory_system.features.accounting.account.entities.AccountMaster;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.sandipsky.inventory_system.common.dto.DropdownDTO;
+import com.sandipsky.inventory_system.common.dropdown.dtos.DropdownDTO;
 
 public interface AccountMasterRepository
         extends JpaRepository<AccountMaster, Integer>, JpaSpecificationExecutor<AccountMaster> {
@@ -19,7 +20,7 @@ public interface AccountMasterRepository
     Optional<AccountMaster> findByAccountName(String accountName);
 
     @Query("""
-            SELECT new com.sandipsky.inventory_system.common.dto.DropdownDTO(p.id, p.accountName)
+            SELECT new com.sandipsky.inventory_system.common.dropdown.dtos.DropdownDTO(p.id, p.accountName)
             FROM AccountMaster p
             WHERE (:type IS NULL OR
                    (:type = TRUE AND (p.vendor.id IS NOT NULL OR p.customer.id IS NOT NULL)) OR
@@ -49,7 +50,7 @@ public interface AccountMasterRepository
     Optional<AccountMaster> findByCustomerId(@Param("customerId") Integer customerId);
 
     @Query("""
-                SELECT new com.sandipsky.inventory_system.common.dto.DropdownDTO(p.id, p.accountName)
+                SELECT new com.sandipsky.inventory_system.common.dropdown.dtos.DropdownDTO(p.id, p.accountName)
                 FROM AccountMaster p
                 WHERE p.accountType = :accountType
                   AND p.isActive = TRUE

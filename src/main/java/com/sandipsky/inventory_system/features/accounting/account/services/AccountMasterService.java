@@ -1,9 +1,15 @@
-package com.sandipsky.inventory_system.account;
+package com.sandipsky.inventory_system.features.accounting.account.services;
+import com.sandipsky.inventory_system.features.accounting.account.entities.AccountType;
+import com.sandipsky.inventory_system.features.accounting.account.repositories.AccountTypeRepository;
+import com.sandipsky.inventory_system.features.accounting.account.dtos.AccountTypeGroupDTO;
+import com.sandipsky.inventory_system.features.accounting.account.repositories.AccountMasterRepository;
+import com.sandipsky.inventory_system.features.accounting.account.dtos.AccountMasterDTO;
+import com.sandipsky.inventory_system.features.accounting.account.entities.AccountMaster;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sandipsky.inventory_system.common.dto.DropdownDTO;
+import com.sandipsky.inventory_system.common.dropdown.dtos.DropdownDTO;
 import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.common.exception.DuplicateResourceException;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;

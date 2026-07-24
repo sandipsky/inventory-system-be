@@ -1,4 +1,5 @@
-package com.sandipsky.inventory_system.user;
+package com.sandipsky.inventory_system.features.user.repositories;
+import com.sandipsky.inventory_system.features.user.entities.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.sandipsky.inventory_system.common.dto.DropdownDTO;
+import com.sandipsky.inventory_system.common.dropdown.dtos.DropdownDTO;
 
 public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User> {
     boolean existsByUsername(String username);
@@ -22,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
     Optional<User> findByUsername(String username);
 
     @Query("""
-                SELECT new com.sandipsky.inventory_system.common.dto.DropdownDTO(u.id, u.username)
+                SELECT new com.sandipsky.inventory_system.common.dropdown.dtos.DropdownDTO(u.id, u.username)
                 FROM User u
                 WHERE (:isActive IS NULL OR u.isActive = :isActive)
             """)

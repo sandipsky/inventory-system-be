@@ -1,7 +1,10 @@
-package com.sandipsky.inventory_system.auth;
+package com.sandipsky.inventory_system.features.auth.controllers;
+import com.sandipsky.inventory_system.features.auth.dtos.LoginResponse;
+import com.sandipsky.inventory_system.features.auth.dtos.LoginRequest;
+import com.sandipsky.inventory_system.features.auth.services.AuthService;
 
-import com.sandipsky.inventory_system.user.User;
-import com.sandipsky.inventory_system.user.UserRoleOperationsDTO;
+import com.sandipsky.inventory_system.features.user.entities.User;
+import com.sandipsky.inventory_system.features.user.dtos.UserRoleOperationsDTO;
 import com.sandipsky.inventory_system.common.exception.AccessDeniedException;
 import com.sandipsky.inventory_system.security.JwtUtil;
 

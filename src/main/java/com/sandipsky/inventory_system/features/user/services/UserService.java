@@ -1,4 +1,7 @@
-package com.sandipsky.inventory_system.user;
+package com.sandipsky.inventory_system.features.user.services;
+import com.sandipsky.inventory_system.features.user.repositories.UserRepository;
+import com.sandipsky.inventory_system.features.user.dtos.UserDTO;
+import com.sandipsky.inventory_system.features.user.entities.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,10 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
-import com.sandipsky.inventory_system.role.Role;
+import com.sandipsky.inventory_system.features.role_operations.entities.Role;
 import com.sandipsky.inventory_system.common.exception.DuplicateResourceException;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;
-import com.sandipsky.inventory_system.role.RoleRepository;
+import com.sandipsky.inventory_system.features.role_operations.repositories.RoleRepository;
 import com.sandipsky.inventory_system.common.util.SpecificationBuilder;
 
 import org.springframework.data.domain.*;

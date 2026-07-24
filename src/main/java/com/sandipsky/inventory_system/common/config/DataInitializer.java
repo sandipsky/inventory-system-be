@@ -1,9 +1,9 @@
 package com.sandipsky.inventory_system.common.config;
 
-import com.sandipsky.inventory_system.user.UserDTO;
-import com.sandipsky.inventory_system.role.RoleRepository;
-import com.sandipsky.inventory_system.user.UserRepository;
-import com.sandipsky.inventory_system.user.UserService;
+import com.sandipsky.inventory_system.features.user.dtos.UserDTO;
+import com.sandipsky.inventory_system.features.role_operations.repositories.RoleRepository;
+import com.sandipsky.inventory_system.features.user.repositories.UserRepository;
+import com.sandipsky.inventory_system.features.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

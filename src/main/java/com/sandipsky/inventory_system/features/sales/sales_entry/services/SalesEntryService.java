@@ -1,16 +1,22 @@
 package com.sandipsky.inventory_system.features.sales.sales_entry.services;
-import com.sandipsky.inventory_system.documentnumbering.DocumentNumberingService;
+import com.sandipsky.inventory_system.features.sales.sales_entry.dtos.SalesEntryDTO;
+import com.sandipsky.inventory_system.features.sales.sales_entry.entities.SalesEntry;
+import com.sandipsky.inventory_system.features.sales.sales_entry.repositories.SalesEntryRepository;
+import com.sandipsky.inventory_system.features.sales.sales_entry.repositories.MasterSalesEntryRepository;
+import com.sandipsky.inventory_system.features.sales.sales_entry.dtos.MasterSalesEntryDTO;
+import com.sandipsky.inventory_system.features.sales.sales_entry.entities.MasterSalesEntry;
+import com.sandipsky.inventory_system.features.settings.document_numbering.services.DocumentNumberingService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
-import com.sandipsky.inventory_system.customer.Customer;
-import com.sandipsky.inventory_system.product.ProductStock;
+import com.sandipsky.inventory_system.features.sales.customer.entities.Customer;
+import com.sandipsky.inventory_system.features.product.entities.ProductStock;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;
-import com.sandipsky.inventory_system.customer.CustomerRepository;
-import com.sandipsky.inventory_system.product.ProductStockRepository;
+import com.sandipsky.inventory_system.features.sales.customer.repositories.CustomerRepository;
+import com.sandipsky.inventory_system.features.product.repositories.ProductStockRepository;
 import com.sandipsky.inventory_system.common.util.SpecificationBuilder;
 
 import org.springframework.data.domain.*;

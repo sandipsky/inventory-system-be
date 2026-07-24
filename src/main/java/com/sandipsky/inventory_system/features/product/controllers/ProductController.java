@@ -1,4 +1,8 @@
-package com.sandipsky.inventory_system.product;
+package com.sandipsky.inventory_system.features.product.controllers;
+import com.sandipsky.inventory_system.features.product.dtos.ProductStockDTO;
+import com.sandipsky.inventory_system.features.product.services.ProductService;
+import com.sandipsky.inventory_system.features.product.dtos.ProductDTO;
+import com.sandipsky.inventory_system.features.product.entities.Product;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

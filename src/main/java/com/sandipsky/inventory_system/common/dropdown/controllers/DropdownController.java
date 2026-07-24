@@ -1,8 +1,9 @@
-package com.sandipsky.inventory_system.dropdown;
+package com.sandipsky.inventory_system.common.dropdown.controllers;
+import com.sandipsky.inventory_system.common.dropdown.services.DropdownService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.sandipsky.inventory_system.common.dto.DropdownDTO;
+import com.sandipsky.inventory_system.common.dropdown.dtos.DropdownDTO;
 
 import java.util.List;
 

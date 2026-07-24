@@ -1,4 +1,7 @@
-package com.sandipsky.inventory_system.features.documentnumbering.services;
+package com.sandipsky.inventory_system.features.settings.document_numbering.services;
+import com.sandipsky.inventory_system.features.settings.document_numbering.repositories.DocumentNumberingRepository;
+import com.sandipsky.inventory_system.features.settings.document_numbering.dtos.DocumentNumberingDTO;
+import com.sandipsky.inventory_system.features.settings.document_numbering.entities.DocumentNumbering;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,12 +10,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sandipsky.inventory_system.journal.MasterJournalEntry;
-import com.sandipsky.inventory_system.purchase.MasterPurchaseEntry;
-import com.sandipsky.inventory_system.sales.MasterSalesEntry;
-import com.sandipsky.inventory_system.journal.MasterJournalEntryRepository;
-import com.sandipsky.inventory_system.purchase.MasterPurchaseEntryRepository;
-import com.sandipsky.inventory_system.sales.MasterSalesEntryRepository;
+import com.sandipsky.inventory_system.features.accounting.journal.entities.MasterJournalEntry;
+import com.sandipsky.inventory_system.features.purchase.purchase_entry.entities.MasterPurchaseEntry;
+import com.sandipsky.inventory_system.features.sales.sales_entry.entities.MasterSalesEntry;
+import com.sandipsky.inventory_system.features.accounting.journal.repositories.MasterJournalEntryRepository;
+import com.sandipsky.inventory_system.features.purchase.purchase_entry.repositories.MasterPurchaseEntryRepository;
+import com.sandipsky.inventory_system.features.sales.sales_entry.repositories.MasterSalesEntryRepository;
 
 @Service
 public class DocumentNumberingService {

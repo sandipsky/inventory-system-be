@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.purchase;
+package com.sandipsky.inventory_system.features.purchase.purchase_entry.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -1,4 +1,4 @@
-package com.sandipsky.inventory_system.features.documentnumbering.dtos;
+package com.sandipsky.inventory_system.features.settings.document_numbering.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

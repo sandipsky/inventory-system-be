@@ -192,16 +192,6 @@ FOR EACH ROW BEGIN
   UPDATE account_master SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
 END;
 
-CREATE TABLE document_number (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  module TEXT NOT NULL,
-  prefix TEXT,
-  start_number INTEGER NOT NULL DEFAULT 1,
-  end_number INTEGER NOT NULL DEFAULT 999999,
-  length INTEGER NOT NULL DEFAULT 6,
-  description TEXT
-);
-
 CREATE TABLE account_types (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   heading TEXT NOT NULL,
@@ -211,6 +201,7 @@ CREATE TABLE account_types (
 CREATE TABLE master_purchase_entry (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   date TEXT,
+  bill_date TEXT,
   system_entry_no TEXT UNIQUE NOT NULL,
   bill_no TEXT,
   transaction_type TEXT,
@@ -452,11 +443,6 @@ INSERT INTO account_master (id, account_code, account_name, account_type, is_act
 (33, NULL, 'GreenTech Enterprises', 'Receivables', 1, 1, 0, 'Trade Receivables', 23, 'Eco-tech solutions firm', NULL, 4),
 (34, NULL, 'City Electronics', 'Receivables', 1, 1, 0, 'Trade Receivables', 23, 'Retail electronics chain', NULL, 5);
 
-INSERT INTO document_number (module, prefix, start_number, end_number, length, description) VALUES
-('Purchase', 'PE-', 1, 999999, 6, 'Purchase Entry'),
-('Sales', 'SI-', 1, 999999, 6, 'Sales Entry'),
-('Journal', 'J-', 1, 999999, 6, 'Journal Entry');
-
 INSERT INTO account_types (heading, name) VALUES
 ('Assets', 'Cash & Cash Equivalents'),
 ('Assets', 'Other Current Assets'),
@@ -584,7 +570,12 @@ INSERT INTO operation (name, module, master_module) VALUES
 ('CreateDocumentNumbering', 'DocumentNumbering', 'Settings'),
 ('ViewDocumentNumbering', 'DocumentNumbering', 'Settings'),
 ('EditDocumentNumbering', 'DocumentNumbering', 'Settings'),
-('DeleteDocumentNumbering', 'DocumentNumbering', 'Settings');
+('DeleteDocumentNumbering', 'DocumentNumbering', 'Settings'),
+
+('CreatePurchaseEntry', 'PurchaseEntry', 'Purchase'),
+('ViewPurchaseEntry', 'PurchaseEntry', 'Purchase'),
+('EditPurchaseEntry', 'PurchaseEntry', 'Purchase'),
+('DeletePurchaseEntry', 'PurchaseEntry', 'Purchase');
 
 
 INSERT INTO role (id, name, description, is_active) VALUES
@@ -606,14 +597,14 @@ CREATE TABLE document_numbering (
   end_no INTEGER
 );
 
-INSERT INTO document_numbering (id, name, start_date, end_date, numbering_style, prefix, body_length, total_length, start_no, end_no) VALUES
-(1, 'Purchase Entry', '-04-01', '-03-32', 'Auto', '|PE-', 6, 17, 1, 999999),
-(4, 'Purchase Order', '-04-01', '-03-32', 'Auto', '|PO-', 6, 17, 1, 999999),
-(5, 'Purchase Return', '-04-01', '-03-32', 'Auto', '|PR-', 6, 17, 1, 999999),
-(8, 'Sales Entry', '-04-01', '-03-32', 'Auto', '|SI-', 6, 17, 1, 999999),
-(9, 'Sales Return', '-04-01', '-03-32', 'Auto', '|SR-', 6, 17, 1, 999999),
-(10, 'Sales Order', '-04-01', '-03-32', 'Auto', '|SO-', 6, 17, 1, 999999),
-(11, 'BDE', '-04-01', '-03-32', 'Auto', '|BDE-', 6, 18, 1, 999999),
-(12, 'Stock Adjustment', '-04-01', '-03-32', 'Auto', '|SA-', 6, 17, 1, 999999),
-(17, 'Journal Entry', '-04-01', '-03-32', 'Auto', '|J-', 6, 16, 1, 999999),
-(18, 'Payment', '-04-01', '-03-32', 'Auto', '|P-', 6, 16, 1, 999999);
+INSERT INTO document_numbering (id, name, prefix, body_length, start_no, end_no) VALUES
+(1, 'Purchase Entry', '|PE-', 6,1, 999999),
+(4, 'Purchase Order', '|PO-', 6,1, 999999),
+(5, 'Purchase Return', '|PR-', 6,1, 999999),
+(8, 'Sales Entry', '|SI-', 6,1, 999999),
+(9, 'Sales Return', '|SR-', 6,1, 999999),
+(10, 'Sales Order', '|SO-', 6,1, 999999),
+(11, 'BDE', '|BDE-', 6, 1, 999999),
+(12, 'Stock Adjustment', '|SA-', 6,1, 999999),
+(17, 'Journal Entry', '|J-', 6, 1, 999999),
+(18, 'Payment', '|P-', 6, 1, 999999);

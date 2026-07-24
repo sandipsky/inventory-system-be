@@ -17,6 +17,9 @@ public class MasterPurchaseEntry {
 
 	private String date;
 
+	@Column(name = "bill_date")
+	private String billDate;
+
 	@Column(columnDefinition = "varchar(25) unique not null")
 	private String systemEntryNo;
 

@@ -279,6 +279,124 @@ CREATE TABLE sales_entry (
   FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
+CREATE TABLE master_purchase_return (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  date TEXT,
+  system_entry_no TEXT UNIQUE NOT NULL,
+  bill_no TEXT,
+  transaction_type TEXT,
+  sub_total REAL NOT NULL DEFAULT 0,
+  discount REAL NOT NULL DEFAULT 0,
+  non_taxable_amount REAL NOT NULL DEFAULT 0,
+  taxable_amount REAL NOT NULL DEFAULT 0,
+  total_tax REAL NOT NULL DEFAULT 0,
+  rounded INTEGER DEFAULT 0,
+  rounding REAL NOT NULL DEFAULT 0,
+  grand_total REAL NOT NULL DEFAULT 0,
+  discount_type TEXT,
+  remarks TEXT,
+  vendor_id INTEGER,
+  FOREIGN KEY (vendor_id) REFERENCES vendor(id)
+);
+
+CREATE TABLE purchase_return_entry (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  master_purchase_return_id INTEGER,
+  quantity REAL,
+  cost_price REAL,
+  selling_price REAL,
+  mrp REAL,
+  product_id INTEGER,
+  FOREIGN KEY (master_purchase_return_id) REFERENCES master_purchase_return(id),
+  FOREIGN KEY (product_id) REFERENCES product(id)
+);
+
+CREATE TABLE master_sales_return (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  date TEXT,
+  system_entry_no TEXT UNIQUE NOT NULL,
+  transaction_type TEXT,
+  sub_total REAL NOT NULL DEFAULT 0,
+  discount REAL NOT NULL DEFAULT 0,
+  non_taxable_amount REAL NOT NULL DEFAULT 0,
+  taxable_amount REAL NOT NULL DEFAULT 0,
+  total_tax REAL NOT NULL DEFAULT 0,
+  rounded INTEGER DEFAULT 0,
+  rounding REAL NOT NULL DEFAULT 0,
+  grand_total REAL NOT NULL DEFAULT 0,
+  discount_type TEXT,
+  remarks TEXT,
+  customer_id INTEGER,
+  FOREIGN KEY (customer_id) REFERENCES customer(id)
+);
+
+CREATE TABLE sales_return_entry (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  master_sales_return_id INTEGER,
+  quantity REAL,
+  cost_price REAL,
+  selling_price REAL,
+  mrp REAL,
+  product_id INTEGER,
+  FOREIGN KEY (master_sales_return_id) REFERENCES master_sales_return(id),
+  FOREIGN KEY (product_id) REFERENCES product(id)
+);
+
+CREATE TABLE master_payment (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  date TEXT,
+  system_entry_no TEXT UNIQUE NOT NULL,
+  type TEXT,
+  amount REAL NOT NULL DEFAULT 0,
+  narration TEXT,
+  total_adjusted_paid_amount REAL NOT NULL DEFAULT 0,
+  unadjusted_amount REAL NOT NULL DEFAULT 0,
+  total_payment_amount REAL NOT NULL DEFAULT 0,
+  vendor_id INTEGER,
+  customer_id INTEGER,
+  transaction_type INTEGER,
+  FOREIGN KEY (vendor_id) REFERENCES vendor(id),
+  FOREIGN KEY (customer_id) REFERENCES customer(id),
+  FOREIGN KEY (transaction_type) REFERENCES account_master(id)
+);
+
+CREATE TABLE payment_detail (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  master_payment_id INTEGER,
+  invoice_date TEXT,
+  invoice_number TEXT,
+  total_invoice_amount REAL NOT NULL DEFAULT 0,
+  due_amount REAL NOT NULL DEFAULT 0,
+  paid_amount REAL NOT NULL DEFAULT 0,
+  FOREIGN KEY (master_payment_id) REFERENCES master_payment(id)
+);
+
+CREATE TABLE amount_due_invoice (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  invoice_number TEXT UNIQUE,
+  total_invoice_amount REAL NOT NULL DEFAULT 0,
+  due_amount REAL NOT NULL DEFAULT 0,
+  paid_amount REAL NOT NULL DEFAULT 0
+);
+
+CREATE TABLE master_stock_adjustment (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  date TEXT,
+  system_entry_no TEXT UNIQUE NOT NULL,
+  remarks TEXT
+);
+
+CREATE TABLE stock_adjustment_entry (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  master_stock_adjustment_id INTEGER,
+  adjustment_type TEXT,
+  quantity REAL,
+  reason TEXT,
+  product_id INTEGER,
+  FOREIGN KEY (master_stock_adjustment_id) REFERENCES master_stock_adjustment(id),
+  FOREIGN KEY (product_id) REFERENCES product(id)
+);
+
 CREATE TABLE master_journal_entry (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   date TEXT,
@@ -286,8 +404,14 @@ CREATE TABLE master_journal_entry (
   remarks TEXT,
   master_purchase_entry_id INTEGER,
   master_sales_entry_id INTEGER,
+  master_purchase_return_id INTEGER,
+  master_sales_return_id INTEGER,
+  master_payment_id INTEGER,
   FOREIGN KEY (master_purchase_entry_id) REFERENCES master_purchase_entry(id),
-  FOREIGN KEY (master_sales_entry_id) REFERENCES master_sales_entry(id)
+  FOREIGN KEY (master_sales_entry_id) REFERENCES master_sales_entry(id),
+  FOREIGN KEY (master_purchase_return_id) REFERENCES master_purchase_return(id),
+  FOREIGN KEY (master_sales_return_id) REFERENCES master_sales_return(id),
+  FOREIGN KEY (master_payment_id) REFERENCES master_payment(id)
 );
 
 CREATE TABLE journal_entry (
@@ -575,7 +699,52 @@ INSERT INTO operation (name, module, master_module) VALUES
 ('CreatePurchaseEntry', 'PurchaseEntry', 'Purchase'),
 ('ViewPurchaseEntry', 'PurchaseEntry', 'Purchase'),
 ('EditPurchaseEntry', 'PurchaseEntry', 'Purchase'),
-('DeletePurchaseEntry', 'PurchaseEntry', 'Purchase');
+('DeletePurchaseEntry', 'PurchaseEntry', 'Purchase'),
+
+('CreatePurchaseReturn', 'PurchaseReturn', 'Purchase'),
+('ViewPurchaseReturn', 'PurchaseReturn', 'Purchase'),
+('EditPurchaseReturn', 'PurchaseReturn', 'Purchase'),
+('DeletePurchaseReturn', 'PurchaseReturn', 'Purchase'),
+
+('CreateSalesEntry', 'SalesEntry', 'Sales'),
+('ViewSalesEntries', 'SalesEntry', 'Sales'),
+('EditSalesEntry', 'SalesEntry', 'Sales'),
+('CancelSalesEntry', 'SalesEntry', 'Sales'),
+
+('CreateSalesReturn', 'SalesReturn', 'Sales'),
+('ViewSalesReturns', 'SalesReturn', 'Sales'),
+('EditSalesReturn', 'SalesReturn', 'Sales'),
+('DeleteSalesReturn', 'SalesReturn', 'Sales'),
+
+('CreateStockAdjustment', 'StockAdjustment', 'Inventory'),
+('ViewStockAdjustment', 'StockAdjustment', 'Inventory'),
+('EditStockAdjustment', 'StockAdjustment', 'Inventory'),
+('DeleteStockAdjustment', 'StockAdjustment', 'Inventory'),
+
+('ViewStockEdit', 'StockEdit', 'Inventory'),
+('EditStockEdit', 'StockEdit', 'Inventory'),
+
+('ViewOpeningStock', 'OpeningStock', 'Inventory'),
+('CreateOpeningStock', 'OpeningStock', 'Inventory'),
+
+('CreateJournalEntry', 'JournalEntry', 'Accounting'),
+('ViewJournalEntries', 'JournalEntry', 'Accounting'),
+('EditJournalEntry', 'JournalEntry', 'Accounting'),
+('DeleteJournalEntry', 'JournalEntry', 'Accounting'),
+
+('CreatePayment', 'Payment', 'Accounting'),
+('ViewVendorPayment', 'Payment', 'Accounting'),
+('ViewCustomerPayment', 'Payment', 'Accounting'),
+('EditPayment', 'Payment', 'Accounting'),
+('DeletePayment', 'Payment', 'Accounting'),
+
+('ViewPaymentAdjustment', 'PaymentAdjustment', 'Accounting'),
+('CreatePaymentAdjustment', 'PaymentAdjustment', 'Accounting'),
+
+('ViewOpeningBalance', 'OpeningBalance', 'Accounting'),
+('CreateOpeningBalance', 'OpeningBalance', 'Accounting'),
+
+('ViewAccount', 'AccountMaster', 'Accounting');
 
 
 INSERT INTO role (id, name, description, is_active) VALUES

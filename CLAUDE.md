@@ -19,7 +19,7 @@ The project is packaged as a WAR (`<packaging>war</packaging>`) and includes [Se
 
 ## Required External State
 
-- **MySQL** schema `inventory_system` must exist before startup. Connection settings live in [application.properties](src/main/resources/application.properties) (defaults: `localhost`, `root` / `Admin@123`). Tables can be created with [database.sql](database.sql), or let Hibernate generate them via JPA (no `ddl-auto` is configured, so set it explicitly if you want auto-create).
+- **SQLite** — the datasource is `jdbc:sqlite:inventory_system.db` (file at repo root, auto-created) with `spring.jpa.hibernate.ddl-auto=update`, so Hibernate creates/updates tables on startup. See [application.properties](src/main/resources/application.properties). [database.sql](database.sql) is the reference schema **and the seed data** — the `account_master` rows (named accounts like `"VAT Purchase"`, `"VAT Sales"`, `"Cash"`, `"Tax"`, `"Adjustment"`), `document_numbering` rows, and `operation` rows must be loaded or transactional saves and `@RequiresOperation` checks will fail at runtime.
 - **`uploads/`** directory at repo root — used for user profile images, served back at `/uploads/**` via [WebConfig.java](src/main/java/com/sandipsky/inventory_system/common/config/WebConfig.java).
 - On first boot, [DataInitializer.java](src/main/java/com/sandipsky/inventory_system/common/config/DataInitializer.java) seeds an `admin` / `Admin@123` user if none exists.
 
@@ -37,11 +37,15 @@ features/
 ├── masters/           # simple lookup masters
 │   ├── category/  unit/  taxtype/  packing/
 ├── purchase/
-│   ├── vendor/  purchase_entry/
+│   ├── vendor/  purchase_entry/  purchase_return/
 ├── sales/
-│   ├── customer/  sales_entry/
+│   ├── customer/  sales_entry/  sales_return/
+├── inventory/
+│   ├── stock_adjustment/  stock_edit/  opening_stock/
 ├── accounting/
-│   ├── journal/  account/  payment/   # payment = entities only, feature in progress
+│   ├── journal/  account/  payment/  opening_balance/
+├── reports/           # read-only; no entities of their own
+│   ├── purchase/  sales/  inventory/  accounting/
 ├── settings/
 │   ├── configuration/  document_numbering/
 ├── product/  user/  role_operations/  auth/
@@ -54,18 +58,28 @@ Cross-cutting code lives in:
 When adding a new domain, create a new feature package under `features/` with the same layer subfolders. Java package names can't contain hyphens, so multi-word features use underscores (`purchase_entry`, `sales_entry`, `role_operations`, `document_numbering`). Note: repository JPQL uses fully-qualified constructor expressions (e.g. `SELECT new com.sandipsky.inventory_system.common.dropdown.dtos.DropdownDTO(...)`) — the compiler does not check these strings, so they must be updated by hand on any package move or they fail at runtime.
 
 ### Master/Detail pattern for transactional entries
-Purchase, Sales, and Journal modules all follow the same shape:
-- `Master*Entry` (header: date, totals, party, transaction type) `@OneToMany` → list of `*Entry` (line items).
-- DTO mirror: `Master*EntryDTO` contains `List<*EntryDTO>`.
-- Save/update flow rewrites the line items and adjusts derived state (stock, journal entries) in a single `@Transactional` method. See [PurchaseEntryService.java](src/main/java/com/sandipsky/inventory_system/features/purchase/purchase_entry/services/PurchaseEntryService.java) as the reference implementation — Sales and Journal follow the same pattern.
+Purchase Entry/Return, Sales Entry/Return, and Journal modules all follow the same shape:
+- `Master*` (header: date, totals, party, transaction type) `@OneToMany` → list of line items.
+- DTO mirror: `Master*DTO` contains a `List<*DTO>` of line items.
+- Save/update flow rewrites the line items and adjusts derived state (stock, journal entries) in a single `@Transactional` method. See [PurchaseEntryService.java](src/main/java/com/sandipsky/inventory_system/features/purchase/purchase_entry/services/PurchaseEntryService.java) as the reference implementation — the others follow the same pattern.
+- Sales Entry is the one exception on lifecycle: instead of hard delete it has **cancel** (`POST /sales/{id}` sets `isCancelled` + `cancelRemarks`, restores stock, removes journal entries; cancelled entries can't be updated).
 
 ### Inventory + Accounting are coupled
-Saving a `MasterPurchaseEntry` or `MasterSalesEntry` does three things atomically:
+Saving a Master purchase/sales entry or return does three things atomically:
 1. Persists the master + line items.
-2. Updates `Product` master prices and `ProductStock` quantities (purchase = +qty, sale = −qty; a delete reverses this and rejects with `"Product Stock is Already Used"` if it would go negative).
-3. Calls `createJournalEntries(...)` which deletes any prior `MasterJournalEntry` for that master and writes new debit/credit `JournalEntry` rows against named accounts in `account_master` — `"VAT Free Purchase"`, `"VAT Purchase"`, `"Tax"`, `"Adjustment"`, `"Cash"`, or the party's own account (looked up by `partyId`). **These named accounts must exist in `account_master` or the save will throw `ResourceNotFoundException`.**
+2. Updates `ProductStock` quantities — purchase / sales-return = +qty; sale / purchase-return = −qty (purchase entry also updates `Product` master prices). Any operation that would push stock below zero is rejected (`"Not enough Quantity In Stock"` / `"Product Stock is Already Used"`).
+3. Calls `createJournalEntries(...)` which deletes any prior `MasterJournalEntry` linked to that master (via the `master_*_id` link columns on `master_journal_entry`) and writes new balanced debit/credit `JournalEntry` rows against named accounts in `account_master` — purchases use `"VAT Free Purchase"` / `"VAT Purchase"`, sales use `"VAT Free Sales"` / `"VAT Sales"`, both use `"Tax"`, `"Adjustment"`, and `"Cash"` or the party's own account (looked up by `vendorId` / `customerId`). Returns post the mirror image (debits and credits swapped). **These named accounts must exist in `account_master` or the save will throw `ResourceNotFoundException`.**
 
 When changing the columns/totals on a Master entry, also update `createJournalEntries` so the books balance.
+
+Related invariants that hang off the same save flows:
+- **Due invoices**: non-Cash (credit) purchase/sales entries maintain an `AmountDueInvoice` row keyed by `systemEntryNo`. Payments (`/payment`) and payment adjustments (`/payment-adjustment`) allocate against these rows and post their own two-line journal (party account vs payment-mode account). Deleting/cancelling an entry with recorded payments is rejected.
+- **Journal ↔ source links**: `master_journal_entry` has nullable `master_*_id` FK columns linking each auto-posted journal to its source (purchase/sales entry, returns, payment). These are mapped `@ManyToOne` on purpose — `@OneToOne` would emit UNIQUE FK columns which SQLite cannot add via `ALTER TABLE`, silently breaking `ddl-auto=update`. Manual journal numbering (`findTopByOrderByIdDescJournal`) only counts journals with all links null and skips the fixed `OPENING-BALANCE` entry.
+- **Opening balance** (`/opening-balance`) is stored as a single journal entry with the fixed `systemEntryNo` `OPENING-BALANCE`; saving replaces it wholesale and requires debits = credits.
+- **Stock Adjustment** (`/stock-adjustment`, numbered `|SA-`) moves `ProductStock` In/Out with no journal; **Stock Edit** (`/stock-edit`) and **Opening Stock** (`/opening-stock`) write `ProductStock` directly (edit corrects figures, opening-stock only creates a missing row).
+
+### Reports
+`features/reports/` is read-only — services reuse feature entities via their own `@Query` repositories (no entities of their own). **All report endpoints are unpaginated `GET`s** taking optional `fromDate`/`toDate` plus `dateType` (`AD` default; `BS` is rejected until Bikram Sambat support lands — see `ReportDateUtil.validateDateType`). Endpoints: `/reports/purchase` (register), `/reports/purchase/vendor`, `/reports/purchase/product`; `/reports/sales`, `/reports/sales/customer`, `/reports/sales/product` (aggregates exclude cancelled entries); `/reports/inventory/stock` (no date params); `/reports/accounting/journal`, `/ledger/{accountId}` (running balance + opening balance), `/trial-balance`, and `/due-amount` (outstanding credit-sales invoices from `AmountDueInvoice`, no date params). Dates are TEXT and compared as strings, so date-range params must use the same format the entries store.
 
 ### Document numbering
 Human-readable numbers (e.g. `PUR0001`, `SAL0001`, `JV0001`) are generated by [DocumentNumberingService.java](src/main/java/com/sandipsky/inventory_system/features/settings/document_numbering/services/DocumentNumberingService.java) per module, using prefix + zero-padded sequence. The next number is derived from the **latest existing master row's `systemEntryNo`**, not from a counter column — so manual DB edits to that field can break sequencing. A `DocumentNumbering` row per module (`Purchase`, `Sales`, `Journal`) must exist with `prefix`, `startNumber`, `endNumber`, `length` configured.

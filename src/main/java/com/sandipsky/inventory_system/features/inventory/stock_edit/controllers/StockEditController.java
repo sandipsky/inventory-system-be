@@ -1,0 +1,39 @@
+package com.sandipsky.inventory_system.features.inventory.stock_edit.controllers;
+import com.sandipsky.inventory_system.features.inventory.stock_edit.services.StockEditService;
+import com.sandipsky.inventory_system.features.inventory.stock_edit.dtos.StockEditDTO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.sandipsky.inventory_system.common.dto.ApiResponse;
+import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import com.sandipsky.inventory_system.common.util.ResponseUtil;
+import com.sandipsky.inventory_system.features.product.entities.ProductStock;
+
+import org.springframework.data.domain.*;
+import org.springframework.http.ResponseEntity;
+
+@RestController
+@RequestMapping("/stock-edit")
+public class StockEditController {
+
+    @Autowired
+    private StockEditService service;
+
+    @PostMapping("/view")
+    public Page<StockEditDTO> getPaginatedProductStocksList(@RequestBody RequestDTO request) {
+        return service.getPaginatedProductStocksList(request);
+    }
+
+    @GetMapping("/{productId}")
+    public StockEditDTO getProductStock(@PathVariable int productId) {
+        return service.getProductStockByProductId(productId);
+    }
+
+    @PutMapping("/{productId}")
+    public ResponseEntity<ApiResponse<ProductStock>> updateProductStock(@PathVariable int productId,
+            @RequestBody StockEditDTO stockEditDTO) {
+        ProductStock res = service.updateProductStock(productId, stockEditDTO);
+        return ResponseEntity.ok(ResponseUtil.success(res.getId(), "Stock Updated successfully"));
+    }
+}

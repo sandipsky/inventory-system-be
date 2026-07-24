@@ -18,6 +18,8 @@ import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
 import com.sandipsky.inventory_system.features.accounting.account.entities.AccountMaster;
 import com.sandipsky.inventory_system.features.accounting.journal.entities.JournalEntry;
 import com.sandipsky.inventory_system.features.accounting.journal.entities.MasterJournalEntry;
+import com.sandipsky.inventory_system.features.accounting.payment.entities.AmountDueInvoice;
+import com.sandipsky.inventory_system.features.accounting.payment.repositories.AmountDueInvoiceRepository;
 import com.sandipsky.inventory_system.features.purchase.vendor.entities.Vendor;
 import com.sandipsky.inventory_system.features.product.entities.Product;
 import com.sandipsky.inventory_system.features.product.entities.ProductStock;
@@ -59,6 +61,9 @@ public class PurchaseEntryService {
 
     @Autowired
     private AccountMasterRepository accountMasterRepository;
+
+    @Autowired
+    private AmountDueInvoiceRepository amountDueInvoiceRepository;
 
     @Autowired
     private DocumentNumberingService documentNumberService;
@@ -141,24 +146,26 @@ public class PurchaseEntryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Vendor not found"));
         masterPurchaseEntry.setVendor(vendor);
 
-        if (masterPurchaseEntryDTO.getRemarks().isEmpty() || masterPurchaseEntryDTO.getRemarks() == null) {
+        if (masterPurchaseEntryDTO.getRemarks() == null || masterPurchaseEntryDTO.getRemarks().isEmpty()) {
             masterPurchaseEntry.setRemarks("Purchased Goods from " + vendor.getName());
         } else {
             masterPurchaseEntry.setRemarks(masterPurchaseEntryDTO.getRemarks());
         }
 
-        MasterPurchaseEntry savedEntry = new MasterPurchaseEntry();
+        MasterPurchaseEntry savedEntry;
 
         try {
             savedEntry = repository.save(masterPurchaseEntry);
         } catch (Exception ex) {
-            if (ex.getMessage().contains("unique_party_bill_no")) {
+            if (ex.getMessage() != null && ex.getMessage().contains("unique_party_bill_no")) {
                 throw new RuntimeException("Bill Number cannot be repeated for the same Vendor");
             }
+            throw ex;
         }
 
         // Create Journal Entry
         createJournalEntries(savedEntry);
+        maintainDueInvoice(savedEntry);
 
         if (masterPurchaseEntryDTO.getPurchaseEntries() != null) {
             for (PurchaseEntryDTO item : masterPurchaseEntryDTO.getPurchaseEntries()) {
@@ -225,20 +232,21 @@ public class PurchaseEntryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Vendor not found"));
         masterPurchaseEntry.setVendor(vendor);
 
-        if (masterPurchaseEntryDTO.getRemarks().isEmpty() || masterPurchaseEntryDTO.getRemarks() == null) {
+        if (masterPurchaseEntryDTO.getRemarks() == null || masterPurchaseEntryDTO.getRemarks().isEmpty()) {
             masterPurchaseEntry.setRemarks("Purchased Goods from " + vendor.getName());
         } else {
             masterPurchaseEntry.setRemarks(masterPurchaseEntryDTO.getRemarks());
         }
 
-        MasterPurchaseEntry savedEntry = new MasterPurchaseEntry();
+        MasterPurchaseEntry savedEntry;
 
         try {
             savedEntry = repository.save(masterPurchaseEntry);
         } catch (Exception ex) {
-            if (ex.getMessage().contains("unique_party_bill_no")) {
+            if (ex.getMessage() != null && ex.getMessage().contains("unique_party_bill_no")) {
                 throw new RuntimeException("Bill Number cannot be repeated for the same Vendor");
             }
+            throw ex;
         }
 
         List<PurchaseEntry> existingEntries = purchaseEntryRepository.findByMasterPurchaseEntryId(savedEntry.getId());
@@ -258,7 +266,7 @@ public class PurchaseEntryService {
             if (!found) {
                 ProductStock stock = productStockRepository.findByProductId(existing.getProduct().getId());
                 Double newStock = stock.getQuantity() - existing.getQuantity();
-                if (newStock > 0) {
+                if (newStock >= 0) {
                     stock.setQuantity(newStock);
                 } else {
                     throw new RuntimeException("Product Stock is Already Used");
@@ -278,7 +286,7 @@ public class PurchaseEntryService {
                 } else {
                     purchaseEntry = new PurchaseEntry();
                 }
-                Double tempQuantity = purchaseEntry.getQuantity();
+                Double tempQuantity = purchaseEntry.getQuantity() != null ? purchaseEntry.getQuantity() : 0.0;
                 purchaseEntry.setQuantity(item.getQuantity());
                 purchaseEntry.setCostPrice(item.getCostPrice());
                 purchaseEntry.setSellingPrice(item.getSellingPrice());
@@ -300,7 +308,7 @@ public class PurchaseEntryService {
                 if (productStock != null) {
                     // Update existing stock
                     Double newStock = productStock.getQuantity() - tempQuantity + item.getQuantity();
-                    if (newStock > 0) {
+                    if (newStock >= 0) {
                         productStock.setQuantity(newStock);
                     } else {
                         throw new RuntimeException("Product Stock is Already Used");
@@ -321,6 +329,10 @@ public class PurchaseEntryService {
             }
         }
 
+        // Re-create Journal Entry so the books reflect the updated totals
+        createJournalEntries(savedEntry);
+        maintainDueInvoice(savedEntry);
+
         return savedEntry;
     }
 
@@ -331,7 +343,7 @@ public class PurchaseEntryService {
         for (PurchaseEntry item : masterPurchaseEntry.getPurchaseEntries()) {
             ProductStock productStock = productStockRepository.findByProductId(item.getProduct().getId());
             Double newStock = productStock.getQuantity() - item.getQuantity();
-            if (newStock > 0) {
+            if (newStock >= 0) {
                 productStock.setQuantity(newStock);
             } else {
                 throw new RuntimeException("Product Stock is Already Used");
@@ -339,7 +351,55 @@ public class PurchaseEntryService {
             productStockRepository.save(productStock);
             purchaseEntryRepository.deleteById(item.getId());
         }
+        deleteJournalEntries(id);
+        removeDueInvoice(masterPurchaseEntry.getSystemEntryNo());
         repository.deleteById(id);
+    }
+
+    // Credit purchases create a due invoice that vendor payments are later adjusted against
+    private void maintainDueInvoice(MasterPurchaseEntry entry) {
+        AmountDueInvoice dueInvoice = amountDueInvoiceRepository.findByInvoiceNumber(entry.getSystemEntryNo())
+                .orElse(null);
+        if ("Cash".equals(entry.getTransactionType())) {
+            if (dueInvoice != null) {
+                if (dueInvoice.getPaidAmount() > 0) {
+                    throw new RuntimeException("Payments already recorded against this invoice");
+                }
+                amountDueInvoiceRepository.delete(dueInvoice);
+            }
+            return;
+        }
+        if (dueInvoice == null) {
+            dueInvoice = new AmountDueInvoice();
+            dueInvoice.setInvoiceNumber(entry.getSystemEntryNo());
+        }
+        if (dueInvoice.getPaidAmount() > entry.getGrandTotal()) {
+            throw new RuntimeException("Invoice total cannot be less than the amount already paid");
+        }
+        dueInvoice.setTotalInvoiceAmount(entry.getGrandTotal());
+        dueInvoice.setDueAmount(entry.getGrandTotal() - dueInvoice.getPaidAmount());
+        amountDueInvoiceRepository.save(dueInvoice);
+    }
+
+    private void removeDueInvoice(String invoiceNumber) {
+        AmountDueInvoice dueInvoice = amountDueInvoiceRepository.findByInvoiceNumber(invoiceNumber).orElse(null);
+        if (dueInvoice != null) {
+            if (dueInvoice.getPaidAmount() > 0) {
+                throw new RuntimeException("Payments already recorded against this invoice");
+            }
+            amountDueInvoiceRepository.delete(dueInvoice);
+        }
+    }
+
+    private void deleteJournalEntries(int masterPurchaseEntryId) {
+        MasterJournalEntry existing = masterJournalEntryRepository.findByMasterPurchaseEntryId(masterPurchaseEntryId)
+                .orElse(null);
+        if (existing != null) {
+            for (JournalEntry existingEntry : existing.getJournalEntries()) {
+                journalEntryRepository.delete(existingEntry);
+            }
+            masterJournalEntryRepository.delete(existing);
+        }
     }
 
     private MasterPurchaseEntryDTO mapToDTO(MasterPurchaseEntry entity) {
@@ -368,19 +428,13 @@ public class PurchaseEntryService {
     }
 
     private void createJournalEntries(MasterPurchaseEntry masterEntry) {
-        MasterJournalEntry existing = masterJournalEntryRepository.findByMasterPurchaseEntryId(masterEntry.getId())
-                .orElse(null);
-        if (existing != null) {
-            for (JournalEntry existingEntry : existing.getJournalEntries()) {
-                journalEntryRepository.delete(existingEntry);
-            }
-            masterJournalEntryRepository.delete(existing);
-        }
+        deleteJournalEntries(masterEntry.getId());
 
         MasterJournalEntry masterJournalEntry = new MasterJournalEntry();
         masterJournalEntry.setDate(masterEntry.getDate());
         masterJournalEntry.setRemarks(masterEntry.getRemarks());
         masterJournalEntry.setSystemEntryNo(masterEntry.getSystemEntryNo());
+        masterJournalEntry.setMasterPurchaseEntry(masterEntry);
 
         MasterJournalEntry savedJournalEntry = masterJournalEntryRepository.save(masterJournalEntry);
 
@@ -431,7 +485,7 @@ public class PurchaseEntryService {
                 roundJournalEntry.setDebitAmount(masterEntry.getRounding());
                 roundJournalEntry.setCreditAmount(0.00);
             } else {
-                roundJournalEntry.setCreditAmount(masterEntry.getRounding());
+                roundJournalEntry.setCreditAmount(-masterEntry.getRounding());
                 roundJournalEntry.setDebitAmount(0.00);
             }
             roundJournalEntry.setNarration(masterEntry.getRemarks());

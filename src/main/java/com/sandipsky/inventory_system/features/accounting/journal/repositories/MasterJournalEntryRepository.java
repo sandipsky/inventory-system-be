@@ -15,8 +15,20 @@ public interface MasterJournalEntryRepository
 
     @Query("SELECT m FROM MasterJournalEntry m " +
             "WHERE m.masterPurchaseEntry.id IS NULL AND m.masterSalesEntry.id IS NULL " +
+            "AND m.masterPurchaseReturn.id IS NULL AND m.masterSalesReturn.id IS NULL " +
+            "AND m.masterPayment.id IS NULL " +
+            "AND m.systemEntryNo <> 'OPENING-BALANCE' " +
             "ORDER BY m.id DESC")
     Optional<MasterJournalEntry> findTopByOrderByIdDescJournal();
+
+    Optional<MasterJournalEntry> findBySystemEntryNo(String systemEntryNo);
+
+    @Query("""
+                SELECT j
+                FROM MasterJournalEntry j
+                WHERE j.masterPayment.id = :masterPaymentId
+            """)
+    Optional<MasterJournalEntry> findByMasterPaymentId(@Param("masterPaymentId") Integer masterPaymentId);
 
     @Query("""
                 SELECT j
@@ -25,4 +37,28 @@ public interface MasterJournalEntryRepository
             """)
     Optional<MasterJournalEntry> findByMasterPurchaseEntryId(
             @Param("masterPurchaseEntryId") Integer masterPurchaseEntryId);
+
+    @Query("""
+                SELECT j
+                FROM MasterJournalEntry j
+                WHERE j.masterSalesEntry.id = :masterSalesEntryId
+            """)
+    Optional<MasterJournalEntry> findByMasterSalesEntryId(
+            @Param("masterSalesEntryId") Integer masterSalesEntryId);
+
+    @Query("""
+                SELECT j
+                FROM MasterJournalEntry j
+                WHERE j.masterPurchaseReturn.id = :masterPurchaseReturnId
+            """)
+    Optional<MasterJournalEntry> findByMasterPurchaseReturnId(
+            @Param("masterPurchaseReturnId") Integer masterPurchaseReturnId);
+
+    @Query("""
+                SELECT j
+                FROM MasterJournalEntry j
+                WHERE j.masterSalesReturn.id = :masterSalesReturnId
+            """)
+    Optional<MasterJournalEntry> findByMasterSalesReturnId(
+            @Param("masterSalesReturnId") Integer masterSalesReturnId);
 }

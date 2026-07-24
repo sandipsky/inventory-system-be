@@ -11,11 +11,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sandipsky.inventory_system.features.accounting.journal.entities.MasterJournalEntry;
+import com.sandipsky.inventory_system.features.accounting.payment.entities.MasterPayment;
+import com.sandipsky.inventory_system.features.inventory.stock_adjustment.entities.MasterStockAdjustment;
 import com.sandipsky.inventory_system.features.purchase.purchase_entry.entities.MasterPurchaseEntry;
+import com.sandipsky.inventory_system.features.purchase.purchase_return.entities.MasterPurchaseReturn;
 import com.sandipsky.inventory_system.features.sales.sales_entry.entities.MasterSalesEntry;
+import com.sandipsky.inventory_system.features.sales.sales_return.entities.MasterSalesReturn;
 import com.sandipsky.inventory_system.features.accounting.journal.repositories.MasterJournalEntryRepository;
+import com.sandipsky.inventory_system.features.accounting.payment.repositories.MasterPaymentRepository;
+import com.sandipsky.inventory_system.features.inventory.stock_adjustment.repositories.MasterStockAdjustmentRepository;
 import com.sandipsky.inventory_system.features.purchase.purchase_entry.repositories.MasterPurchaseEntryRepository;
+import com.sandipsky.inventory_system.features.purchase.purchase_return.repositories.MasterPurchaseReturnRepository;
 import com.sandipsky.inventory_system.features.sales.sales_entry.repositories.MasterSalesEntryRepository;
+import com.sandipsky.inventory_system.features.sales.sales_return.repositories.MasterSalesReturnRepository;
 
 @Service
 public class DocumentNumberingService {
@@ -28,6 +36,18 @@ public class DocumentNumberingService {
 
     @Autowired
     private MasterSalesEntryRepository masterSalesEntryRepository;
+
+    @Autowired
+    private MasterPurchaseReturnRepository masterPurchaseReturnRepository;
+
+    @Autowired
+    private MasterSalesReturnRepository masterSalesReturnRepository;
+
+    @Autowired
+    private MasterPaymentRepository masterPaymentRepository;
+
+    @Autowired
+    private MasterStockAdjustmentRepository masterStockAdjustmentRepository;
 
     @Autowired
     private MasterJournalEntryRepository masterJournalEntryRepository;
@@ -52,6 +72,38 @@ public class DocumentNumberingService {
 
         Optional<MasterSalesEntry> lastEntryOpt = masterSalesEntryRepository.findTopByOrderByIdDesc();
         return buildNextNumber(pref, lastEntryOpt.map(MasterSalesEntry::getSystemEntryNo).orElse(null));
+    }
+
+    public String generatePurchaseReturnNumber() {
+        DocumentNumbering pref = repository.findByName("Purchase Return")
+                .orElseThrow(() -> new RuntimeException("Document numbering not found for Purchase Return"));
+
+        Optional<MasterPurchaseReturn> lastEntryOpt = masterPurchaseReturnRepository.findTopByOrderByIdDesc();
+        return buildNextNumber(pref, lastEntryOpt.map(MasterPurchaseReturn::getSystemEntryNo).orElse(null));
+    }
+
+    public String generateSalesReturnNumber() {
+        DocumentNumbering pref = repository.findByName("Sales Return")
+                .orElseThrow(() -> new RuntimeException("Document numbering not found for Sales Return"));
+
+        Optional<MasterSalesReturn> lastEntryOpt = masterSalesReturnRepository.findTopByOrderByIdDesc();
+        return buildNextNumber(pref, lastEntryOpt.map(MasterSalesReturn::getSystemEntryNo).orElse(null));
+    }
+
+    public String generatePaymentNumber() {
+        DocumentNumbering pref = repository.findByName("Payment")
+                .orElseThrow(() -> new RuntimeException("Document numbering not found for Payment"));
+
+        Optional<MasterPayment> lastEntryOpt = masterPaymentRepository.findTopByOrderByIdDesc();
+        return buildNextNumber(pref, lastEntryOpt.map(MasterPayment::getSystemEntryNo).orElse(null));
+    }
+
+    public String generateStockAdjustmentNumber() {
+        DocumentNumbering pref = repository.findByName("Stock Adjustment")
+                .orElseThrow(() -> new RuntimeException("Document numbering not found for Stock Adjustment"));
+
+        Optional<MasterStockAdjustment> lastEntryOpt = masterStockAdjustmentRepository.findTopByOrderByIdDesc();
+        return buildNextNumber(pref, lastEntryOpt.map(MasterStockAdjustment::getSystemEntryNo).orElse(null));
     }
 
     public String generateJournalNumber() {

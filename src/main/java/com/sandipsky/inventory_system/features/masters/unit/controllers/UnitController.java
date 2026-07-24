@@ -1,0 +1,60 @@
+package com.sandipsky.inventory_system.unit;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.sandipsky.inventory_system.common.dto.ApiResponse;
+import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import com.sandipsky.inventory_system.common.util.ResponseUtil;
+import com.sandipsky.inventory_system.security.RequiresOperation;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/master/units")
+public class UnitController {
+
+    @Autowired
+    private UnitService service;
+
+    @GetMapping()
+    @RequiresOperation("ViewUnit")
+    public List<UnitDTO> getUnits() {
+        return service.getUnits();
+    }
+
+    @PostMapping("/view")
+    @RequiresOperation("ViewUnit")
+    public Page<UnitDTO> getPaginatedUnitsList(@RequestBody RequestDTO request) {
+        return service.getPaginatedUnitsList(request);
+    }
+
+    @GetMapping("/{id}")
+    @RequiresOperation("ViewUnit")
+    public UnitDTO getUnit(@PathVariable int id) {
+        return service.getUnitById(id);
+    }
+
+    @PostMapping()
+    @RequiresOperation("CreateUnit")
+    public ResponseEntity<ApiResponse<Unit>> createUnit(@RequestBody UnitDTO unit) {
+        Unit res = service.saveUnit(unit);
+        return ResponseEntity.ok(ResponseUtil.success(res.getId(), "Unit Added successfully"));
+    }
+
+    @PutMapping("/{id}")
+    @RequiresOperation("EditUnit")
+    public ResponseEntity<ApiResponse<Unit>> updateUnit(@PathVariable int id, @RequestBody UnitDTO unit) {
+        Unit res = service.updateUnit(id, unit);
+        return ResponseEntity.ok(ResponseUtil.success(res.getId(), "Unit Updated successfully"));
+    }
+
+    @DeleteMapping("/{id}")
+    @RequiresOperation("DeleteUnit")
+    public ResponseEntity<ApiResponse<Unit>> deleteUnit(@PathVariable int id) {
+        service.deleteUnit(id);
+        return ResponseEntity.ok(ResponseUtil.success(id, "Unit Deleted successfully"));
+    }
+}

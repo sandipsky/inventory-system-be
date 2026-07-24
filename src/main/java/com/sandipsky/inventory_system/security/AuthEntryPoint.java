@@ -7,8 +7,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sandipsky.inventory_system.dto.ApiResponse;
-import com.sandipsky.inventory_system.util.ResponseUtil;
+import com.sandipsky.inventory_system.common.dto.ApiResponse;
+import com.sandipsky.inventory_system.common.util.ResponseUtil;
 
 import java.io.IOException;
 

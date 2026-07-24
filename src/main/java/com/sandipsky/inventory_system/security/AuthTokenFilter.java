@@ -1,6 +1,5 @@
 package com.sandipsky.inventory_system.security;
 
-import com.sandipsky.inventory_system.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

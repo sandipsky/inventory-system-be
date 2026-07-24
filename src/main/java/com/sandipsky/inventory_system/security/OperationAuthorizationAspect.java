@@ -7,8 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.sandipsky.inventory_system.exception.AccessDeniedException;
-import com.sandipsky.inventory_system.repository.UserRepository;
+import com.sandipsky.inventory_system.common.exception.AccessDeniedException;
+import com.sandipsky.inventory_system.user.UserRepository;
 
 @Aspect
 @Component

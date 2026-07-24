@@ -1,0 +1,61 @@
+package com.sandipsky.inventory_system.packing;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.sandipsky.inventory_system.common.dto.ApiResponse;
+import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import com.sandipsky.inventory_system.common.util.ResponseUtil;
+import com.sandipsky.inventory_system.security.RequiresOperation;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/master/packings")
+public class PackingController {
+
+    @Autowired
+    private PackingService service;
+
+    @GetMapping()
+    @RequiresOperation("ViewPacking")
+    public List<PackingDTO> getPackings() {
+        return service.getPackings();
+    }
+
+    @PostMapping("/view")
+    @RequiresOperation("ViewPacking")
+    public Page<PackingDTO> getPaginatedPackingsList(@RequestBody RequestDTO request) {
+        return service.getPaginatedPackingsList(request);
+    }
+
+    @GetMapping("/{id}")
+    @RequiresOperation("ViewPacking")
+    public PackingDTO getPacking(@PathVariable int id) {
+        return service.getPackingById(id);
+    }
+
+    @PostMapping()
+    @RequiresOperation("CreatePacking")
+    public ResponseEntity<ApiResponse<Packing>> createPacking(@RequestBody PackingDTO packing) {
+        Packing res = service.savePacking(packing);
+        return ResponseEntity.ok(ResponseUtil.success(res.getId(), "Packing Added successfully"));
+    }
+
+    @PutMapping("/{id}")
+    @RequiresOperation("EditPacking")
+    public ResponseEntity<ApiResponse<Packing>> updatePacking(@PathVariable int id,
+            @RequestBody PackingDTO packing) {
+        Packing res = service.updatePacking(id, packing);
+        return ResponseEntity.ok(ResponseUtil.success(res.getId(), "Packing Updated successfully"));
+    }
+
+    @DeleteMapping("/{id}")
+    @RequiresOperation("DeletePacking")
+    public ResponseEntity<ApiResponse<Packing>> deletePacking(@PathVariable int id) {
+        service.deletePacking(id);
+        return ResponseEntity.ok(ResponseUtil.success(id, "Packing Deleted successfully"));
+    }
+}

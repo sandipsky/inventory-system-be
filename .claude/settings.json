@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(& \"$env:LOCALAPPDATA\\\\Programs\\\\DockerDesktop\\\\resources\\\\bin\\\\docker.exe\" info --format \"Server: {{.ServerVersion}} / OS: {{.OperatingSystem}}\")",
+      "Bash(\"/c/Users/Sandip.Shakya/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe\" compose *)",
+      "PowerShell($d = \"$env:LOCALAPPDATA\\\\Programs\\\\DockerDesktop\\\\resources\\\\bin\\\\docker.exe\"; & $d ps -a --format \"{{.Names}} | {{.Status}}\"; \"--- images ---\"; & $d images --format \"{{.Repository}}:{{.Tag}} | {{.Size}}\" | Select-Object -First 5; \"--- active builds ---\"; & $d buildx ls 2>$null | Select-Object -First 3)",
+      "Bash(\"/c/Users/Sandip.Shakya/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe\" ps *)",
+      "Bash(/c/Users/Sandip.Shakya/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe logs *)",
+      "Bash(curl -s -X POST http://localhost:8080/auth/login -H \"Content-Type: application/json\" -d '{\"username\":\"admin\",\"password\":\"Admin@123\"}')"
+    ]
+  }
+}

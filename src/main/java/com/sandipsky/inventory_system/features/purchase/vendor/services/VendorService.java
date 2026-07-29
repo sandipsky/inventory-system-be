@@ -6,7 +6,8 @@ import com.sandipsky.inventory_system.features.purchase.vendor.entities.Vendor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import com.sandipsky.inventory_system.common.util.QueryParamUtil;
+import java.util.Map;
 import com.sandipsky.inventory_system.features.accounting.account.entities.AccountMaster;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;
 import com.sandipsky.inventory_system.features.accounting.account.repositories.AccountMasterRepository;
@@ -56,13 +57,10 @@ public class VendorService {
         return savedVendor;
     }
 
-    public Page<VendorDTO> getPaginatedVendorsList(RequestDTO request) {
-        Pageable pageable = PageRequest.of(
-                request.getPagination() != null ? request.getPagination().getPageIndex() : 0,
-                request.getPagination() != null ? request.getPagination().getPageSize() : 25,
-                specBuilder.buildSort(request.getSortDTO()));
+    public Page<VendorDTO> getPaginatedVendorsList(Map<String, String> params) {
+        Pageable pageable = QueryParamUtil.toPageable(params);
 
-        Specification<Vendor> spec = specBuilder.buildSpecification(request.getFilter());
+        Specification<Vendor> spec = specBuilder.buildSpecification(QueryParamUtil.toFilterParams(params));
         Page<Vendor> vendorPage = repository.findAll(spec, pageable);
         return vendorPage.map(this::mapToDTO);
     }

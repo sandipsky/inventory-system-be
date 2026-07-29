@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.sandipsky.inventory_system.common.dto.ApiResponse;
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import java.util.Map;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 import com.sandipsky.inventory_system.features.product.entities.ProductStock;
 
@@ -20,9 +20,9 @@ public class StockEditController {
     @Autowired
     private StockEditService service;
 
-    @PostMapping("/view")
-    public Page<StockEditDTO> getPaginatedProductStocksList(@RequestBody RequestDTO request) {
-        return service.getPaginatedProductStocksList(request);
+    @GetMapping("/view")
+    public Page<StockEditDTO> getPaginatedProductStocksList(@RequestParam Map<String, String> params) {
+        return service.getPaginatedProductStocksList(params);
     }
 
     @GetMapping("/{productId}")

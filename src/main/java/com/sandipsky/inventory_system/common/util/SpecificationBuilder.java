@@ -1,30 +1,27 @@
 package com.sandipsky.inventory_system.common.util;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-
-import com.sandipsky.inventory_system.common.dto.filter.FilterDTO;
-import com.sandipsky.inventory_system.common.dto.filter.SortDTO;
 
 import jakarta.persistence.criteria.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SpecificationBuilder<T> {
-    
-    public Specification<T> buildSpecification(List<FilterDTO> filters) {
+
+    public Specification<T> buildSpecification(Map<String, String> filters) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (filters != null) {
-                for (FilterDTO filter : filters) {
-                    if (filter.getField() != null && filter.getValue() != null) {
+                for (Map.Entry<String, String> filter : filters.entrySet()) {
+                    if (filter.getKey() != null && filter.getValue() != null) {
                         try {
-                            Path<?> path = getPath(root, filter.getField());
+                            Path<?> path = getPath(root, filter.getKey());
                             Expression<String> expression = cb.lower(path.as(String.class));
                             predicates.add(cb.like(expression, "%" + filter.getValue().toLowerCase() + "%"));
                         } catch (IllegalArgumentException e) {
-                            System.out.println("Skipping unknown filter field: " + filter.getField());
+                            System.out.println("Skipping unknown filter field: " + filter.getKey());
                         }
                     }
                 }
@@ -44,21 +41,5 @@ public class SpecificationBuilder<T> {
         } else {
             return root.get(fieldName);
         }
-    }
-
-    public Sort buildSort(List<SortDTO> sortDTOs) {
-        List<Sort.Order> orders = new ArrayList<>();
-        if (sortDTOs != null) {
-            for (SortDTO dto : sortDTOs) {
-                if (dto.getField() != null && dto.getOrderType() != null) {
-                    String property = dto.getField();
-                    Sort.Order order = "desc".equalsIgnoreCase(dto.getOrderType())
-                            ? Sort.Order.desc(property).ignoreCase()
-                            : Sort.Order.asc(property).ignoreCase();
-                    orders.add(order);
-                }
-            }
-        }
-        return orders.isEmpty() ? Sort.unsorted() : Sort.by(orders);
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sandipsky.inventory_system.common.dropdown.dtos.DropdownDTO;
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import com.sandipsky.inventory_system.common.util.QueryParamUtil;
 import com.sandipsky.inventory_system.common.exception.DuplicateResourceException;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;
 import com.sandipsky.inventory_system.common.util.SpecificationBuilder;
@@ -53,13 +53,10 @@ public class AccountMasterService {
         return repository.save(accountMaster);
     }
 
-    public Page<AccountMasterDTO> getPaginatedAccountMastersList(RequestDTO request) {
-        Pageable pageable = PageRequest.of(
-                request.getPagination() != null ? request.getPagination().getPageIndex() : 0,
-                request.getPagination() != null ? request.getPagination().getPageSize() : 25,
-                specBuilder.buildSort(request.getSortDTO()));
+    public Page<AccountMasterDTO> getPaginatedAccountMastersList(Map<String, String> params) {
+        Pageable pageable = QueryParamUtil.toPageable(params);
 
-        Specification<AccountMaster> spec = specBuilder.buildSpecification(request.getFilter());
+        Specification<AccountMaster> spec = specBuilder.buildSpecification(QueryParamUtil.toFilterParams(params));
         Page<AccountMaster> accountMasterPage = repository.findAll(spec, pageable);
         return accountMasterPage.map(this::mapToDTO);
     }

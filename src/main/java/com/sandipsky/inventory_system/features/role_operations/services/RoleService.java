@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import com.sandipsky.inventory_system.common.util.QueryParamUtil;
+import java.util.Map;
 import com.sandipsky.inventory_system.common.exception.DuplicateResourceException;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;
 import com.sandipsky.inventory_system.common.util.SpecificationBuilder;
@@ -85,13 +85,10 @@ public class RoleService {
         return repository.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    public Page<RoleDTO> getPaginatedRolesList(RequestDTO request) {
-        Pageable pageable = PageRequest.of(
-                request.getPagination() != null ? request.getPagination().getPageIndex() : 0,
-                request.getPagination() != null ? request.getPagination().getPageSize() : 25,
-                specBuilder.buildSort(request.getSortDTO()));
+    public Page<RoleDTO> getPaginatedRolesList(Map<String, String> params) {
+        Pageable pageable = QueryParamUtil.toPageable(params);
 
-        Specification<Role> spec = specBuilder.buildSpecification(request.getFilter());
+        Specification<Role> spec = specBuilder.buildSpecification(QueryParamUtil.toFilterParams(params));
         return repository.findAll(spec, pageable).map(this::mapToDTO);
     }
 

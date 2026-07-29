@@ -5,12 +5,12 @@ import com.sandipsky.inventory_system.features.masters.taxtype.entities.TaxType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import com.sandipsky.inventory_system.common.util.QueryParamUtil;
+import java.util.Map;
 import com.sandipsky.inventory_system.common.exception.DuplicateResourceException;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;
 import com.sandipsky.inventory_system.common.util.SpecificationBuilder;
@@ -37,13 +37,10 @@ public class TaxTypeService {
         return repository.save(taxType);
     }
 
-    public Page<TaxTypeDTO> getPaginatedTaxTypesList(RequestDTO request) {
-        Pageable pageable = PageRequest.of(
-                request.getPagination() != null ? request.getPagination().getPageIndex() : 0,
-                request.getPagination() != null ? request.getPagination().getPageSize() : 25,
-                specBuilder.buildSort(request.getSortDTO()));
+    public Page<TaxTypeDTO> getPaginatedTaxTypesList(Map<String, String> params) {
+        Pageable pageable = QueryParamUtil.toPageable(params);
 
-        Specification<TaxType> spec = specBuilder.buildSpecification(request.getFilter());
+        Specification<TaxType> spec = specBuilder.buildSpecification(QueryParamUtil.toFilterParams(params));
         return repository.findAll(spec, pageable).map(this::mapToDTO);
     }
 

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.sandipsky.inventory_system.common.dto.ApiResponse;
 import com.sandipsky.inventory_system.common.dropdown.dtos.DropdownDTO;
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import java.util.Map;
 import com.sandipsky.inventory_system.security.RequiresOperation;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 
@@ -31,10 +31,10 @@ public class AccountMasterController {
         return service.getAccountMasters();
     }
 
-    @PostMapping("/view")
+    @GetMapping("/view")
     @RequiresOperation("ViewAccountMaster")
-    public Page<AccountMasterDTO> getPaginatedAccountMastersList(@RequestBody RequestDTO request) {
-        return service.getPaginatedAccountMastersList(request);
+    public Page<AccountMasterDTO> getPaginatedAccountMastersList(@RequestParam Map<String, String> params) {
+        return service.getPaginatedAccountMastersList(params);
     }
 
     @GetMapping("/getAccountTypes")

@@ -14,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import com.sandipsky.inventory_system.common.util.QueryParamUtil;
+import java.util.Map;
 import com.sandipsky.inventory_system.features.accounting.account.entities.AccountMaster;
 import com.sandipsky.inventory_system.features.accounting.journal.entities.JournalEntry;
 import com.sandipsky.inventory_system.features.accounting.journal.entities.MasterJournalEntry;
@@ -70,13 +71,10 @@ public class SalesEntryService {
 
     private final SpecificationBuilder<MasterSalesEntry> specBuilder = new SpecificationBuilder<>();
 
-    public Page<MasterSalesEntryDTO> getPaginatedMasterSalesEntrysList(RequestDTO request) {
-        Pageable pageable = PageRequest.of(
-                request.getPagination() != null ? request.getPagination().getPageIndex() : 0,
-                request.getPagination() != null ? request.getPagination().getPageSize() : 25,
-                specBuilder.buildSort(request.getSortDTO()));
+    public Page<MasterSalesEntryDTO> getPaginatedMasterSalesEntrysList(Map<String, String> params) {
+        Pageable pageable = QueryParamUtil.toPageable(params);
 
-        Specification<MasterSalesEntry> spec = specBuilder.buildSpecification(request.getFilter());
+        Specification<MasterSalesEntry> spec = specBuilder.buildSpecification(QueryParamUtil.toFilterParams(params));
         Page<MasterSalesEntry> productPage = repository.findAll(spec, pageable);
         return productPage.map(this::mapToDTO);
     }

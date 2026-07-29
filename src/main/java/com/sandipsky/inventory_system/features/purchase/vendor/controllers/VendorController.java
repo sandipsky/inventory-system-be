@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.sandipsky.inventory_system.common.dto.ApiResponse;
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import java.util.Map;
 import com.sandipsky.inventory_system.security.RequiresOperation;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 
@@ -29,10 +29,10 @@ public class VendorController {
         return service.getVendors();
     }
 
-    @PostMapping("/view")
+    @GetMapping("/view")
     @RequiresOperation("ViewVendor")
-    public Page<VendorDTO> getPaginatedVendorsList(@RequestBody RequestDTO request) {
-        return service.getPaginatedVendorsList(request);
+    public Page<VendorDTO> getPaginatedVendorsList(@RequestParam Map<String, String> params) {
+        return service.getPaginatedVendorsList(params);
     }
 
     @GetMapping("/{id}")

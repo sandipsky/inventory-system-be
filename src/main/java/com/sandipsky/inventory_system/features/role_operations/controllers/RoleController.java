@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.sandipsky.inventory_system.common.dto.ApiResponse;
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import java.util.Map;
 import com.sandipsky.inventory_system.security.RequiresOperation;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 
@@ -29,10 +29,10 @@ public class RoleController {
         return service.getRoles();
     }
 
-    @PostMapping("/view")
+    @GetMapping("/view")
     @RequiresOperation("ViewRole")
-    public Page<RoleDTO> getPaginatedRolesList(@RequestBody RequestDTO request) {
-        return service.getPaginatedRolesList(request);
+    public Page<RoleDTO> getPaginatedRolesList(@RequestParam Map<String, String> params) {
+        return service.getPaginatedRolesList(params);
     }
 
     @GetMapping("/{id}")

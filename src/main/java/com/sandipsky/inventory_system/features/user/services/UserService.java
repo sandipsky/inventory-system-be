@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import com.sandipsky.inventory_system.common.util.QueryParamUtil;
+import java.util.Map;
 import com.sandipsky.inventory_system.features.role_operations.entities.Role;
 import com.sandipsky.inventory_system.common.exception.DuplicateResourceException;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;
@@ -58,13 +59,10 @@ public class UserService {
         return repository.save(user);
     }
 
-    public Page<UserDTO> getPaginatedUsersList(RequestDTO request) {
-        Pageable pageable = PageRequest.of(
-                request.getPagination() != null ? request.getPagination().getPageIndex() : 0,
-                request.getPagination() != null ? request.getPagination().getPageSize() : 25,
-                specBuilder.buildSort(request.getSortDTO()));
+    public Page<UserDTO> getPaginatedUsersList(Map<String, String> params) {
+        Pageable pageable = QueryParamUtil.toPageable(params);
 
-        Specification<User> spec = specBuilder.buildSpecification(request.getFilter());
+        Specification<User> spec = specBuilder.buildSpecification(QueryParamUtil.toFilterParams(params));
         Page<User> productPage = repository.findAll(spec, pageable);
         return productPage.map(this::mapToDTO);
     }

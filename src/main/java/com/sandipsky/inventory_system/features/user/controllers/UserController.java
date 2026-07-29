@@ -4,7 +4,7 @@ import com.sandipsky.inventory_system.features.user.dtos.UserDTO;
 import com.sandipsky.inventory_system.features.user.entities.User;
 
 import com.sandipsky.inventory_system.common.dto.ApiResponse;
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import java.util.Map;
 import com.sandipsky.inventory_system.security.RequiresOperation;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 
@@ -30,10 +30,10 @@ public class UserController {
         return service.getUsers();
     }
 
-    @PostMapping("/view")
+    @GetMapping("/view")
     @RequiresOperation("ViewUser")
-    public Page<UserDTO> getPaginatedUsersList(@RequestBody RequestDTO request) {
-        return service.getPaginatedUsersList(request);
+    public Page<UserDTO> getPaginatedUsersList(@RequestParam Map<String, String> params) {
+        return service.getPaginatedUsersList(params);
     }
 
     @GetMapping("/{id}")

@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.sandipsky.inventory_system.common.dto.ApiResponse;
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import java.util.Map;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 import com.sandipsky.inventory_system.security.RequiresOperation;
 
@@ -28,10 +28,10 @@ public class TaxTypeController {
         return service.getTaxTypes();
     }
 
-    @PostMapping("/view")
+    @GetMapping("/view")
     @RequiresOperation("ViewTaxType")
-    public Page<TaxTypeDTO> getPaginatedTaxTypesList(@RequestBody RequestDTO request) {
-        return service.getPaginatedTaxTypesList(request);
+    public Page<TaxTypeDTO> getPaginatedTaxTypesList(@RequestParam Map<String, String> params) {
+        return service.getPaginatedTaxTypesList(params);
     }
 
     @GetMapping("/{id}")

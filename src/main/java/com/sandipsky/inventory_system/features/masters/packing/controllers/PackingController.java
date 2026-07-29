@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.sandipsky.inventory_system.common.dto.ApiResponse;
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import java.util.Map;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 import com.sandipsky.inventory_system.security.RequiresOperation;
 
@@ -28,10 +28,10 @@ public class PackingController {
         return service.getPackings();
     }
 
-    @PostMapping("/view")
+    @GetMapping("/view")
     @RequiresOperation("ViewPacking")
-    public Page<PackingDTO> getPaginatedPackingsList(@RequestBody RequestDTO request) {
-        return service.getPaginatedPackingsList(request);
+    public Page<PackingDTO> getPaginatedPackingsList(@RequestParam Map<String, String> params) {
+        return service.getPaginatedPackingsList(params);
     }
 
     @GetMapping("/{id}")

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.sandipsky.inventory_system.common.dto.ApiResponse;
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import java.util.Map;
 import com.sandipsky.inventory_system.security.RequiresOperation;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 
@@ -30,10 +30,10 @@ public class ProductController {
         return service.getProducts();
     }
 
-    @PostMapping("/view")
+    @GetMapping("/view")
     @RequiresOperation("ViewProduct")
-    public Page<ProductDTO> getPaginatedProductsList(@RequestBody RequestDTO request) {
-        return service.getPaginatedProductsList(request);
+    public Page<ProductDTO> getPaginatedProductsList(@RequestParam Map<String, String> params) {
+        return service.getPaginatedProductsList(params);
     }
 
     @GetMapping("/{id}")

@@ -11,8 +11,8 @@ import com.sandipsky.inventory_system.features.product.entities.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sandipsky.inventory_system.common.dto.filter.FilterDTO;
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import com.sandipsky.inventory_system.common.util.QueryParamUtil;
+import java.util.Map;
 import com.sandipsky.inventory_system.features.masters.category.entities.Category;
 import com.sandipsky.inventory_system.features.masters.packing.entities.Packing;
 import com.sandipsky.inventory_system.features.masters.taxtype.entities.TaxType;
@@ -76,24 +76,15 @@ public class ProductService {
         return repository.save(product);
     }
 
-    public Page<ProductDTO> getPaginatedProductsList(RequestDTO request) {
-        Pageable pageable = PageRequest.of(
-                request.getPagination() != null ? request.getPagination().getPageIndex() : 0,
-                request.getPagination() != null ? request.getPagination().getPageSize() : 25,
-                specBuilder.buildSort(request.getSortDTO()));
+    public Page<ProductDTO> getPaginatedProductsList(Map<String, String> params) {
+        Pageable pageable = QueryParamUtil.toPageable(params);
 
+        Map<String, String> filters = QueryParamUtil.toFilterParams(params);
         String productType = null;
-        List<FilterDTO> filters = request.getFilter();
-        if (filters != null) {
-            List<FilterDTO> remaining = new ArrayList<>();
-            for (FilterDTO f : filters) {
-                if ("productType".equalsIgnoreCase(f.getField())) {
-                    productType = f.getValue();
-                } else {
-                    remaining.add(f);
-                }
+        for (String key : List.copyOf(filters.keySet())) {
+            if ("productType".equalsIgnoreCase(key)) {
+                productType = filters.remove(key);
             }
-            filters = remaining;
         }
 
         Specification<Product> spec = specBuilder.buildSpecification(filters);

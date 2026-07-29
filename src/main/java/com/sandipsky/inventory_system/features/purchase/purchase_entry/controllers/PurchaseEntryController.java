@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.sandipsky.inventory_system.common.dto.ApiResponse;
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import java.util.Map;
 import com.sandipsky.inventory_system.features.settings.document_numbering.services.DocumentNumberingService;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 
@@ -29,9 +29,9 @@ public class PurchaseEntryController {
         return documentNumberingService.generatePurchaseNumber();
     }
 
-    @PostMapping("/view")
-    public Page<MasterPurchaseEntryDTO> getPaginatedMasterPurchaseEntrysList(@RequestBody RequestDTO request) {
-        return service.getPaginatedMasterPurchaseEntrysList(request);
+    @GetMapping("/view")
+    public Page<MasterPurchaseEntryDTO> getPaginatedMasterPurchaseEntrysList(@RequestParam Map<String, String> params) {
+        return service.getPaginatedMasterPurchaseEntrysList(params);
     }
 
     @GetMapping("/{id}")

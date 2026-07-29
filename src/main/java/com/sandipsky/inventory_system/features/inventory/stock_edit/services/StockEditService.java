@@ -5,7 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sandipsky.inventory_system.common.dto.filter.RequestDTO;
+import com.sandipsky.inventory_system.common.util.QueryParamUtil;
+import java.util.Map;
 import com.sandipsky.inventory_system.features.product.entities.ProductStock;
 import com.sandipsky.inventory_system.common.exception.ResourceNotFoundException;
 import com.sandipsky.inventory_system.features.product.repositories.ProductStockRepository;
@@ -22,13 +23,10 @@ public class StockEditService {
 
     private final SpecificationBuilder<ProductStock> specBuilder = new SpecificationBuilder<>();
 
-    public Page<StockEditDTO> getPaginatedProductStocksList(RequestDTO request) {
-        Pageable pageable = PageRequest.of(
-                request.getPagination() != null ? request.getPagination().getPageIndex() : 0,
-                request.getPagination() != null ? request.getPagination().getPageSize() : 25,
-                specBuilder.buildSort(request.getSortDTO()));
+    public Page<StockEditDTO> getPaginatedProductStocksList(Map<String, String> params) {
+        Pageable pageable = QueryParamUtil.toPageable(params);
 
-        Specification<ProductStock> spec = specBuilder.buildSpecification(request.getFilter());
+        Specification<ProductStock> spec = specBuilder.buildSpecification(QueryParamUtil.toFilterParams(params));
         Page<ProductStock> stockPage = productStockRepository.findAll(spec, pageable);
         return stockPage.map(this::mapToDTO);
     }

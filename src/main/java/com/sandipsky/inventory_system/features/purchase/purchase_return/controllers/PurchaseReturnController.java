@@ -29,7 +29,7 @@ public class PurchaseReturnController {
         return documentNumberingService.generatePurchaseReturnNumber();
     }
 
-    @GetMapping("/view")
+    @GetMapping()
     public Page<MasterPurchaseReturnDTO> getPaginatedMasterPurchaseReturnsList(@RequestParam Map<String, String> params) {
         return service.getPaginatedMasterPurchaseReturnsList(params);
     }

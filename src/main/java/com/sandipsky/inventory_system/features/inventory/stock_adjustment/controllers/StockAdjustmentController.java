@@ -29,7 +29,7 @@ public class StockAdjustmentController {
         return documentNumberingService.generateStockAdjustmentNumber();
     }
 
-    @GetMapping("/view")
+    @GetMapping()
     public Page<MasterStockAdjustmentDTO> getPaginatedMasterStockAdjustmentsList(@RequestParam Map<String, String> params) {
         return service.getPaginatedMasterStockAdjustmentsList(params);
     }

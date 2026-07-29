@@ -13,7 +13,6 @@ import java.util.Map;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 import com.sandipsky.inventory_system.security.RequiresOperation;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/master/units")
@@ -23,12 +22,6 @@ public class UnitController {
     private UnitService service;
 
     @GetMapping()
-    @RequiresOperation("ViewUnit")
-    public List<UnitDTO> getUnits() {
-        return service.getUnits();
-    }
-
-    @GetMapping("/view")
     @RequiresOperation("ViewUnit")
     public Page<UnitDTO> getPaginatedUnitsList(@RequestParam Map<String, String> params) {
         return service.getPaginatedUnitsList(params);

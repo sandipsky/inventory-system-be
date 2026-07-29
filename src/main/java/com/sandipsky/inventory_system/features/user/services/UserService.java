@@ -67,10 +67,6 @@ public class UserService {
         return productPage.map(this::mapToDTO);
     }
 
-    public List<UserDTO> getUsers() {
-        return repository.findAll().stream().map(this::mapToDTO).toList();
-    }
-
     public UserDTO getUserById(int id) {
         User user = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));

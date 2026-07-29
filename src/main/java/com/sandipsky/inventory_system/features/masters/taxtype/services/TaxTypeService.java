@@ -44,10 +44,6 @@ public class TaxTypeService {
         return repository.findAll(spec, pageable).map(this::mapToDTO);
     }
 
-    public List<TaxTypeDTO> getTaxTypes() {
-        return repository.findAll().stream().map(this::mapToDTO).toList();
-    }
-
     public TaxTypeDTO getTaxTypeById(int id) {
         TaxType existing = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tax Type not found"));

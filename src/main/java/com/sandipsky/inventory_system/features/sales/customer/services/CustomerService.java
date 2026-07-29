@@ -65,12 +65,6 @@ public class CustomerService {
         return customerPage.map(this::mapToDTO);
     }
 
-    public List<CustomerDTO> getCustomers() {
-        return repository.findAll().stream()
-                .map(this::mapToDTO)
-                .toList();
-    }
-
     public CustomerDTO getCustomerById(int id) {
         Customer customer = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));

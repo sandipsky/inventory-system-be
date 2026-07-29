@@ -44,10 +44,6 @@ public class CategoryService {
         return repository.findAll(spec, pageable).map(this::mapToDTO);
     }
 
-    public List<CategoryDTO> getCategorys() {
-        return repository.findAll().stream().map(this::mapToDTO).toList();
-    }
-
     public CategoryDTO getCategoryById(int id) {
         Category existing = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));

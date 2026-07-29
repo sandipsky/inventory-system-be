@@ -13,7 +13,6 @@ import java.util.Map;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 import com.sandipsky.inventory_system.security.RequiresOperation;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/master/categorys")
@@ -23,12 +22,6 @@ public class CategoryController {
     private CategoryService service;
 
     @GetMapping()
-    @RequiresOperation("ViewCategory")
-    public List<CategoryDTO> getCategorys() {
-        return service.getCategorys();
-    }
-
-    @GetMapping("/view")
     @RequiresOperation("ViewCategory")
     public Page<CategoryDTO> getPaginatedCategorysList(@RequestParam Map<String, String> params) {
         return service.getPaginatedCategorysList(params);

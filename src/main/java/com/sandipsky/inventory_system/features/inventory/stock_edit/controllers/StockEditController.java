@@ -20,7 +20,7 @@ public class StockEditController {
     @Autowired
     private StockEditService service;
 
-    @GetMapping("/view")
+    @GetMapping()
     public Page<StockEditDTO> getPaginatedProductStocksList(@RequestParam Map<String, String> params) {
         return service.getPaginatedProductStocksList(params);
     }

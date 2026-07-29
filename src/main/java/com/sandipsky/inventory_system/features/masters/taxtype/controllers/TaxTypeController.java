@@ -13,7 +13,6 @@ import java.util.Map;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 import com.sandipsky.inventory_system.security.RequiresOperation;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/master/taxtypes")
@@ -23,12 +22,6 @@ public class TaxTypeController {
     private TaxTypeService service;
 
     @GetMapping()
-    @RequiresOperation("ViewTaxType")
-    public List<TaxTypeDTO> getTaxTypes() {
-        return service.getTaxTypes();
-    }
-
-    @GetMapping("/view")
     @RequiresOperation("ViewTaxType")
     public Page<TaxTypeDTO> getPaginatedTaxTypesList(@RequestParam Map<String, String> params) {
         return service.getPaginatedTaxTypesList(params);

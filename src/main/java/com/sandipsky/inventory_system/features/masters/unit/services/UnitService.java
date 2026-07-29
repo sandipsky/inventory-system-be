@@ -44,10 +44,6 @@ public class UnitService {
         return repository.findAll(spec, pageable).map(this::mapToDTO);
     }
 
-    public List<UnitDTO> getUnits() {
-        return repository.findAll().stream().map(this::mapToDTO).toList();
-    }
-
     public UnitDTO getUnitById(int id) {
         Unit existing = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Unit not found"));
         return mapToDTO(existing);

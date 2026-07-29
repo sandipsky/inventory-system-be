@@ -29,7 +29,7 @@ public class SalesEntryController {
         return documentNumberingService.generateSalesNumber();
     }
 
-    @GetMapping("/view")
+    @GetMapping()
     public Page<MasterSalesEntryDTO> getPaginatedMasterSalesEntrysList(@RequestParam Map<String, String> params) {
         return service.getPaginatedMasterSalesEntrysList(params);
     }

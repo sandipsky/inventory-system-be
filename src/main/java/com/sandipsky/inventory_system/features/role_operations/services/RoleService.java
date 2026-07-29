@@ -81,10 +81,6 @@ public class RoleService {
         repository.deleteById(id);
     }
 
-    public List<RoleDTO> getRoles() {
-        return repository.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
-    }
-
     public Page<RoleDTO> getPaginatedRolesList(Map<String, String> params) {
         Pageable pageable = QueryParamUtil.toPageable(params);
 

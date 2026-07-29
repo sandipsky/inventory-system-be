@@ -29,7 +29,7 @@ public class PaymentController {
         return documentNumberingService.generatePaymentNumber();
     }
 
-    @GetMapping("/view")
+    @GetMapping()
     public Page<MasterPaymentDTO> getPaginatedMasterPaymentsList(@RequestParam Map<String, String> params) {
         return service.getPaginatedMasterPaymentsList(params);
     }

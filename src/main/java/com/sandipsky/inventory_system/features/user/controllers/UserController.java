@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -25,12 +24,6 @@ public class UserController {
     private UserService service;
 
     @GetMapping()
-    @RequiresOperation("ViewUser")
-    public List<UserDTO> getUsers() {
-        return service.getUsers();
-    }
-
-    @GetMapping("/view")
     @RequiresOperation("ViewUser")
     public Page<UserDTO> getPaginatedUsersList(@RequestParam Map<String, String> params) {
         return service.getPaginatedUsersList(params);

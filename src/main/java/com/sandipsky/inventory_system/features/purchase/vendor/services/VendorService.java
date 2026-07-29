@@ -65,12 +65,6 @@ public class VendorService {
         return vendorPage.map(this::mapToDTO);
     }
 
-    public List<VendorDTO> getVendors() {
-        return repository.findAll().stream()
-                .map(this::mapToDTO)
-                .toList();
-    }
-
     public VendorDTO getVendorById(int id) {
         Vendor vendor = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Vendor not found"));
         return mapToDTO(vendor);

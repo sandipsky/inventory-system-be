@@ -14,7 +14,6 @@ import com.sandipsky.inventory_system.common.util.ResponseUtil;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/vendor")
@@ -24,12 +23,6 @@ public class VendorController {
     private VendorService service;
 
     @GetMapping()
-    @RequiresOperation("ViewVendor")
-    public List<VendorDTO> getVendors() {
-        return service.getVendors();
-    }
-
-    @GetMapping("/view")
     @RequiresOperation("ViewVendor")
     public Page<VendorDTO> getPaginatedVendorsList(@RequestParam Map<String, String> params) {
         return service.getPaginatedVendorsList(params);

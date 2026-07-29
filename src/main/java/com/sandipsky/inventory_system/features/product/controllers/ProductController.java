@@ -15,7 +15,6 @@ import com.sandipsky.inventory_system.common.util.ResponseUtil;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -25,12 +24,6 @@ public class ProductController {
     private ProductService service;
 
     @GetMapping()
-    @RequiresOperation("ViewProduct")
-    public List<ProductDTO> getProducts() {
-        return service.getProducts();
-    }
-
-    @GetMapping("/view")
     @RequiresOperation("ViewProduct")
     public Page<ProductDTO> getPaginatedProductsList(@RequestParam Map<String, String> params) {
         return service.getPaginatedProductsList(params);

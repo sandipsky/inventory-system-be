@@ -44,10 +44,6 @@ public class PackingService {
         return repository.findAll(spec, pageable).map(this::mapToDTO);
     }
 
-    public List<PackingDTO> getPackings() {
-        return repository.findAll().stream().map(this::mapToDTO).toList();
-    }
-
     public PackingDTO getPackingById(int id) {
         Packing existing = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Packing not found"));

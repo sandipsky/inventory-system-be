@@ -27,12 +27,6 @@ public class AccountMasterController {
 
     @GetMapping()
     @RequiresOperation("ViewAccountMaster")
-    public List<AccountMasterDTO> getAccountMasters() {
-        return service.getAccountMasters();
-    }
-
-    @GetMapping("/view")
-    @RequiresOperation("ViewAccountMaster")
     public Page<AccountMasterDTO> getPaginatedAccountMastersList(@RequestParam Map<String, String> params) {
         return service.getPaginatedAccountMastersList(params);
     }

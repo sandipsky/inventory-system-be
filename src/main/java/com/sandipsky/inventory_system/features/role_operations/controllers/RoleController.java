@@ -25,12 +25,6 @@ public class RoleController {
 
     @GetMapping()
     @RequiresOperation("ViewRole")
-    public List<RoleDTO> getRoles() {
-        return service.getRoles();
-    }
-
-    @GetMapping("/view")
-    @RequiresOperation("ViewRole")
     public Page<RoleDTO> getPaginatedRolesList(@RequestParam Map<String, String> params) {
         return service.getPaginatedRolesList(params);
     }

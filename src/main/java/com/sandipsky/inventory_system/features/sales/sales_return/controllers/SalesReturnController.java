@@ -29,7 +29,7 @@ public class SalesReturnController {
         return documentNumberingService.generateSalesReturnNumber();
     }
 
-    @GetMapping("/view")
+    @GetMapping()
     public Page<MasterSalesReturnDTO> getPaginatedMasterSalesReturnsList(@RequestParam Map<String, String> params) {
         return service.getPaginatedMasterSalesReturnsList(params);
     }

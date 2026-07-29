@@ -20,7 +20,7 @@ public class OpeningStockController {
     @Autowired
     private OpeningStockService service;
 
-    @GetMapping("/view")
+    @GetMapping()
     public Page<OpeningStockDTO> getPaginatedOpeningStocksList(@RequestParam Map<String, String> params) {
         return service.getPaginatedOpeningStocksList(params);
     }

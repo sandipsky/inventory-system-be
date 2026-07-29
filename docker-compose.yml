@@ -15,5 +15,9 @@ services:
     restart: unless-stopped
 
 volumes:
+  # Pin exact volume names (no compose project prefix) — the original
+  # `docker run` deployment created them unprefixed and they hold live data.
   inventory-data:
+    name: inventory-data
   inventory-uploads:
+    name: inventory-uploads

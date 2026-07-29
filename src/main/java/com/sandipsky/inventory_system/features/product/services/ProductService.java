@@ -112,12 +112,6 @@ public class ProductService {
         };
     }
 
-    public List<ProductDTO> getProducts() {
-        return repository.findAll().stream()
-                .map(this::mapToDTO)
-                .toList();
-    }
-
     public ProductDTO getProductById(int id) {
         Product product = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         return mapToDTO(product);

@@ -29,7 +29,7 @@ public class PurchaseEntryController {
         return documentNumberingService.generatePurchaseNumber();
     }
 
-    @GetMapping("/view")
+    @GetMapping()
     public Page<MasterPurchaseEntryDTO> getPaginatedMasterPurchaseEntrysList(@RequestParam Map<String, String> params) {
         return service.getPaginatedMasterPurchaseEntrysList(params);
     }

@@ -61,12 +61,6 @@ public class AccountMasterService {
         return accountMasterPage.map(this::mapToDTO);
     }
 
-    public List<AccountMasterDTO> getAccountMasters() {
-        return repository.findAll().stream()
-                .map(this::mapToDTO)
-                .toList();
-    }
-
     public AccountMasterDTO getAccountMasterById(int id) {
         AccountMaster accountMaster = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("AccountMaster not found"));

@@ -14,7 +14,6 @@ import com.sandipsky.inventory_system.common.util.ResponseUtil;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/customer")
@@ -24,12 +23,6 @@ public class CustomerController {
     private CustomerService service;
 
     @GetMapping()
-    @RequiresOperation("ViewCustomer")
-    public List<CustomerDTO> getCustomers() {
-        return service.getCustomers();
-    }
-
-    @GetMapping("/view")
     @RequiresOperation("ViewCustomer")
     public Page<CustomerDTO> getPaginatedCustomersList(@RequestParam Map<String, String> params) {
         return service.getPaginatedCustomersList(params);

@@ -13,7 +13,6 @@ import java.util.Map;
 import com.sandipsky.inventory_system.common.util.ResponseUtil;
 import com.sandipsky.inventory_system.security.RequiresOperation;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/master/packings")
@@ -23,12 +22,6 @@ public class PackingController {
     private PackingService service;
 
     @GetMapping()
-    @RequiresOperation("ViewPacking")
-    public List<PackingDTO> getPackings() {
-        return service.getPackings();
-    }
-
-    @GetMapping("/view")
     @RequiresOperation("ViewPacking")
     public Page<PackingDTO> getPaginatedPackingsList(@RequestParam Map<String, String> params) {
         return service.getPaginatedPackingsList(params);

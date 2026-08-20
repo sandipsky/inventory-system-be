@@ -13,6 +13,6 @@ if (Test-Path $dbPath) {
 New-Item -ItemType File -Path $dbPath | Out-Null
 Write-Host "Created $dbPath"
 
-& $sqliteExe $dbPath ".read $sqlPath"
+& $sqliteExe $dbPath ".read '$sqlPath'"
 if ($LASTEXITCODE -ne 0) { throw "sqlite3 failed with exit code $LASTEXITCODE" }
 Write-Host "Loaded schema from $sqlPath"

@@ -128,7 +128,6 @@ public class AccountMasterService {
     }
 
     private void mapDtoToEntity(AccountMasterDTO dto, AccountMaster accountMaster) {
-        accountMaster.setId(dto.getId());
         accountMaster.setAccountName(dto.getAccountName());
         accountMaster.setAccountCode(dto.getAccountCode());
         accountMaster.setAccountType(dto.getAccountType());
